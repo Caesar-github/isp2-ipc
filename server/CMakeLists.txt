@@ -10,16 +10,22 @@ pkg_check_modules (JSON-C REQUIRED IMPORTED_TARGET json-c)
 
 include_directories(
 	${PROJECT_SOURCE_DIR}/./
-        ${PROJECT_SOURCE_DIR}/../interface
+        /home/qe/1109/external/isp2-ipc/interface
         /home/qe/1109/external/rv1109_rkaiq/uAPI
         /home/qe/1109/external/rv1109_rkaiq/algos
         /home/qe/1109/external/rv1109_rkaiq/common
         /home/qe/1109/external/rv1109_rkaiq/xcore
         /home/qe/1109/external/rv1109_rkaiq/iq_parser
+        /home/qe/1109/external/call_fun_ipc2/
+        /home/qe/1109/external/isp2-ipc/common
+        /home/qe/1109/external/call_fun_ipc2/demo
+
 	)
 
 link_directories(
-	${PROJECT_SOURCE_DIR}/../libs)
+	${PROJECT_SOURCE_DIR}/../libs
+        /home/qe/1109/external/call_fun_ipc2
+        )
 
 aux_source_directory(./ SRCS)
 aux_source_directory(./impl SRCS)
@@ -35,6 +41,7 @@ target_link_libraries(${PROJECT_NAME}
         gdbus
         pthread
         rkaiq
+        CallFunIpc
         )
 
 install(TARGETS ${PROJECT_NAME}

@@ -1,4 +1,6 @@
 
+#include "config.h"
+#if ENABLE_ALL
 #include "awb/rk_aiq_uapi_awb_int.h"
 
 XCamReturn
@@ -17,4 +19,6 @@ XCamReturn
 rk_aiq_user_api_awb_QueryWBInfo(rk_aiq_sys_ctx_t* sys_ctx, rk_aiq_wb_querry_info_t *wb_querry_info) {
     return 0;
 }
+
+#endif
 

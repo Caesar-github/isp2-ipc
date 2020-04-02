@@ -1,7 +1,7 @@
 #ifndef _RK_AIQ_USER_API_ALSC_IPC_H_
 #define _RK_AIQ_USER_API_ALSC_IPC_H_
 
-#include "alsc/rk_aiq_uapi_alsc.h"
+#include "rk_aiq_user_api_alsc.h"
 
 XCamReturn
 rk_aiq_user_api_alsc_SetAttrib_ipc(void* args);

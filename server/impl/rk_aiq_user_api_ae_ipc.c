@@ -1,5 +1,7 @@
 
-#include "ae/rk_aiq_uapi_ae.h"
+#include "config.h"
+#if ENABLE_ALL
+#include "rk_aiq_user_api_ae_ipc.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -25,6 +27,6 @@ XCamReturn rk_aiq_user_api_ae_getHdrExpAttr_ipc(void* args){return 0;}
 #endif
 
 
-
+#endif
 
 

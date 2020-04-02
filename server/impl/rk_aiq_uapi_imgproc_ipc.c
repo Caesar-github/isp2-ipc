@@ -14,11 +14,12 @@
  * limitations under the License.
  *
  */
+//#include "rk_aiq_upi_imgproc_ipc.h"
 
 
 
-
-
+#include "config.h"
+#if ENABLE_ALL
 
 /*
 **********************************************************
@@ -35,6 +36,7 @@
 *          manual: manual exposure
 *****************************
 */
+
 XCamReturn rk_aiq_uapi_setExpMode(void *args){
     return 0;
 return 0;}
@@ -548,4 +550,5 @@ XCamReturn rk_aiq_uapi_getSaturation(void *args){return 0;}
 XCamReturn rk_aiq_uapi_setSharpness(void *args){return 0;}
 XCamReturn rk_aiq_uapi_getSharpness(void *args){return 0;}
 
+#endif
 

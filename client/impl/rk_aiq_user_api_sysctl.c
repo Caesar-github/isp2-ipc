@@ -15,10 +15,11 @@
  *
  */
 
-
+#include "config.h"
 #include "rk_aiq.h"
 #include "rk_aiq_algo_des.h"
-
+#include "../protocol/rk_aiq_user_api_sysctl_ptl.h"
+#include "call_fun_ipc.h"
 RKAIQ_BEGIN_DECLARE
 
 typedef struct rk_aiq_sys_ctx_s rk_aiq_sys_ctx_t;
@@ -40,8 +41,18 @@ rk_aiq_uapi_sysctl_init(const char* sns_ent_name,
                         const char* iq_file_dir,
                         rk_aiq_error_cb err_cb,
                         rk_aiq_metas_cb metas_cb) {
+    rk_aiq_uapi_sysctl_init_t para;
+    if (strlen(sns_ent_name) > sizeof(para.sns_ent_name))
+        printf("%s err sns_ent_name too long\n", __func__);
 
-    return NULL;
+    if (strlen(iq_file_dir) > sizeof(para.iq_file_dir))
+        printf("%s err iq_file_dir too long\n", __func__);
+
+    strcpy(para.sns_ent_name, sns_ent_name);
+    strcpy(para.iq_file_dir, iq_file_dir);
+    call_fun_ipc_call((char *)__func__, &para, sizeof(rk_aiq_uapi_sysctl_init_t), 1);
+
+    return para.return_ctx;
 }
 
 /*!
@@ -53,7 +64,9 @@ rk_aiq_uapi_sysctl_init(const char* sns_ent_name,
 void
 rk_aiq_uapi_sysctl_deinit(rk_aiq_sys_ctx_t* ctx) {
 
-    return NULL;
+    rk_aiq_uapi_sysctl_deinit_t para;
+    para.ctx = ctx;
+    call_fun_ipc_call((char *)__func__, &para, sizeof(rk_aiq_uapi_sysctl_deinit_t), 0);
 }
 
 /*!
@@ -72,8 +85,15 @@ XCamReturn
 rk_aiq_uapi_sysctl_prepare(const rk_aiq_sys_ctx_t* ctx,
                            uint32_t  width, uint32_t  height,
                            rk_aiq_working_mode_t mode) {
-       return 0;
-    }
+    rk_aiq_uapi_sysctl_prepare_t para;
+    para.ctx = ctx;
+    para.width = width;
+    para.height = height;
+    para.mode = mode;
+    call_fun_ipc_call((char *)__func__, &para, sizeof(rk_aiq_uapi_sysctl_prepare_t), 1);
+
+    return para.xcamreturn;
+}
 
 /*!
  * \brief start aiq control system
@@ -87,7 +107,11 @@ rk_aiq_uapi_sysctl_prepare(const rk_aiq_sys_ctx_t* ctx,
 XCamReturn
 rk_aiq_uapi_sysctl_start(const rk_aiq_sys_ctx_t* ctx) {
 
-    return 0;
+    rk_aiq_uapi_sysctl_start_t para;
+    para.ctx = ctx;
+    call_fun_ipc_call((char *)__func__, &para, sizeof(rk_aiq_uapi_sysctl_start_t), 1);
+
+    return para.xcamreturn;
 }
 
 /*!
@@ -98,17 +122,35 @@ rk_aiq_uapi_sysctl_start(const rk_aiq_sys_ctx_t* ctx) {
  */
 XCamReturn
 rk_aiq_uapi_sysctl_stop(const rk_aiq_sys_ctx_t* ctx) {
-    return 0;
+    rk_aiq_uapi_sysctl_stop_t para;
+
+    para.ctx = ctx;
+    call_fun_ipc_call((char *)__func__, &para, sizeof(rk_aiq_uapi_sysctl_stop_t), 1);
+
+    return para.xcamreturn;
 }
 
 rk_aiq_static_info_t*
 rk_aiq_uapi_sysctl_getStaticMetas(const char* sns_ent_name) {
-    return NULL;
+    rk_aiq_uapi_sysctl_getStaticMetas_t para;
+    rk_aiq_static_info_t  *static_info = (rk_aiq_static_info_t*)malloc(sizeof(rk_aiq_static_info_t));
+    if (strlen(sns_ent_name) > sizeof(para.sns_ent_name))
+        printf("%s err sns_ent_name too long\n", __func__);
+
+    strcpy(para.sns_ent_name, sns_ent_name);
+    call_fun_ipc_call((char *)__func__, &para, sizeof(rk_aiq_uapi_sysctl_getStaticMetas_t), 1);
+    memcpy(static_info, &para.static_info, sizeof(rk_aiq_static_info_t));
+    return static_info;
 }
 
 rk_aiq_metas_t*
 rk_aiq_uapi_sysctl_getMetaData(const rk_aiq_sys_ctx_t* ctx, uint32_t frame_id){
-    return NULL;
+    rk_aiq_uapi_sysctl_getMetaData_t para;
+    rk_aiq_metas_t *metas = (rk_aiq_metas_t*)malloc(sizeof(rk_aiq_metas_t));
+    para.ctx = ctx;
+    para.frame_id = frame_id;
+    call_fun_ipc_call((char *)__func__, &para, sizeof(rk_aiq_uapi_sysctl_getMetaData_t), 1);
+    memcpy(metas, &para.metas, sizeof(rk_aiq_metas_t));
 }
 
 #if 0

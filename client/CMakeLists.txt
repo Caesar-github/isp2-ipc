@@ -15,6 +15,8 @@ include_directories(
 		/home/qe/1109/external/rv1109_rkaiq/common
 		/home/qe/1109/external/rv1109_rkaiq/xcore
 		/home/qe/1109/external/rv1109_rkaiq/iq_parser
+		/home/qe/1109/external/isp2-ipc/common
+		
 	)
 
 link_directories(
@@ -25,7 +27,7 @@ link_directories(
 aux_source_directory(./ SRCS)
 aux_source_directory(./impl SRCS)
 
-add_executable(${PROJECT_NAME}
+add_library(${PROJECT_NAME}
 	${SRCS})
 
 target_link_libraries(${PROJECT_NAME}
@@ -38,6 +40,7 @@ target_link_libraries(${PROJECT_NAME}
 	)
 
 install(TARGETS ${PROJECT_NAME}
-	RUNTIME DESTINATION bin)
+	    LIBRARY DESTINATION  lib
+	   )
 install(FILES dbusconfig/ispclient.conf
 	DESTINATION share/dbus-1/system.d)

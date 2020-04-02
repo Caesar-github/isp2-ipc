@@ -17,7 +17,7 @@
 
 
 
-#include "rk_aiq_user_api_sysctl.h"
+#include "rk_aiq_user_api_sysctl_ipc.h"
 
 RKAIQ_BEGIN_DECLARE
 

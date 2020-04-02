@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef RK_AIQ_USER_API_SYSCTL_H
-#define RK_AIQ_USER_API_SYSCTL_H
+#ifndef RK_AIQ_USER_API_SYSCTL_IPC_H
+#define RK_AIQ_USER_API_SYSCTL_IPC_H
 
 #include "rk_aiq_user_api_sysctl.h"
 

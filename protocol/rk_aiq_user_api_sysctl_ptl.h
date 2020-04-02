@@ -30,70 +30,76 @@ typedef struct rk_aiq_uapi_sysctl_init {
     const char iq_file_dir[200];
     rk_aiq_error_cb err_cb;
     rk_aiq_metas_cb metas_cb;
+    rk_aiq_sys_ctx_t* return_ctx;
 } rk_aiq_uapi_sysctl_init_t;
 
 typedef struct rk_aiq_uapi_sysctl_deinit {
-    unsigned int ctx;
+    rk_aiq_sys_ctx_t* ctx;
 } rk_aiq_uapi_sysctl_deinit_t;
 
 typedef struct rk_aiq_uapi_sysctl_prepare {
-    unsigned int ctx;
+    rk_aiq_sys_ctx_t* ctx;
     uint32_t width;
     uint32_t height;
     rk_aiq_working_mode_t mode;
+    XCamReturn xcamreturn;
 } rk_aiq_uapi_sysctl_prepare_t;
 
 typedef struct rk_aiq_uapi_sysctl_start {
-    unsigned int ctx;
+    rk_aiq_sys_ctx_t* ctx;
+   XCamReturn xcamreturn;
 } rk_aiq_uapi_sysctl_start_t;
 
 typedef struct rk_aiq_uapi_sysctl_stop {
-    unsigned int ctx;
+    rk_aiq_sys_ctx_t* ctx;
+     XCamReturn xcamreturn;
 } rk_aiq_uapi_sysctl_stop_t;
 
 typedef struct rk_aiq_uapi_sysctl_getStaticMetas {
     char sns_ent_name[200];
+    rk_aiq_static_info_t static_info
 } rk_aiq_uapi_sysctl_getStaticMetas_t;
 
 typedef struct rk_aiq_uapi_sysctl_getMetaData {
-    unsigned int ctx;
+    rk_aiq_sys_ctx_t* ctx;
     uint32_t frame_id;
+    rk_aiq_metas_t metas;
 } rk_aiq_uapi_sysctl_getMetaData_t;
 
 typedef struct rk_aiq_uapi_sysctl_setModuleCtl {
-    unsigned int ctx;
+    rk_aiq_sys_ctx_t* ctx;
     int32_t mod_en;
 } rk_aiq_uapi_sysctl_setModuleCtl_t;
 
 typedef struct rk_aiq_uapi_sysctl_getModuleCtl {
-    unsigned int ctx;
+    rk_aiq_sys_ctx_t* ctx;
 } rk_aiq_uapi_sysctl_getModuleCtl_t;
 
 typedef struct rk_aiq_uapi_sysctl_regLib {
-    unsigned int ctx;
+    rk_aiq_sys_ctx_t* ctx;
 } rk_aiq_uapi_sysctl_regLib_t;
 
 typedef struct rk_aiq_uapi_sysctl_unRegLib {
-    unsigned int ctx;
+    rk_aiq_sys_ctx_t* ctx;
     int algo_type;
     int lib_id;
 } rk_aiq_uapi_sysctl_unRegLib_t;
 
 typedef struct rk_aiq_uapi_sysctl_enableAxlib {
-    unsigned int ctx;
+    rk_aiq_sys_ctx_t* ctx;
     int algo_type;
     int lib_id;
     bool enable;
 } rk_aiq_uapi_sysctl_enableAxlib_t;
 
 typedef struct rk_aiq_uapi_sysctl_getAxlibStatus {
-    unsigned int ctx;
+    rk_aiq_sys_ctx_t* ctx;
     int algo_type;
     int lib_id;
 } rk_aiq_uapi_sysctl_getAxlibStatus_t;
 
 typedef struct rk_aiq_uapi_sysctl_getEnabledAxlibCtx {
-    unsigned int ctx;
+    rk_aiq_sys_ctx_t* ctx;
     int algo_type;
 } rk_aiq_uapi_sysctl_getEnabledAxlibCtx_t;
 

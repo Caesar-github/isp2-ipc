@@ -1,5 +1,6 @@
 #ifndef _RK_AIQ_USER_API_A3DLUT_IPC_H_
 #define _RK_AIQ_USER_API_A3DLUT_IPC_H_
+#include "rk_aiq_user_api_a3dlut.h"
 
 
 XCamReturn

@@ -1,7 +1,7 @@
 #ifndef __RK_AIQ_USER_API_AE_IPC_H__
 #define __RK_AIQ_USER_API_AE_IPC_H__
 
-#include "ae/rk_aiq_uapi_ae.h"
+#include "rk_aiq_user_api_ae.h"
 
 #ifdef __cplusplus
 extern "C"

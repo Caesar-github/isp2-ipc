@@ -1,7 +1,7 @@
 #ifndef _RK_AIQ_USER_API_ACCM_IPC_H_
 #define _RK_AIQ_USER_API_ACCM_IPC_H_
 
-#include "accm/rk_aiq_uapi_accm.h"
+#include "rk_aiq_user_api_accm.h"
 
 XCamReturn
 rk_aiq_user_api_accm_SetAttrib_ipc(void *args);

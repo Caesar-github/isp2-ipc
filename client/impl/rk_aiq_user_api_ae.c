@@ -1,4 +1,6 @@
 
+#include "config.h"
+#if ENABLE_ALL
 #include "ae/rk_aiq_uapi_ae_int.h"
 
 #ifdef __cplusplus
@@ -44,6 +46,8 @@ XCamReturn rk_aiq_user_api_ae_getHdrExpAttr(const rk_aiq_sys_ctx_t* ctx, Uapi_Hd
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif
 
 

@@ -1,4 +1,6 @@
 
+#include "config.h"
+#if ENABLE_ALL
 #include "alsc/rk_aiq_uapi_alsc_int.h"
 
 XCamReturn
@@ -13,4 +15,6 @@ XCamReturn
 rk_aiq_user_api_alsc_QueryLscInfo(rk_aiq_sys_ctx_t* sys_ctx, rk_aiq_lsc_querry_info_t *lsc_querry_info) {
     return 0;
 }
+
+#endif
 
