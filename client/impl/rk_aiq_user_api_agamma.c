@@ -1,5 +1,4 @@
 
-
 #include "agamma/rk_aiq_uapi_agamma_int.h"
 
 XCamReturn

@@ -1,5 +1,5 @@
-#ifndef __RK_AIQ_USER_API_AE_H__
-#define __RK_AIQ_USER_API_AE_H__
+#ifndef __RK_AIQ_USER_API_AE_PTL_H__
+#define __RK_AIQ_USER_API_AE_PTL_H__
 
 #include "ae/rk_aiq_uapi_ae_int.h"
 

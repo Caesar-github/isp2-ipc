@@ -15,7 +15,6 @@
  *
  */
 
-
 #include "base/xcam_common.h"
 #include "rk_aiq_user_api_awb.h"
 #include "rk_aiq_uapi_aec.h"
@@ -720,5 +719,4 @@ XCamReturn rk_aiq_uapi_getSharpness(const rk_aiq_sys_ctx_t* ctx, unsigned int *l
 
 
 RKAIQ_END_DECLARE
-
 

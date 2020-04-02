@@ -16,7 +16,6 @@
  */
 
 
-
 #include "rk_aiq.h"
 #include "rk_aiq_algo_des.h"
 
@@ -216,5 +215,4 @@ rk_aiq_uapi_sysctl_getEnabledAxlibCtx(const rk_aiq_sys_ctx_t* ctx, const int alg
 }
 
 RKAIQ_END_DECLARE
-
 

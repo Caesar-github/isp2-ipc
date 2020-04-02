@@ -1,5 +1,4 @@
 
-
 #include "a3dlut/rk_aiq_uapi_a3dlut_int.h"
 
 XCamReturn
@@ -14,5 +13,4 @@ XCamReturn
 rk_aiq_user_api_a3dlut_Query3dlutInfo(rk_aiq_sys_ctx_t* sys_ctx, rk_aiq_lut3d_querry_info_t *lut3d_querry_info) {
     return 0;
 }
-
 

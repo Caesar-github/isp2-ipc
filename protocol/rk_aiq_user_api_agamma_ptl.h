@@ -1,5 +1,5 @@
-#ifndef _RK_AIQ_USER_API_AGAMMA_H_
-#define _RK_AIQ_USER_API_AGAMMA_H_
+#ifndef _RK_AIQ_USER_API_AGAMMA_PTL_H_
+#define _RK_AIQ_USER_API_AGAMMA_PTL_H_
 
 #include "agamma/rk_aiq_uapi_agamma_int.h"
 

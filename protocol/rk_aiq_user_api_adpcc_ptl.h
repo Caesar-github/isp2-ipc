@@ -1,5 +1,5 @@
-#ifndef _RK_AIQ_USER_API_ADPCC_H_
-#define _RK_AIQ_USER_API_ADPCC_H_
+#ifndef _RK_AIQ_USER_API_ADPCC_PTL_H_
+#define _RK_AIQ_USER_API_ADPCC_PTL_H_
 
 #include "adpcc/rk_aiq_uapi_adpcc_int.h"
 

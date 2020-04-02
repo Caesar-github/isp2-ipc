@@ -1,5 +1,4 @@
 
-
 #include "asharp/rk_aiq_uapi_asharp_int.h"
 
 XCamReturn

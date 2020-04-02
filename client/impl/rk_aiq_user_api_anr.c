@@ -1,5 +1,4 @@
 
-
 #include "anr/rk_aiq_uapi_anr_int.h"
 
 XCamReturn

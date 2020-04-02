@@ -1,5 +1,5 @@
-#ifndef _RK_AIQ_USER_API_ALSC_H_
-#define _RK_AIQ_USER_API_ALSC_H_
+#ifndef _RK_AIQ_USER_API_ALSC_PTL_H_
+#define _RK_AIQ_USER_API_ALSC_PTL_H_
 
 #include "alsc/rk_aiq_uapi_alsc_int.h"
 

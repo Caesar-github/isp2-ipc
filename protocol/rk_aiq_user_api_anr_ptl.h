@@ -1,5 +1,5 @@
-#ifndef _RK_AIQ_USER_API_ANR_H_
-#define _RK_AIQ_USER_API_ANR_H_
+#ifndef _RK_AIQ_USER_API_ANR_PTL_H_
+#define _RK_AIQ_USER_API_ANR_PTL_H_
 
 #include "anr/rk_aiq_uapi_anr_int.h"
 

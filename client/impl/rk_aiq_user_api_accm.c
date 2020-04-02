@@ -1,5 +1,4 @@
 
-
 #include "accm/rk_aiq_uapi_accm_int.h"
 
 XCamReturn
@@ -8,5 +7,4 @@ XCamReturn
 rk_aiq_user_api_accm_GetAttrib(rk_aiq_sys_ctx_t* sys_ctx, rk_aiq_ccm_attrib_t *attr);
 XCamReturn
 rk_aiq_user_api_accm_QueryCcmInfo(rk_aiq_sys_ctx_t* sys_ctx, rk_aiq_ccm_querry_info_t *ccm_querry_info);
-
 

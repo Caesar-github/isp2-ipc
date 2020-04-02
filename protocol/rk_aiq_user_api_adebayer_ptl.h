@@ -1,5 +1,5 @@
-#ifndef _RK_AIQ_USER_API_ADEBAYER_H_
-#define _RK_AIQ_USER_API_ADEBAYER_H_
+#ifndef _RK_AIQ_USER_API_ADEBAYER_PTL_H_
+#define _RK_AIQ_USER_API_ADEBAYER_PTL_H_
 
 #include "adebayer/rk_aiq_uapi_adebayer_int.h"
 
