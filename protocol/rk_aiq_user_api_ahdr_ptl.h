@@ -3,7 +3,9 @@
 
 #include "ahdr/rk_aiq_uapi_ahdr_int.h"
 
-typedef struct
-rk_aiq_user_api_ahdr_SetAttrib{unsigned int sys_ctx; ahdr_attrib_t attr} rk_aiq_user_api_ahdr_SetAttrib_t;
+typedef struct rk_aiq_user_api_ahdr_SetAttrib {
+    unsigned int sys_ctx;
+    ahdr_attrib_t attr;
+} rk_aiq_user_api_ahdr_SetAttrib_t;
 
 #endif
