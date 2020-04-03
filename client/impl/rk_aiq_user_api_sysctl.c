@@ -42,16 +42,23 @@ rk_aiq_uapi_sysctl_init(const char* sns_ent_name,
                         rk_aiq_error_cb err_cb,
                         rk_aiq_metas_cb metas_cb) {
     rk_aiq_uapi_sysctl_init_t para;
-    if (strlen(sns_ent_name) > sizeof(para.sns_ent_name))
-        printf("%s err sns_ent_name too long\n", __func__);
-
-    if (strlen(iq_file_dir) > sizeof(para.iq_file_dir))
-        printf("%s err iq_file_dir too long\n", __func__);
-
-    strcpy(para.sns_ent_name, sns_ent_name);
-    strcpy(para.iq_file_dir, iq_file_dir);
+    
+    if (sns_ent_name!=NULL && strlen(sns_ent_name) > sizeof(para.sns_ent_name)) {
+       printf("%s err sns_ent_name too long\n", __func__);
+    }
+ 
+    if (iq_file_dir!=NULL && strlen(iq_file_dir) > sizeof(para.iq_file_dir)) {
+       printf("%s err iq_file_dir too long\n", __func__);
+    }
+   if (sns_ent_name != NULL) {
+        strcpy(para.sns_ent_name, sns_ent_name);
+   }
+   if (iq_file_dir != NULL) {
+        strcpy(para.iq_file_dir, iq_file_dir);
+   }
+    printf("call call_fun_ipc_call enter\n");
     call_fun_ipc_call((char *)__func__, &para, sizeof(rk_aiq_uapi_sysctl_init_t), 1);
-
+    printf("call call_fun_ipc_call,return_ctx=%d\n",para.return_ctx);
     return para.return_ctx;
 }
 

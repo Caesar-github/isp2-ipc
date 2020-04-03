@@ -15,9 +15,9 @@
  *
  */
 
-#ifndef RK_AIQ_USER_API_SYSCTL_H
-#define RK_AIQ_USER_API_SYSCTL_H
-
+#ifndef RK_AIQ_USER_API_SYSCTL_PTL_H
+#define RK_AIQ_USER_API_SYSCTL_PTL_H
+#pragma pack(1)
 #include "rk_aiq.h"
 #include "rk_aiq_algo_des.h"
 
@@ -25,9 +25,10 @@ RKAIQ_BEGIN_DECLARE
 
 typedef struct rk_aiq_sys_ctx_s rk_aiq_sys_ctx_t;
 
+
 typedef struct rk_aiq_uapi_sysctl_init {
-    const char sns_ent_name[200];
-    const char iq_file_dir[200];
+    char sns_ent_name[200];
+    char iq_file_dir[200];
     rk_aiq_error_cb err_cb;
     rk_aiq_metas_cb metas_cb;
     rk_aiq_sys_ctx_t* return_ctx;

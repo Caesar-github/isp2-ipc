@@ -4,10 +4,10 @@
 
 
 XCamReturn
-rk_aiq_user_api_a3dlut_SetAttrib(void* args);
+rk_aiq_user_api_a3dlut_SetAttrib_ipc(void* args);
 XCamReturn
-rk_aiq_user_api_a3dlut_GetAttrib(void* args);
+rk_aiq_user_api_a3dlut_GetAttrib_ipc(void* args);
 XCamReturn
-rk_aiq_user_api_a3dlut_Query3dlutInfo(void* args);
+rk_aiq_user_api_a3dlut_Query3dlutInfo_ipc(void* args);
 
 #endif

@@ -11,9 +11,8 @@
 #include <gdbus.h>
 
 #include "call_fun_ipc.h"
-#include "common.h"
 #include "fun_map.h"
-
+#include "config.h"
 
 /*
 int examples(void* data)

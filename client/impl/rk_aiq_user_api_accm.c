@@ -2,7 +2,7 @@
 #include "config.h"
 #if ENABLE_ALL
 #include "accm/rk_aiq_uapi_accm_int.h"
-
+#include "rk_aiq_user_api_sysctl.h"
 XCamReturn
 rk_aiq_user_api_accm_SetAttrib(rk_aiq_sys_ctx_t* sys_ctx, rk_aiq_ccm_attrib_t attr);
 XCamReturn

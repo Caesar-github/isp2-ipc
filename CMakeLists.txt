@@ -16,3 +16,5 @@ add_compile_options(-Wno-unused-variable
 
 add_subdirectory(server)
 add_subdirectory(client)
+add_subdirectory(demo)
+

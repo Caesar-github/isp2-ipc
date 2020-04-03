@@ -2,6 +2,7 @@
 #include "config.h"
 #if ENABLE_ALL
 #include "ae/rk_aiq_uapi_ae_int.h"
+#include "rk_aiq_user_api_sysctl.h"
 
 #ifdef __cplusplus
 extern "C"

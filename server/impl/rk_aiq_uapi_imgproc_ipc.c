@@ -1,7 +1,7 @@
 /*
- *  Copyright (c) 2019 Rockchip Corporation
+ *  Copyright _ipc(c) 2019 Rockchip Corporation
  *
- * Licensed under the Apache License, Version 2.0 (the "License"){return 0;}
+ * Licensed under the Apache License, Version 2.0 _ipc(the "License"){return 0;}
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -19,8 +19,8 @@
 
 
 #include "config.h"
-#if ENABLE_ALL
-
+#if 0
+#include "rk_aiq_uapi_imgproc_ipc_ipc.h"
 /*
 **********************************************************
 * Exposure
@@ -37,11 +37,11 @@
 *****************************
 */
 
-XCamReturn rk_aiq_uapi_setExpMode(void *args){
+XCamReturn rk_aiq_uapi_setExpMode_ipc(void *args){
     return 0;
 return 0;}
 
-XCamReturn rk_aiq_uapi_getExpMode(void *args){
+XCamReturn rk_aiq_uapi_getExpMode_ipc(void *args){
    return 0;
 return 0;}
 
@@ -54,10 +54,10 @@ return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setAeMode(void *args){
+XCamReturn rk_aiq_uapi_setAeMode_ipc(void *args){
 
 return 0;}
-XCamReturn rk_aiq_uapi_getAeMode(void *args){
+XCamReturn rk_aiq_uapi_getAeMode_ipc(void *args){
 
     
 return 0;}
@@ -74,8 +74,8 @@ return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setExpGainRange(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getExpGainRange(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setExpGainRange_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getExpGainRange_ipc(void *args){return 0;}
 /*
 *****************************
 *
@@ -88,8 +88,8 @@ XCamReturn rk_aiq_uapi_getExpGainRange(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setExpTimeRange(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getExpTimeRange(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setExpTimeRange_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getExpTimeRange_ipc(void *args){return 0;}
 
 /*
 **********************************************************
@@ -107,7 +107,7 @@ XCamReturn rk_aiq_uapi_getExpTimeRange(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setBLCMode(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setBLCMode_ipc(void *args){return 0;}
 
 /*
 *****************************
@@ -120,7 +120,7 @@ XCamReturn rk_aiq_uapi_setBLCMode(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setHLCMode(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setHLCMode_ipc(void *args){return 0;}
 /*
 *****************************
 *
@@ -132,8 +132,8 @@ XCamReturn rk_aiq_uapi_setHLCMode(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setLExpMode(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getLExpMode(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setLExpMode_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getLExpMode_ipc(void *args){return 0;}
 
 /*
 *****************************
@@ -144,8 +144,8 @@ XCamReturn rk_aiq_uapi_getLExpMode(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setMLExp(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getMLExp(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setMLExp_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getMLExp_ipc(void *args){return 0;}
 
 /*
 *****************************
@@ -156,8 +156,8 @@ XCamReturn rk_aiq_uapi_getMLExp(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setExpPwrLineFreqMode(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getExpPwrLineFreqMode(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setExpPwrLineFreqMode_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getExpPwrLineFreqMode_ipc(void *args){return 0;}
 
 
 /*
@@ -169,8 +169,8 @@ XCamReturn rk_aiq_uapi_getExpPwrLineFreqMode(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setDayNSwMode(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getDayNSwMode(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setDayNSwMode_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getDayNSwMode_ipc(void *args){return 0;}
 
 /*
 *****************************
@@ -182,8 +182,8 @@ XCamReturn rk_aiq_uapi_getDayNSwMode(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setMDNScene(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getMDNScene(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setMDNScene_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getMDNScene_ipc(void *args){return 0;}
 
 
 /*
@@ -196,8 +196,8 @@ XCamReturn rk_aiq_uapi_getMDNScene(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setADNSens(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getADNSens(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setADNSens_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getADNSens_ipc(void *args){return 0;}
 
 
 /*
@@ -209,8 +209,8 @@ XCamReturn rk_aiq_uapi_getADNSens(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setFLightMode(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getFLightMode(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setFLightMode_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getFLightMode_ipc(void *args){return 0;}
 
 
 /*
@@ -223,8 +223,8 @@ XCamReturn rk_aiq_uapi_getFLightMode(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setMFLight(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getMFLight(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setMFLight_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getMFLight_ipc(void *args){return 0;}
 
 
 
@@ -243,8 +243,8 @@ XCamReturn rk_aiq_uapi_getMFLight(void *args){return 0;}
 *          manual: manual white balance
 *****************************
 */
-XCamReturn rk_aiq_uapi_setWBMode(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getWBMode(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setWBMode_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getWBMode_ipc(void *args){return 0;}
 
 
 /*
@@ -256,8 +256,8 @@ XCamReturn rk_aiq_uapi_getWBMode(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_lockAWB(void *args){return 0;}
-XCamReturn rk_aiq_uapi_unlockAWB(void *args){return 0;}
+XCamReturn rk_aiq_uapi_lockAWB_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_unlockAWB_ipc(void *args){return 0;}
 
 
 /*
@@ -269,8 +269,8 @@ XCamReturn rk_aiq_uapi_unlockAWB(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setAWBRange(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getAWBRange(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setAWBRange_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getAWBRange_ipc(void *args){return 0;}
 
 
 /*
@@ -282,8 +282,8 @@ XCamReturn rk_aiq_uapi_getAWBRange(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setMWBScene(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getMWBScene(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setMWBScene_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getMWBScene_ipc(void *args){return 0;}
 
 
 /*
@@ -295,8 +295,8 @@ XCamReturn rk_aiq_uapi_getMWBScene(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setMWBGain(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getMWBGain(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setMWBGain_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getMWBGain_ipc(void *args){return 0;}
 
 /*
 *****************************
@@ -307,8 +307,8 @@ XCamReturn rk_aiq_uapi_getMWBGain(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setMWBCT(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getMWBCT(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setMWBCT_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getMWBCT_ipc(void *args){return 0;}
 
 
 /*
@@ -320,8 +320,8 @@ XCamReturn rk_aiq_uapi_getMWBCT(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setCrSuppsn(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getCrSuppsn(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setCrSuppsn_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getCrSuppsn_ipc(void *args){return 0;}
 
 /*
 **********************************************************
@@ -338,8 +338,8 @@ XCamReturn rk_aiq_uapi_getCrSuppsn(void *args){return 0;}
 *          semi-auto: semi-auto focus
 *****************************
 */
-XCamReturn rk_aiq_uapi_setFocusMode(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getFocusMode(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setFocusMode_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getFocusMode_ipc(void *args){return 0;}
 
 
 /*
@@ -350,8 +350,8 @@ XCamReturn rk_aiq_uapi_getFocusMode(void *args){return 0;}
 *   disrance:  unint is cm
 *****************************
 */
-XCamReturn rk_aiq_uapi_setMinFocusDis(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getMinFocusDis(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setMinFocusDis_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getMinFocusDis_ipc(void *args){return 0;}
 
 
 /*
@@ -363,8 +363,8 @@ XCamReturn rk_aiq_uapi_getMinFocusDis(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setOpZoomRange(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getOpZoomRange(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setOpZoomRange_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getOpZoomRange_ipc(void *args){return 0;}
 
 /*
 *****************************
@@ -375,8 +375,8 @@ XCamReturn rk_aiq_uapi_getOpZoomRange(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setOpZoomSpeed(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getOpZoomSpeed(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setOpZoomSpeed_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getOpZoomSpeed_ipc(void *args){return 0;}
 
 /*
 **********************************************************
@@ -394,8 +394,8 @@ XCamReturn rk_aiq_uapi_getOpZoomSpeed(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setHDRMode(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getHDRMode(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setHDRMode_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getHDRMode_ipc(void *args){return 0;}
 
 /*
 *****************************
@@ -409,8 +409,8 @@ XCamReturn rk_aiq_uapi_getHDRMode(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setMHDRStrth(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getMHDRStrth(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setMHDRStrth_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getMHDRStrth_ipc(void *args){return 0;}
 
 /*
 **********************************************************
@@ -428,8 +428,8 @@ XCamReturn rk_aiq_uapi_getMHDRStrth(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setNRMode(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getNRMode(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setNRMode_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getNRMode_ipc(void *args){return 0;}
 
 /*
 *****************************
@@ -440,8 +440,8 @@ XCamReturn rk_aiq_uapi_getNRMode(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setANRStrth(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getANRStrth(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setANRStrth_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getANRStrth_ipc(void *args){return 0;}
 
 /*
 *****************************
@@ -455,8 +455,8 @@ XCamReturn rk_aiq_uapi_getANRStrth(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setMSpaNRStrth(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getMSpaNRStrth(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setMSpaNRStrth_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getMSpaNRStrth_ipc(void *args){return 0;}
 
 /*
 *****************************
@@ -468,8 +468,8 @@ XCamReturn rk_aiq_uapi_getMSpaNRStrth(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setMTNRStrth(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getMTNRStrth(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setMTNRStrth_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getMTNRStrth_ipc(void *args){return 0;}
 
 /*
 **********************************************************
@@ -487,8 +487,8 @@ XCamReturn rk_aiq_uapi_getMTNRStrth(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setDhzMode(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getDhzMode(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setDhzMode_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getDhzMode_ipc(void *args){return 0;}
 
 /*
 *****************************
@@ -500,8 +500,8 @@ XCamReturn rk_aiq_uapi_getDhzMode(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setMDhzStrth(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getMDhzStrth(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setMDhzStrth_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getMDhzStrth_ipc(void *args){return 0;}
 /*
 **********************************************************
 * Image adjust
@@ -516,8 +516,8 @@ XCamReturn rk_aiq_uapi_getMDhzStrth(void *args){return 0;}
 *    level: contrast level, [0, 100]
 *****************************
 */
-XCamReturn rk_aiq_uapi_setContrast(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getContrast(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setContrast_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getContrast_ipc(void *args){return 0;}
 
 /*
 *****************************
@@ -527,8 +527,8 @@ XCamReturn rk_aiq_uapi_getContrast(void *args){return 0;}
 *    level: contrast level, [0, 100]
 *****************************
 */
-XCamReturn rk_aiq_uapi_setBrightness(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getBrightness(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setBrightness_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getBrightness_ipc(void *args){return 0;}
 /*
 *****************************
 *
@@ -537,8 +537,8 @@ XCamReturn rk_aiq_uapi_getBrightness(void *args){return 0;}
 *    level: contrast level, [0, 100]
 *****************************
 */
-XCamReturn rk_aiq_uapi_setSaturation(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getSaturation(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setSaturation_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getSaturation_ipc(void *args){return 0;}
 /*
 *****************************
 *
@@ -547,8 +547,8 @@ XCamReturn rk_aiq_uapi_getSaturation(void *args){return 0;}
 *    level: contrast level, [0, 100]
 *****************************
 */
-XCamReturn rk_aiq_uapi_setSharpness(void *args){return 0;}
-XCamReturn rk_aiq_uapi_getSharpness(void *args){return 0;}
+XCamReturn rk_aiq_uapi_setSharpness_ipc(void *args){return 0;}
+XCamReturn rk_aiq_uapi_getSharpness_ipc(void *args){return 0;}
 
 #endif
 

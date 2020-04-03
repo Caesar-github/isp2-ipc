@@ -14,39 +14,15 @@
  * limitations under the License.
  *
  */
-#include "config.h"
-#if ENABLE_ALL
-#include "base/xcam_common.h"
-#include "rk_aiq_user_api_awb.h"
-#include "rk_aiq_uapi_aec.h"
-#include "rk_aiq_uapi_af.h"
-#include "rk_aiq_uapi_anr.h"
-#include "rk_aiq_uapi_ahdr.h"
-#include "rk_aiq_uapi_adhz.h"
-#include "rk_aiq_user_api_alsc.h"
-#include "rk_aiq_user_api_accm.h"
-#include "rk_aiq_user_api_a3dlut.h"
-#include "rk_aiq_user_api_agamma.h"
 
-/*
-*****************************
-* Common
-*****************************
-*/
+#include "rk_aiq_user_api_imgproc_ipc.h"
 
-typedef enum dayNightScene_e {
-    DAYNIGHT_SCENE_DAY = 0,
-    DAYNIGHT_SCENE_NIGHT= 1,
-    DAYNIGHT_SCENE_INVAL
-} dayNightScene_t;
 
-RKAIQ_BEGIN_DECLARE
-
-/*
-**********************************************************
-* Exposure
-**********************************************************
-*/
+#define RKAIQ_IMGPROC_CHECK_RET(ret, format, ...) \
+    if (ret) { \
+        LOGE(format, ##__VA_ARGS__); \
+        return ret; \
+    }
 
 /*
 *****************************

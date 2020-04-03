@@ -18,7 +18,8 @@
 
 
 #include "rk_aiq_user_api_sysctl_ipc.h"
-
+#include "../../protocol/rk_aiq_user_api_sysctl_ptl.h"
+#include "config.h"
 RKAIQ_BEGIN_DECLARE
 
 typedef struct rk_aiq_sys_ctx_s rk_aiq_sys_ctx_t;
@@ -36,7 +37,13 @@ typedef struct rk_aiq_sys_ctx_s rk_aiq_sys_ctx_t;
  * \return return system context if success, or NULL if failure.
  */
 rk_aiq_sys_ctx_t*
-rk_aiq_uapi_sysctl_init_ipc(void *args){return 0;}
+rk_aiq_uapi_sysctl_init_ipc(void *args){
+    printf("enter %s\n", __FUNCTION__);
+    rk_aiq_uapi_sysctl_init_t *fun_st = args;
+    rk_aiq_sys_ctx_t* ctx = rk_aiq_uapi_sysctl_init(fun_st->sns_ent_name, fun_st->iq_file_dir, NULL, NULL);
+    fun_st->return_ctx = ctx;
+    return ctx;
+}
 
 /*!
  * \brief deinitialze aiq context
@@ -45,7 +52,11 @@ rk_aiq_uapi_sysctl_init_ipc(void *args){return 0;}
  * \param[in] ctx             the context returned by \ref rk_aiq_uapi_sysctl_init
  */
 void
-rk_aiq_uapi_sysctl_deinit_ipc(void *args){return 0;}
+rk_aiq_uapi_sysctl_deinit_ipc(void *args){
+    rk_aiq_uapi_sysctl_deinit_t *fun_st = args;
+    rk_aiq_sys_ctx_t* ctx = fun_st->ctx;
+    rk_aiq_uapi_sysctl_deinit(ctx);
+}
 
 /*!
  * \brief prepare aiq control system before runninig
@@ -60,7 +71,17 @@ rk_aiq_uapi_sysctl_deinit_ipc(void *args){return 0;}
  * \return return 0 if success
  */
 XCamReturn
-rk_aiq_uapi_sysctl_prepare_ipc(void *args){return 0;}
+rk_aiq_uapi_sysctl_prepare_ipc(void *args){
+    rk_aiq_uapi_sysctl_prepare_t *fun_st = args;
+    rk_aiq_sys_ctx_t* ctx = fun_st->ctx;
+    int width = fun_st->width;
+    int height = fun_st->height;
+    rk_aiq_working_mode_t mode;
+    memcpy(&mode, &fun_st->mode, sizeof(rk_aiq_working_mode_t));
+    XCamReturn r = rk_aiq_uapi_sysctl_prepare(ctx, width, height, mode);
+    fun_st->xcamreturn = r;
+    return r;
+}
 
 /*!
  * \brief start aiq control system
@@ -72,7 +93,12 @@ rk_aiq_uapi_sysctl_prepare_ipc(void *args){return 0;}
  * \return return 0 if success
  */
 XCamReturn
-rk_aiq_uapi_sysctl_start_ipc(void *args){return 0;}
+rk_aiq_uapi_sysctl_start_ipc(void *args){
+    rk_aiq_uapi_sysctl_start_t  *fun_st = args;
+    rk_aiq_sys_ctx_t* ctx = fun_st->ctx;
+    XCamReturn r = rk_aiq_uapi_sysctl_start(ctx);
+    return r;
+}
 
 /*!
  * \brief stop aiq control system
@@ -81,7 +107,12 @@ rk_aiq_uapi_sysctl_start_ipc(void *args){return 0;}
  * \return return 0 if success
  */
 XCamReturn
-rk_aiq_uapi_sysctl_stop_ipc(void *args){return 0;}
+rk_aiq_uapi_sysctl_stop_ipc(void *args){
+    rk_aiq_uapi_sysctl_start_t  *fun_st = args;
+    rk_aiq_sys_ctx_t* ctx = fun_st->ctx;
+    XCamReturn r = rk_aiq_uapi_sysctl_stop(ctx);
+    return r;
+}
 
 rk_aiq_static_info_t*
 rk_aiq_uapi_sysctl_getStaticMetas_ipc(void *args){return 0;}
