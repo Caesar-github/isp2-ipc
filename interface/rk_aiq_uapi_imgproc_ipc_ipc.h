@@ -17,7 +17,20 @@
 
 #ifndef _RK_AIQ_UAPI_IMGPROC_IPC_IPC_H_
 #define _RK_AIQ_UAPI_IMGPROC_IPC_IPC_H_
-#include "rk_aiq_uapi_imgproc_ipc.h"
+#include "base/xcam_common.h"
+#include "rk_aiq_user_api_sysctl.h"
+#include "rk_aiq_user_api_awb.h"
+#include "rk_aiq_user_api_ae.h"
+//#include "rk_aiq_uapi_af.h"
+#include "rk_aiq_user_api_anr.h"
+#include "rk_aiq_user_api_ahdr.h"
+#include "rk_aiq_user_api_adehaze.h"
+#include "rk_aiq_user_api_alsc.h"
+#include "rk_aiq_user_api_accm.h"
+#include "rk_aiq_user_api_a3dlut.h"
+#include "rk_aiq_user_api_asharp.h"
+#include "rk_aiq_user_api_agamma.h"
+
 RKAIQ_BEGIN_DECLARE
 
 /*

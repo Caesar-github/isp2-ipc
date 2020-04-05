@@ -19,10 +19,10 @@
 #include <dlfcn.h>
 #include <signal.h>
 #include <linux/videodev2.h>
-
+#include "call_fun_ipc.h"
 #include "drmDsp.h"
 #include "rk_aiq_user_api_sysctl.h"
-
+#include "config.h"
 #define CLEAR(x) memset(&(x), 0, sizeof(x))
 #define FMT_NUM_PLANES 1
 
@@ -424,10 +424,14 @@ int main(int argc, char **argv)
 
     open_device();
     init_device();
-
+    //rkaiq = 1;
 	if (rkaiq) {
-		aiq_ctx = rk_aiq_uapi_sysctl_init("m01_f_ov4689 1-0036", NULL, NULL, NULL);
-
+        printf("====call_fun_ipc_client_init\n");
+        call_fun_ipc_client_init(DBUS_NAME, DBUS_IF, DBUS_PATH, SHARE_PATH);
+		aiq_ctx = rk_aiq_uapi_sysctl_init("imx347", "/data/", NULL, NULL);
+        /*while(1) {
+            usleep(50*1000);
+        }*/
 		if (aiq_ctx) {
 			XCamReturn ret = rk_aiq_uapi_sysctl_prepare(aiq_ctx, width, height, RK_AIQ_WORKING_MODE_ISP_HDR3);
 			if (ret != XCAM_RETURN_NO_ERROR)
@@ -436,7 +440,7 @@ int main(int argc, char **argv)
 				start_capturing();
 				if (writeFile)
 				    fp = fopen( "/tmp/capture_yuv.yuv", "a" );
-				ret = rk_aiq_uapi_sysctl_start(aiq_ctx );
+				ret = rk_aiq_uapi_sysctl_start(aiq_ctx);
 			}
 
 			if (vop) {

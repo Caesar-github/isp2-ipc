@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2019 Rockchip Corporation
  *
- * Licensed under the Apache License, Version 2.0 (the "License";};
+ * Licensed under the Apache License, Version 2.0 (the "License";   XCamReturn returnvalue;};
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -17,31 +17,7 @@
 
 #ifndef _RK_AIQ_UAPI_IMGPROC_PTL_H_
 #define _RK_AIQ_UAPI_IMGPROC_PTL_H_
-#include "base/xcam_common.h"
-#include "rk_aiq_user_api_awb.h"
-#include "rk_aiq_uapi_aec.h"
-#include "rk_aiq_uapi_af.h"
-#include "rk_aiq_uapi_anr.h"
-#include "rk_aiq_uapi_ahdr.h"
-#include "rk_aiq_uapi_adhz.h"
-#include "rk_aiq_user_api_alsc.h"
-#include "rk_aiq_user_api_accm.h"
-#include "rk_aiq_user_api_a3dlut.h"
-#include "rk_aiq_user_api_agamma.h"
-
-
-
-/*
-*****************************
-* Common
-*****************************
-*/
-
-typedef enum dayNightScene_e {
-    DAYNIGHT_SCENE_DAY = 0,
-    DAYNIGHT_SCENE_NIGHT = 1,
-    DAYNIGHT_SCENE_INVAL
-} dayNightScene_t;
+#include "rk_aiq_user_api_imgproc_ipc.h"
 
 RKAIQ_BEGIN_DECLARE
 
@@ -61,13 +37,15 @@ RKAIQ_BEGIN_DECLARE
 *****************************
 */
 typedef struct rk_aiq_uapi_setExpMode {
-    unsigned int ctx;
-    opMode_t mode;
+   rk_aiq_sys_ctx_t* sys_ctx;
+   opMode_t attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setExpMode_t;
 
 typedef struct rk_aiq_uapi_getExpMode {
-    unsigned int ctx;
-    opMode_t mode;
+   rk_aiq_sys_ctx_t* sys_ctx;
+   opMode_t attr;
+      XCamReturn returnvalue;
 } rk_aiq_uapi_getExpMode_t;
 
 /*
@@ -81,13 +59,15 @@ typedef struct rk_aiq_uapi_getExpMode {
 */
 
 typedef struct rk_aiq_uapi_setAeMode {
-    unsigned int ctx;
-    aeMode_t mode;
+    rk_aiq_sys_ctx_t* sys_ctx;
+    aeMode_t attr;
+    XCamReturn returnvalue;
 } rk_aiq_uapi_setAeMode_t;
 
 typedef struct rk_aiq_uapi_getAeMode {
-    unsigned int ctx;
-    aeMode_t  mode;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    aeMode_t  attr;
+      XCamReturn returnvalue;
 } rk_aiq_uapi_getAeMode_t;
 
 /*
@@ -103,13 +83,15 @@ typedef struct rk_aiq_uapi_getAeMode {
 *****************************
 */
 typedef struct rk_aiq_uapi_setExpGainRange {
-    unsigned int ctx;
-    paRange_t  gain;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    paRange_t  attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setExpGainRange_t;
 
 typedef struct rk_aiq_uapi_getExpGainRange {
-    unsigned int ctx;
-    paRange_t  gain
+   rk_aiq_sys_ctx_t* sys_ctx;
+    paRange_t  attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_getExpGainRange_t;
 /*
 *****************************
@@ -124,13 +106,15 @@ typedef struct rk_aiq_uapi_getExpGainRange {
 *****************************
 */
 typedef struct rk_aiq_uapi_setExpTimeRange {
-    unsigned int ctx;
-    paRange_t  time;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    paRange_t  attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setExpTimeRange_t;
 
 typedef struct rk_aiq_uapi_getExpTimeRange {
-    unsigned int ctx;
-    paRange_t  time;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    paRange_t  attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_getExpTimeRange_t;
 
 /*
@@ -150,9 +134,10 @@ typedef struct rk_aiq_uapi_getExpTimeRange {
 *****************************
 */
 typedef struct rk_aiq_uapi_setBLCMode {
-    unsigned int ctx;
+   rk_aiq_sys_ctx_t* sys_ctx;
     bool on;
     paRect_t rect;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setBLCMode_t;
 
 /*
@@ -167,9 +152,10 @@ typedef struct rk_aiq_uapi_setBLCMode {
 *****************************
 */
 typedef struct rk_aiq_uapi_setHLCMode {
-    unsigned int ctx;
+   rk_aiq_sys_ctx_t* sys_ctx;
     bool on;
     paRect_t rect;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setHLCMode_t;
 /*
 *****************************
@@ -183,14 +169,15 @@ typedef struct rk_aiq_uapi_setHLCMode {
 *****************************
 */
 typedef struct rk_aiq_uapi_setLExpMode {
-    unsigned int ctx;
-    opMode_t mode;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    opMode_t attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setLExpMode_t;
 
 typedef struct rk_aiq_uapi_getLExpMode {
-    unsigned int ctx;
-    opMode_t mode;
-
+   rk_aiq_sys_ctx_t* sys_ctx;
+    opMode_t attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_getLExpMode_t;
 
 /*
@@ -203,15 +190,16 @@ typedef struct rk_aiq_uapi_getLExpMode {
 *****************************
 */
 typedef struct rk_aiq_uapi_setMLExp {
-    unsigned int ctx;
-    unsigned int ratio;
+   rk_aiq_sys_ctx_t* sys_ctx;
+   unsigned int level;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setMLExp_t;
 
 typedef struct rk_aiq_uapi_getMLExp {
-
-    unsigned int ctx;
-    unsigned int ratio;
-} rk_aiq_uapi_getMLExp;
+   rk_aiq_sys_ctx_t* sys_ctx;
+   unsigned int level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_getMLExp_t;
 
 /*
 *****************************
@@ -223,13 +211,15 @@ typedef struct rk_aiq_uapi_getMLExp {
 *****************************
 */
 typedef struct rk_aiq_uapi_setExpPwrLineFreqMode {
-    unsigned int ctx;
-    expPwrLineFreq_t freq;
+   rk_aiq_sys_ctx_t* sys_ctx;
+   expPwrLineFreq_t attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setExpPwrLineFreqMode_t;
 
 typedef struct rk_aiq_uapi_getExpPwrLineFreqMode {
-    unsigned int ctx;
-    expPwrLineFreq_t freq;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    expPwrLineFreq_t attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_getExpPwrLineFreqMode_t;
 
 
@@ -244,14 +234,15 @@ typedef struct rk_aiq_uapi_getExpPwrLineFreqMode {
 */
 typedef struct rk_aiq_uapi_setDayNSwMode {
 
-    unsigned int ctx;
-    opMode_t mode;
-
-} rk_aiq_uapi_setDayNSwMode;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    opMode_t attr;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_setDayNSwMode_t;
 
 typedef struct rk_aiq_uapi_getDayNSwMode {
-    unsigned int ctx;
-    opMode_t mode;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    opMode_t attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_getDayNSwMode_t;
 
 /*
@@ -265,13 +256,15 @@ typedef struct rk_aiq_uapi_getDayNSwMode {
 *****************************
 */
 typedef struct rk_aiq_uapi_setMDNScene {
-    unsigned int ctx;
-    dayNightScene_t scene;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    dayNightScene_t attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setMDNScene_t;
 
 typedef struct rk_aiq_uapi_getMDNScene {
-    unsigned int ctx;
-    dayNightScene_t scene;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    dayNightScene_t attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_getMDNScene_t;
 
 
@@ -286,13 +279,15 @@ typedef struct rk_aiq_uapi_getMDNScene {
 *****************************
 */
 typedef struct rk_aiq_uapi_setADNSens {
-    unsigned int ctx;
+   rk_aiq_sys_ctx_t* sys_ctx;
     unsigned    int level;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setADNSens_t;
 
 typedef struct rk_aiq_uapi_getADNSens {
-    unsigned int ctx;
+   rk_aiq_sys_ctx_t* sys_ctx;
     unsigned int level;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_getADNSens_t;
 
 
@@ -306,13 +301,15 @@ typedef struct rk_aiq_uapi_getADNSens {
 *****************************
 */
 typedef struct rk_aiq_uapi_setFLightMode {
-    unsigned int ctx;
-    opMode_t mode
+   rk_aiq_sys_ctx_t* sys_ctx;
+    opMode_t attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setFLightMode_t;
 
 typedef struct rk_aiq_uapi_getFLightMode {
-    unsigned int ctx;
-    opMode_t  mode;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    opMode_t  attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_getFLightMode_t;
 
 
@@ -327,13 +324,15 @@ typedef struct rk_aiq_uapi_getFLightMode {
 *****************************
 */
 typedef struct rk_aiq_uapi_setMFLight {
-    unsigned int ctx;
-    bool on;
+   rk_aiq_sys_ctx_t* sys_ctx;
+   bool level;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setMFLight_t;
 
 typedef struct rk_aiq_uapi_getMFLight {
-    unsigned int ctx;
-    bool  on;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    bool  level;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_getMFLight_t;
 
 
@@ -354,13 +353,15 @@ typedef struct rk_aiq_uapi_getMFLight {
 *****************************
 */
 typedef struct rk_aiq_uapi_setWBMode {
-    unsigned int ctx;
-    opMode_t mode;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    opMode_t attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setWBMode_t;
 
 typedef struct rk_aiq_uapi_getWBMode {
-    unsigned int ctx;
-    opMode_t  mode;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    opMode_t  attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_getWBMode_t;
 
 
@@ -374,13 +375,15 @@ typedef struct rk_aiq_uapi_getWBMode {
 *****************************
 */
 typedef struct rk_aiq_uapi_lockAWB {
-    unsigned int ctx;
-    void abort;
+   rk_aiq_sys_ctx_t* sys_ctx;
+   int abort;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_lockAWB_t;
 
 typedef struct rk_aiq_uapi_unlockAWB {
-    unsigned int ctx;
-    void abort;
+   rk_aiq_sys_ctx_t* sys_ctx;
+   int  abort;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_unlockAWB_t;
 
 
@@ -394,15 +397,17 @@ typedef struct rk_aiq_uapi_unlockAWB {
 *****************************
 */
 typedef struct rk_aiq_uapi_setAWBRange {
-    unsigned int ctx;
-    awbRange_t range;
+   rk_aiq_sys_ctx_t* sys_ctx;
+   awbRange_t attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setAWBRange_t;
 
 typedef struct rk_aiq_uapi_getAWBRange {
 
-    unsigned int ctx;
-    awbRange_t  range;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    awbRange_t  attr;
 
+   XCamReturn returnvalue;
 } rk_aiq_uapi_getAWBRange_t;
 
 
@@ -416,13 +421,15 @@ typedef struct rk_aiq_uapi_getAWBRange {
 *****************************
 */
 typedef struct rk_aiq_uapi_setMWBScene {
-    unsigned int ctx;
-    wbCTScene_t ct_scene;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    rk_aiq_wb_scene_t attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setMWBScene_t;
 
 typedef struct rk_aiq_uapi_getMWBScene {
-    unsigned int ctx;
-    wbCTScene_t  ct_scene;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    rk_aiq_wb_scene_t  attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_getMWBScene_t;
 
 
@@ -436,13 +443,15 @@ typedef struct rk_aiq_uapi_getMWBScene {
 *****************************
 */
 typedef struct rk_aiq_uapi_setMWBGain {
-    unsigned int ctx;
-    wbGain_t  gain
+   rk_aiq_sys_ctx_t* sys_ctx;
+    rk_aiq_wb_gain_t  attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setMWBGain_t;
 
 typedef struct rk_aiq_uapi_getMWBGain {
-    unsigned int ctx;
-    wbGain_t  gain;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    rk_aiq_wb_gain_t  attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_getMWBGain_t;
 
 /*
@@ -455,13 +464,15 @@ typedef struct rk_aiq_uapi_getMWBGain {
 *****************************
 */
 typedef struct rk_aiq_uapi_setMWBCT {
-    unsigned int ctx;
-    int ct
+   rk_aiq_sys_ctx_t* sys_ctx;
+    rk_aiq_wb_cct_t attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setMWBCT_t;
 
 typedef struct rk_aiq_uapi_getMWBCT {
-    unsigned int ctx;
-    int  ct;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    rk_aiq_wb_cct_t  attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_getMWBCT_t;
 
 
@@ -475,13 +486,15 @@ typedef struct rk_aiq_uapi_getMWBCT {
 *****************************
 */
 typedef struct rk_aiq_uapi_setCrSuppsn {
-    unsigned int ctx;
+   rk_aiq_sys_ctx_t* sys_ctx;
     unsigned int level;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setCrSuppsn_t;
 
 typedef struct rk_aiq_uapi_getCrSuppsn {
-    unsigned int ctx;
+   rk_aiq_sys_ctx_t* sys_ctx;
     unsigned int  level;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_getCrSuppsn_t;
 
 /*
@@ -500,13 +513,15 @@ typedef struct rk_aiq_uapi_getCrSuppsn {
 *****************************
 */
 typedef struct rk_aiq_uapi_setFocusMode {
-    unsigned int ctx;
-    opMode_t mode;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    opMode_t attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setFocusMode_t;
 
 typedef struct rk_aiq_uapi_getFocusMode {
-    unsigned int ctx;
-    opMode_t  mode;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    opMode_t  attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_getFocusMode_t;
 
 
@@ -519,13 +534,15 @@ typedef struct rk_aiq_uapi_getFocusMode {
 *****************************
 */
 typedef struct rk_aiq_uapi_setMinFocusDis {
-    unsigned int ctx;
-    unsigned int distance;
+   rk_aiq_sys_ctx_t* sys_ctx;
+   unsigned int level;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setMinFocusDis_t;
 
 typedef struct rk_aiq_uapi_getMinFocusDis {
-    unsigned int ctx;
-    unsigned int distance;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    unsigned int level;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_getMinFocusDis_t;
 
 
@@ -539,13 +556,15 @@ typedef struct rk_aiq_uapi_getMinFocusDis {
 *****************************
 */
 typedef struct rk_aiq_uapi_setOpZoomRange {
-    unsigned int ctx;
-    paRange_t  range;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    paRange_t  attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setOpZoomRange_t ;
 
 typedef struct rk_aiq_uapi_getOpZoomRange {
-    unsigned int ctx;
-    paRange_t  range;
+   rk_aiq_sys_ctx_t* sys_ctx;
+    paRange_t  attr;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_getOpZoomRange_t;
 
 /*
@@ -558,11 +577,16 @@ typedef struct rk_aiq_uapi_getOpZoomRange {
 *****************************
 */
 typedef struct rk_aiq_uapi_setOpZoomSpeed {
-    unsigned int ctx;
+   rk_aiq_sys_ctx_t* sys_ctx;
     unsigned int level;
+   XCamReturn returnvalue;
 } rk_aiq_uapi_setOpZoomSpeed_t;
 
-typedef struct rk_aiq_uapi_getOpZoomSpeed { unsigned int ctx; unsigned int  level;} rk_aiq_uapi_getOpZoomSpeed_t;
+typedef struct rk_aiq_uapi_getOpZoomSpeed {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   unsigned int  level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_getOpZoomSpeed_t;
 
 /*
 **********************************************************
@@ -580,8 +604,16 @@ typedef struct rk_aiq_uapi_getOpZoomSpeed { unsigned int ctx; unsigned int  leve
 *
 *****************************
 */
-typedef struct rk_aiq_uapi_setHDRMode { unsigned int ctx; opMode_t mode;} rk_aiq_uapi_setHDRMode_t;
-typedef struct rk_aiq_uapi_getHDRMode { unsigned int ctx; opMode_t  mode;} rk_aiq_uapi_getHDRMode_t;
+typedef struct rk_aiq_uapi_setHDRMode {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   opMode_t attr;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_setHDRMode_t;
+typedef struct rk_aiq_uapi_getHDRMode {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   opMode_t  attr;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_getHDRMode_t;
 
 /*
 *****************************
@@ -595,8 +627,18 @@ typedef struct rk_aiq_uapi_getHDRMode { unsigned int ctx; opMode_t  mode;} rk_ai
 *
 *****************************
 */
-typedef struct rk_aiq_uapi_setMHDRStrth { unsigned int ctx; bool on, unsigned int level;} rk_aiq_uapi_setMHDRStrth_t;
-typedef struct rk_aiq_uapi_getMHDRStrth { unsigned int ctx; bool *on, unsigned int  level;} rk_aiq_uapi_getMHDRStrth_t;
+typedef struct rk_aiq_uapi_setMHDRStrth {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   bool on; 
+   unsigned int level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_setMHDRStrth_t;
+typedef struct rk_aiq_uapi_getMHDRStrth {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   bool on; 
+   unsigned int  level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_getMHDRStrth_t;
 
 /*
 **********************************************************
@@ -614,8 +656,16 @@ typedef struct rk_aiq_uapi_getMHDRStrth { unsigned int ctx; bool *on, unsigned i
 *
 *****************************
 */
-typedef struct rk_aiq_uapi_setNRMode { unsigned int ctx; opMode_t mode;} rk_aiq_uapi_setNRMode_t;
-typedef struct rk_aiq_uapi_getNRMode { unsigned int ctx; opMode_t  mode;} rk_aiq_uapi_getNRMode_t;
+typedef struct rk_aiq_uapi_setNRMode {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   opMode_t attr;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_setNRMode_t;
+typedef struct rk_aiq_uapi_getNRMode {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   opMode_t  attr;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_getNRMode_t;
 
 /*
 *****************************
@@ -626,8 +676,16 @@ typedef struct rk_aiq_uapi_getNRMode { unsigned int ctx; opMode_t  mode;} rk_aiq
 *
 *****************************
 */
-typedef struct rk_aiq_uapi_setANRStrth { unsigned int ctx; unsigned int level;} rk_aiq_uapi_setANRStrth_t;
-typedef struct rk_aiq_uapi_getANRStrth { unsigned int ctx; unsigned int  level;} rk_aiq_uapi_getANRStrth_t;
+typedef struct rk_aiq_uapi_setANRStrth {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   unsigned int level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_setANRStrth_t;
+typedef struct rk_aiq_uapi_getANRStrth {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   unsigned int  level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_getANRStrth_t;
 
 /*
 *****************************
@@ -641,8 +699,18 @@ typedef struct rk_aiq_uapi_getANRStrth { unsigned int ctx; unsigned int  level;}
 *
 *****************************
 */
-typedef struct rk_aiq_uapi_setMSpaNRStrth { unsigned int ctx; bool on, unsigned int level;} rk_aiq_uapi_setMSpaNRStrth_t;
-typedef struct rk_aiq_uapi_getMSpaNRStrth { unsigned int ctx; bool *on, unsigned int  level;} rk_aiq_uapi_getMSpaNRStrth_t;
+typedef struct rk_aiq_uapi_setMSpaNRStrth {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   bool on;
+   unsigned int level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_setMSpaNRStrth_t;
+typedef struct rk_aiq_uapi_getMSpaNRStrth {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   bool on; 
+   unsigned int  level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_getMSpaNRStrth_t;
 
 /*
 *****************************
@@ -654,8 +722,18 @@ typedef struct rk_aiq_uapi_getMSpaNRStrth { unsigned int ctx; bool *on, unsigned
 *
 *****************************
 */
-typedef struct rk_aiq_uapi_setMTNRStrth { unsigned int ctx; bool on, unsigned int level;} rk_aiq_uapi_setMTNRStrth_t;
-typedef struct rk_aiq_uapi_getMTNRStrth { unsigned int ctx; bool *on, unsigned int  level;} rk_aiq_uapi_getMTNRStrth_t;
+typedef struct rk_aiq_uapi_setMTNRStrth {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   bool on;
+   unsigned int level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_setMTNRStrth_t;
+typedef struct rk_aiq_uapi_getMTNRStrth {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   bool on;
+   unsigned int  level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_getMTNRStrth_t;
 
 /*
 **********************************************************
@@ -673,8 +751,16 @@ typedef struct rk_aiq_uapi_getMTNRStrth { unsigned int ctx; bool *on, unsigned i
 *
 *****************************
 */
-typedef struct rk_aiq_uapi_setDhzMode { unsigned int ctx; opMode_t mode;} rk_aiq_uapi_setDhzMode_t;
-typedef struct rk_aiq_uapi_getDhzMode { unsigned int ctx; opMode_t  mode;} rk_aiq_uapi_getDhzMode_t;
+typedef struct rk_aiq_uapi_setDhzMode {
+   rk_aiq_sys_ctx_t* sys_ctx;
+    opMode_t attr;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_setDhzMode_t;
+typedef struct rk_aiq_uapi_getDhzMode {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   opMode_t  attr;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_getDhzMode_t;
 
 /*
 *****************************
@@ -686,8 +772,18 @@ typedef struct rk_aiq_uapi_getDhzMode { unsigned int ctx; opMode_t  mode;} rk_ai
 *
 *****************************
 */
-typedef struct rk_aiq_uapi_setMDhzStrth { unsigned int ctx; bool on, unsigned int level;} rk_aiq_uapi_setMDhzStrth_t;
-typedef struct rk_aiq_uapi_getMDhzStrth { unsigned int ctx; bool on, unsigned int  level;} rk_aiq_uapi_getMDhzStrth_t;
+typedef struct rk_aiq_uapi_setMDhzStrth {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   bool on;
+  unsigned int level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_setMDhzStrth_t;
+typedef struct rk_aiq_uapi_getMDhzStrth {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   bool on;
+   unsigned int  level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_getMDhzStrth_t;
 /*
 **********************************************************
 * Image adjust
@@ -702,8 +798,16 @@ typedef struct rk_aiq_uapi_getMDhzStrth { unsigned int ctx; bool on, unsigned in
 *    level: contrast level, [0, 100]
 *****************************
 */
-typedef struct rk_aiq_uapi_setContrast { unsigned int ctx; unsigned int level;} rk_aiq_uapi_setContrast_t;
-typedef struct rk_aiq_uapi_getContrast { unsigned int ctx; unsigned int  level;} rk_aiq_uapi_getContrast_t;
+typedef struct rk_aiq_uapi_setContrast {
+   rk_aiq_sys_ctx_t* sys_ctx;
+   unsigned int level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_setContrast_t;
+typedef struct rk_aiq_uapi_getContrast {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   unsigned int  level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_getContrast_t;
 
 /*
 *****************************
@@ -713,8 +817,16 @@ typedef struct rk_aiq_uapi_getContrast { unsigned int ctx; unsigned int  level;}
 *    level: contrast level, [0, 100]
 *****************************
 */
-typedef struct rk_aiq_uapi_setBrightness { unsigned int ctx; unsigned int level;} rk_aiq_uapi_setBrightness_t;
-typedef struct rk_aiq_uapi_getBrightness { unsigned int ctx; unsigned int  level;} rk_aiq_uapi_getBrightness_t;
+typedef struct rk_aiq_uapi_setBrightness {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   unsigned int level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_setBrightness_t;
+typedef struct rk_aiq_uapi_getBrightness {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   unsigned int  level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_getBrightness_t;
 /*
 *****************************
 *
@@ -723,8 +835,16 @@ typedef struct rk_aiq_uapi_getBrightness { unsigned int ctx; unsigned int  level
 *    level: contrast level, [0, 100]
 *****************************
 */
-typedef struct rk_aiq_uapi_setSaturation { unsigned int ctx; float level;} rk_aiq_uapi_setSaturation_t;
-typedef struct rk_aiq_uapi_getSaturation { unsigned int ctx; float level;} rk_aiq_uapi_getSaturation_t;
+typedef struct rk_aiq_uapi_setSaturation {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   float level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_setSaturation_t;
+typedef struct rk_aiq_uapi_getSaturation {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   float level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_getSaturation_t;
 /*
 *****************************
 *
@@ -733,8 +853,16 @@ typedef struct rk_aiq_uapi_getSaturation { unsigned int ctx; float level;} rk_ai
 *    level: contrast level, [0, 100]
 *****************************
 */
-typedef struct rk_aiq_uapi_setSharpness { unsigned int ctx; unsigned int level;} rk_aiq_uapi_setSharpness_t;
-typedef struct rk_aiq_uapi_getSharpness { unsigned int ctx; unsigned int  level;} rk_aiq_uapi_getSharpness_t;
+typedef struct rk_aiq_uapi_setSharpness {
+   rk_aiq_sys_ctx_t* sys_ctx;
+    unsigned int level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_setSharpness_t;
+typedef struct rk_aiq_uapi_getSharpness {
+   rk_aiq_sys_ctx_t* sys_ctx; 
+   unsigned int  level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_getSharpness_t;
 
 RKAIQ_END_DECLARE
 

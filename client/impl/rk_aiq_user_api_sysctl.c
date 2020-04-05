@@ -96,7 +96,7 @@ rk_aiq_uapi_sysctl_prepare(const rk_aiq_sys_ctx_t* ctx,
     para.ctx = ctx;
     para.width = width;
     para.height = height;
-    para.mode = mode;
+    memcpy(&para.mode,&mode, sizeof(rk_aiq_working_mode_t));
     call_fun_ipc_call((char *)__func__, &para, sizeof(rk_aiq_uapi_sysctl_prepare_t), 1);
 
     return para.xcamreturn;
@@ -158,6 +158,7 @@ rk_aiq_uapi_sysctl_getMetaData(const rk_aiq_sys_ctx_t* ctx, uint32_t frame_id){
     para.frame_id = frame_id;
     call_fun_ipc_call((char *)__func__, &para, sizeof(rk_aiq_uapi_sysctl_getMetaData_t), 1);
     memcpy(metas, &para.metas, sizeof(rk_aiq_metas_t));
+    return metas;
 }
 
 #if 0

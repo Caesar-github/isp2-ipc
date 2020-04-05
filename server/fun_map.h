@@ -1,7 +1,7 @@
 #ifndef _RK_AIQ_USER_API_FUN_MAP_H_
 #define _RK_AIQ_USER_API_FUN_MAP_H_
-#if 0
-#include "rk_aiq_upi_imgproc_ipc_ipc.h"
+#if 1
+#include "rk_aiq_uapi_imgproc_ipc_ipc.h"
 #include "rk_aiq_user_api_a3dlut_ipc.h"
 #include "rk_aiq_user_api_ablc_ipc.h"
 #include "rk_aiq_user_api_accm_ipc.h"
@@ -19,7 +19,7 @@
 #include "rk_aiq_user_api_sysctl_ipc.h"
 
 struct FunMap map[] = {
-#if 0
+#if 1
     //rk_aiq_upi_imgproc_ipc
     {"rk_aiq_uapi_setExpMode", &rk_aiq_uapi_setExpMode_ipc},
     {"rk_aiq_uapi_getExpMode", &rk_aiq_uapi_getExpMode_ipc},

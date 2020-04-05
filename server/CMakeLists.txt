@@ -23,8 +23,8 @@ include_directories(
 	)
 
 link_directories(
-	${PROJECT_SOURCE_DIR}/../libs
         /home/qe/1109/external/call_fun_ipc2
+        /home/qe/1109/external/rv1109_rkaiq/all_lib/Release
         )
 
 aux_source_directory(./ SRCS)
@@ -40,8 +40,8 @@ target_link_libraries(${PROJECT_NAME}
         PkgConfig::JSON-C
         gdbus
         pthread
-        rkaiq
         CallFunIpc
+        rkaiq
         )
 
 install(TARGETS ${PROJECT_NAME}
