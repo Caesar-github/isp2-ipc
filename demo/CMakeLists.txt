@@ -17,11 +17,13 @@ include_directories(
 		/home/qe/1109/external/rv1109_rkaiq/iq_parser
 		/home/qe/1109/external/isp2-ipc/common
 		/home/qe/1109/external/isp2-ipc/demo/include/libdrm
+		/home/qe/1109/external/CallFunIpc
 		
 	)
 
 link_directories(
 	${PROJECT_SOURCE_DIR}/./lib
+	/home/qe/1109/external/CallFunIpc
 	${PROJECT_SOURCE_DIR}/../libs
 	)
 
@@ -39,6 +41,7 @@ target_link_libraries(${PROJECT_NAME}
 	pthread
 	drm
 	ispclient
+	#rkaiq
 	CallFunIpc
 	)
 

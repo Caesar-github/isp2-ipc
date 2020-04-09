@@ -14,19 +14,39 @@
 #include "fun_map.h"
 #include "config.h"
 
-/*
-int examples(void* data)
+static void main_exit(void)
 {
-    struct Examples_s *para = data;
-    printf("%s r = %d, g = %d, b = %d\n", __func__, para->r, para->g, para->b);
-    para->ret = 100;
-}*/
+    printf("server %s\n", __func__);
+    call_fun_ipc_server_deinit();
+}
+
+void signal_crash_handler(int sig)
+{
+    call_fun_ipc_server_deinit();
+    exit(-1);
+}
+
+void signal_exit_handler(int sig)
+{
+    call_fun_ipc_server_deinit();
+    exit(0);
+}
+
+
 
 int main(int argc , char ** argv)
 {
     GMainLoop *main_loop;
+    atexit(main_exit);
+    signal(SIGTERM, signal_exit_handler);
+    signal(SIGINT, signal_exit_handler);
+    signal(SIGPIPE, SIG_IGN);
+    signal(SIGBUS, signal_crash_handler);
+    signal(SIGSEGV, signal_crash_handler);
+    signal(SIGFPE, signal_crash_handler);
+    signal(SIGABRT, signal_crash_handler);
 
-    call_fun_ipc_server_init(map, sizeof(map) / sizeof(struct FunMap), DBUS_NAME, DBUS_IF, DBUS_PATH);
+    call_fun_ipc_server_init(map, sizeof(map) / sizeof(struct FunMap), DBUS_NAME, DBUS_IF, DBUS_PATH, 0);
 
     main_loop = g_main_loop_new(NULL, FALSE);
     printf("call_fun_ipc_demo_server init\n");

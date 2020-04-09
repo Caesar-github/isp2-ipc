@@ -12,7 +12,7 @@ typedef struct
 
 typedef struct
     rk_aiq_user_api_ablc_GetAttrib {
-   rk_aiq_sys_ctx_t* sys_ctx;
+    rk_aiq_sys_ctx_t* sys_ctx;
     rk_aiq_blc_attrib_t attr;
      XCamReturn returnvalue;
 } rk_aiq_user_api_ablc_GetAttrib_t;

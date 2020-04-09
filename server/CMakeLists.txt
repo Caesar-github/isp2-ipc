@@ -16,14 +16,14 @@ include_directories(
         /home/qe/1109/external/rv1109_rkaiq/common
         /home/qe/1109/external/rv1109_rkaiq/xcore
         /home/qe/1109/external/rv1109_rkaiq/iq_parser
-        /home/qe/1109/external/call_fun_ipc2/
+        /home/qe/1109/external/CallFunIpc
         /home/qe/1109/external/isp2-ipc/common
-        /home/qe/1109/external/call_fun_ipc2/demo
+        /home/qe/1109/external/CallFunIpc/demo
 
 	)
 
 link_directories(
-        /home/qe/1109/external/call_fun_ipc2
+        /home/qe/1109/external/CallFunIpc
         /home/qe/1109/external/rv1109_rkaiq/all_lib/Release
         )
 

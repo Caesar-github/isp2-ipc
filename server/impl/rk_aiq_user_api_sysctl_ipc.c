@@ -40,6 +40,7 @@ rk_aiq_sys_ctx_t*
 rk_aiq_uapi_sysctl_init_ipc(void *args){
     printf("enter %s\n", __FUNCTION__);
     rk_aiq_uapi_sysctl_init_t *fun_st = args;
+    printf("enter sns_ent_name=%s,iq_file_dir=%s\n",fun_st->sns_ent_name, fun_st->iq_file_dir);
     rk_aiq_sys_ctx_t* ctx = rk_aiq_uapi_sysctl_init(fun_st->sns_ent_name, fun_st->iq_file_dir, NULL, NULL);
     fun_st->return_ctx = ctx;
     return ctx;
