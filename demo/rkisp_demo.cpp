@@ -24,7 +24,7 @@
 #include "rk_aiq_user_api_sysctl.h"
 #include "rk_aiq_user_api_a3dlut.h"
 #include "rk_aiq_user_api_ablc.h"
-#include "rk_aiq_user_api_imgproc_ipc.h"
+#include "rk_aiq_user_api_imgproc.h"
 #include "config.h"
 #define CLEAR(x) memset(&(x), 0, sizeof(x))
 #define FMT_NUM_PLANES 1

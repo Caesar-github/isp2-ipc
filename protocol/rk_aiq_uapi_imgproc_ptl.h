@@ -17,7 +17,7 @@
 
 #ifndef _RK_AIQ_UAPI_IMGPROC_PTL_H_
 #define _RK_AIQ_UAPI_IMGPROC_PTL_H_
-#include "rk_aiq_user_api_imgproc_ipc.h"
+#include "rk_aiq_user_api_imgproc.h"
 
 RKAIQ_BEGIN_DECLARE
 

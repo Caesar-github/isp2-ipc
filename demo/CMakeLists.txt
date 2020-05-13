@@ -10,11 +10,11 @@ pkg_check_modules (JSON-C REQUIRED IMPORTED_TARGET json-c)
 include_directories(
 		${PROJECT_SOURCE_DIR}/./
 		${PROJECT_SOURCE_DIR}/../interface
-		/home/qe/1109/external/rv1109_rkaiq/uAPI
-		/home/qe/1109/external/rv1109_rkaiq/algos
-		/home/qe/1109/external/rv1109_rkaiq/common
-		/home/qe/1109/external/rv1109_rkaiq/xcore
-		/home/qe/1109/external/rv1109_rkaiq/iq_parser
+        	/home/qe/1109/external/rv1109_rkaiq/include/uAPI
+        	/home/qe/1109/external/rv1109_rkaiq/include/algos
+        	/home/qe/1109/external/rv1109_rkaiq/include/common
+        	/home/qe/1109/external/rv1109_rkaiq/include/xcore
+        	/home/qe/1109/external/rv1109_rkaiq/include/iq_parser
 		/home/qe/1109/external/isp2-ipc/common
 		/home/qe/1109/external/isp2-ipc/demo/include/libdrm
 		/home/qe/1109/external/CallFunIpc

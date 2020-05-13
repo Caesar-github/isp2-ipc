@@ -15,7 +15,7 @@
  *
  */
 #include "config.h"
-#include "rk_aiq_user_api_imgproc_ipc.h"
+#include "rk_aiq_user_api_imgproc.h"
 #include "rk_aiq_user_api_sysctl.h"
 #include "../protocol/rk_aiq_uapi_imgproc_ptl.h"
 
