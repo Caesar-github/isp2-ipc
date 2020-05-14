@@ -55,6 +55,8 @@ static int vop = 0;
 static int rkaiq = 0;
 static int writeFile = 0;
 static int pponeframe = 0;
+static int hdrmode = 0;
+static char sensor[64];
 
 static int fd_pp_input = -1;
 static int fd_isp_mp = -1;
@@ -63,7 +65,6 @@ static int outputCnt = 3;
 static int skipCnt = 30;
 
 //TODO: get active sensor from driver
-#define ov4689
 //#define os04a10 
 
 #define DBG(...) do { if(!silent) printf(__VA_ARGS__); } while(0)
@@ -747,6 +748,8 @@ void parse_args(int argc, char **argv)
            {"vop",   no_argument,       0, 'v' },
            {"rkaiq",   no_argument,       0, 'r' },
            {"pponeframe",   no_argument,       0, 'm' },
+           {"hdr",   no_argument,       0, 'a' },
+           {"sensor",   required_argument,       0, 'b' },
            {0,          0,                 0,  0  }
        };
 
@@ -794,6 +797,12 @@ void parse_args(int argc, char **argv)
        case 'm':
            pponeframe = 1;
            break;
+       case 'a':
+           hdrmode = 1;
+           break;
+       case 'b':
+           strcpy(sensor, optarg);
+           break;
        case '?':
        case 'p':
            ERR("Usage: %s to capture rkisp1 frames\n"
@@ -809,6 +818,8 @@ void parse_args(int argc, char **argv)
                   "         --rkaiq,                           optional, auto image quality\n",
                   "         --silent,                          optional, subpress debug log\n",
                   "         --pponeframe,                      optional, pp oneframe readback mode\n",
+                  "         --hdr,                             optional, hdr mode\n",
+                  "         --sensor,  default os04a10,        optional, sensor names\n",
                   argv[0]);
            exit(-1);
 
@@ -850,7 +861,7 @@ static void deinit()
 }
 static void signal_handle(int signo)
 {
-    printf("force exit !!!\n");
+    printf("force exit signo %d !!!\n",signo);
     deinit();
     exit(0);
 }
@@ -890,6 +901,7 @@ int main(int argc, char **argv)
     signal(SIGFPE, signal_crash_handler);
     signal(SIGABRT, signal_crash_handler);
 
+    strcpy(sensor, "os04a10");
     parse_args(argc, argv);
 
     printf("-------- open output dev -------------\n");
@@ -906,24 +918,32 @@ int main(int argc, char **argv)
             exit(-1);
         }
     }
-    width = 640;
-    height = 480;
 
-#ifdef ov4689
-    const char* sns_entity_name = "m01_f_ov4689 1-0036";
-  //  const char* sns_entity_name = "ov4689";
-    printf("=====call RK_AIQ_WORKING_MODE_NORMAL\n");
-    rk_aiq_working_mode_t work_mode = RK_AIQ_WORKING_MODE_NORMAL;//RK_AIQ_WORKING_MODE_ISP_HDR3;
-#elif defined(os04a10)
-    const char* sns_entity_name = "m01_f_os04a10 1-0036";
-    rk_aiq_working_mode_t work_mode = RK_AIQ_WORKING_MODE_ISP_HDR2;
-    /* rk_aiq_working_mode_t work_mode = RK_AIQ_WORKING_MODE_NORMAL; */
-#else
-    #error("not define sensor!")
-#endif
+    const char* sns_entity_name = NULL;
+    rk_aiq_working_mode_t work_mode = RK_AIQ_WORKING_MODE_NORMAL;
+
+    if (strcasecmp(sensor, "ov4689") == 0) {
+        if (hdrmode)
+            work_mode = RK_AIQ_WORKING_MODE_ISP_HDR3;
+        sns_entity_name = "m01_f_ov4689 1-0036";
+    } else if (strcasecmp(sensor, "os04a10") == 0) {
+        if (hdrmode)
+            work_mode = RK_AIQ_WORKING_MODE_ISP_HDR2;
+        sns_entity_name = "m01_f_os04a10 1-0036";
+    } else if (strcasecmp(sensor, "gc4c33") == 0) {
+        if (hdrmode)
+            work_mode = RK_AIQ_WORKING_MODE_ISP_HDR2;
+        sns_entity_name = "m01_f_gc4c33 1-0029";
+    } else if (strcasecmp(sensor, "imx347") == 0) {
+        if (hdrmode)
+            work_mode = RK_AIQ_WORKING_MODE_ISP_HDR2;
+        sns_entity_name = "m01_f_imx347 1-0037";
+    }
+
+    printf("sns_entity_name %s\n", sns_entity_name);
 	if (rkaiq) {
-        printf("====call_fun_ipc_client_init\n");
-        int r = 0xFEFEFEFE;
+        printf("+++++call_fun_ipc_client_init\n");
+        //int r = 0xFEFEFEFE;
       //  while (r == 0xFEFEFEFE) {
         call_fun_ipc_client_init(DBUS_NAME, DBUS_IF, DBUS_PATH, SHARE_PATH, 1);
          //   usleep(1000*1000);
@@ -947,13 +967,13 @@ int main(int argc, char **argv)
 				ret = rk_aiq_uapi_sysctl_start(aiq_ctx);
                 printf("-------------stream on mipi end\n");
 			}
-           
-			/*if (vop) {
+
+			if (vop) {
 				if (initDrmDsp() < 0) {
 					printf("DRM display init failed\n");
 					exit(0);
 				}
-			}*/
+			}
 
 			usleep(500 * 1000);
 		}
