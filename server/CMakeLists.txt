@@ -6,26 +6,21 @@ include(FindPkgConfig)
 pkg_check_modules (GLIB REQUIRED IMPORTED_TARGET glib-2.0)
 pkg_check_modules (DBUS REQUIRED IMPORTED_TARGET dbus-1)
 pkg_check_modules (JSON-C REQUIRED IMPORTED_TARGET json-c)
-
+message("=================================")
+message("$PROJECT_SOURCE_DIR")
 
 include_directories(
 	${PROJECT_SOURCE_DIR}/./
-        /home/qe/1109/external/isp2-ipc/interface
-        /home/qe/1109/external/rv1109_rkaiq/include/uAPI
-        /home/qe/1109/external/rv1109_rkaiq/include/algos
-        /home/qe/1109/external/rv1109_rkaiq/include/common
-        /home/qe/1109/external/rv1109_rkaiq/include/xcore
-        /home/qe/1109/external/rv1109_rkaiq/include/iq_parser
-        /home/qe/1109/external/CallFunIpc
-        /home/qe/1109/external/isp2-ipc/common
-        /home/qe/1109/external/CallFunIpc/demo
-
+        ${PROJECT_SOURCE_DIR}/../interface/
+        ${PROJECT_SOURCE_DIR}/../common/
+        ${CMAKE_SYSROOT}/usr/include/rkaiq/uAPI/
+        ${CMAKE_SYSROOT}/usr/include/rkaiq/algos
+        ${CMAKE_SYSROOT}/usr/include/rkaiq/common
+        ${CMAKE_SYSROOT}/usr/include/rkaiq/xcore
+        ${CMAKE_SYSROOT}/usr/include/rkaiq/iq_parser
+        ${PROJECT_SOURCE_DIR}/../../CallFunIpc
 	)
 
-link_directories(
-        /home/qe/1109/external/CallFunIpc
-        /home/qe/1109/external/rv1109_rkaiq/all_lib/Release
-        )
 
 aux_source_directory(./ SRCS)
 aux_source_directory(./impl SRCS)

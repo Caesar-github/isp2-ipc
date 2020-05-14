@@ -10,13 +10,12 @@ pkg_check_modules (JSON-C REQUIRED IMPORTED_TARGET json-c)
 include_directories(
 		${PROJECT_SOURCE_DIR}/./
 		${PROJECT_SOURCE_DIR}/../interface
-		/home/qe/1109/external/rv1109_rkaiq/include/uAPI
-		/home/qe/1109/external/rv1109_rkaiq/include/algos
-		/home/qe/1109/external/rv1109_rkaiq/include/common
-		/home/qe/1109/external/rv1109_rkaiq/include/xcore
-		/home/qe/1109/external/rv1109_rkaiq/include/iq_parser
-		/home/qe/1109/external/isp2-ipc/common
-		
+        ${PROJECT_SOURCE_DIR}/../common/
+        ${CMAKE_SYSROOT}/usr/include/rkaiq/uAPI/
+        ${CMAKE_SYSROOT}/usr/include/rkaiq/algos
+        ${CMAKE_SYSROOT}/usr/include/rkaiq/common
+        ${CMAKE_SYSROOT}/usr/include/rkaiq/xcore
+        ${CMAKE_SYSROOT}/usr/include/rkaiq/iq_parser
 	)
 
 link_directories(
