@@ -23,6 +23,14 @@
 RKAIQ_BEGIN_DECLARE
 
 typedef struct rk_aiq_sys_ctx_s rk_aiq_sys_ctx_t;
+typedef enum rk_aiq_state_e {
+    AIQ_STATE_INVALID           = 0,
+    AIQ_STATE_INITIALIZED       = 1,
+    AIQ_STATE_PREPARED          = 2,
+    AIQ_STATE_RUNNING           = 3,
+    AIQ_STATE_STOPPED           = 4,
+    AIQ_STATE_MAX
+} rk_aiq_state_t;
 
 /*!
  * \brief initialze aiq control system context
@@ -84,10 +92,10 @@ rk_aiq_uapi_sysctl_start_ipc(void *args);
 XCamReturn
 rk_aiq_uapi_sysctl_stop_ipc(void *args);
 
-rk_aiq_static_info_t*
+XCamReturn
 rk_aiq_uapi_sysctl_getStaticMetas_ipc(void *args);
 
-rk_aiq_metas_t*
+XCamReturn
 rk_aiq_uapi_sysctl_getMetaData_ipc(void *args);
 
 #if 0
@@ -165,10 +173,12 @@ rk_aiq_uapi_sysctl_getAxlibStatus_ipc(void *args);
  *
  * \param[in] ctx             context
  * \param[in] algo_type       algo type defined by RkAiqAlgoDesComm.type
- * \return return current enabled algo context if success or NULL.
+ * \return return 0 if success
  */
 const RkAiqAlgoContext*
 rk_aiq_uapi_sysctl_getEnabledAxlibCtx_ipc(void *args);
+
+rk_aiq_state_t rk_aiq_get_state();
 
 RKAIQ_END_DECLARE
 

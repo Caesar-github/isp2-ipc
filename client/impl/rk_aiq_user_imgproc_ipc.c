@@ -236,6 +236,21 @@ XCamReturn rk_aiq_uapi_getMLExp(const rk_aiq_sys_ctx_t* ctx, unsigned int* ratio
 *
 *****************************
 */
+XCamReturn rk_aiq_uapi_setAntiFlickerMode(const rk_aiq_sys_ctx_t* ctx, antiFlickerMode_t mode)
+{
+    const rk_aiq_sys_ctx_t* sys_ctx = ctx;
+    antiFlickerMode_t attr;
+    memcpy(&attr, &mode, sizeof(antiFlickerMode_t));
+    CLIENT_CALL_SET_AIQ(rk_aiq_uapi_setAntiFlickerMode);
+}
+
+XCamReturn rk_aiq_uapi_getAntiFlickerMode(const rk_aiq_sys_ctx_t* ctx, antiFlickerMode_t *mode)
+{
+    const rk_aiq_sys_ctx_t* sys_ctx = ctx;
+   antiFlickerMode_t *attr = mode;
+   CLIENT_CALL_GET_AIQ(rk_aiq_uapi_getAntiFlickerMode);
+}
+
 XCamReturn rk_aiq_uapi_setExpPwrLineFreqMode(const rk_aiq_sys_ctx_t* ctx, expPwrLineFreq_t freq)
 {    
     const rk_aiq_sys_ctx_t* sys_ctx = ctx;
@@ -394,7 +409,7 @@ XCamReturn rk_aiq_uapi_getMFLight(const rk_aiq_sys_ctx_t* ctx, bool *on)
 *****************************
 */
 XCamReturn rk_aiq_uapi_setWBMode(const rk_aiq_sys_ctx_t* ctx, opMode_t mode)
-{    
+{ 
     const rk_aiq_sys_ctx_t* sys_ctx = ctx;
     opMode_t attr;
     memcpy(&attr, &mode, sizeof(opMode_t));

@@ -23,6 +23,17 @@
 RKAIQ_BEGIN_DECLARE
 
 typedef struct rk_aiq_sys_ctx_s rk_aiq_sys_ctx_t;
+static rk_aiq_state_t g_state = AIQ_STATE_INVALID;
+
+rk_aiq_state_t rk_aiq_get_state()
+{
+	return g_state;
+}
+
+static void rk_aiq_set_state(rk_aiq_state_t state)
+{
+	g_state = state;
+}
 
 /*!
  * \brief initialze aiq control system context
@@ -43,6 +54,7 @@ rk_aiq_uapi_sysctl_init_ipc(void *args){
     printf("enter sns_ent_name=%s,iq_file_dir=%s\n",fun_st->sns_ent_name, fun_st->iq_file_dir);
     rk_aiq_sys_ctx_t* ctx = rk_aiq_uapi_sysctl_init(fun_st->sns_ent_name, fun_st->iq_file_dir, NULL, NULL);
     fun_st->return_ctx = ctx;
+    rk_aiq_set_state(AIQ_STATE_INITIALIZED);
     return ctx;
 }
 
@@ -57,6 +69,7 @@ rk_aiq_uapi_sysctl_deinit_ipc(void *args){
     rk_aiq_uapi_sysctl_deinit_t *fun_st = args;
     rk_aiq_sys_ctx_t* ctx = fun_st->ctx;
     rk_aiq_uapi_sysctl_deinit(ctx);
+    rk_aiq_set_state(AIQ_STATE_INVALID);
 }
 
 /*!
@@ -81,6 +94,7 @@ rk_aiq_uapi_sysctl_prepare_ipc(void *args){
     memcpy(&mode, &fun_st->mode, sizeof(rk_aiq_working_mode_t));
     XCamReturn r = rk_aiq_uapi_sysctl_prepare(ctx, width, height, mode);
     fun_st->xcamreturn = r;
+    rk_aiq_set_state(AIQ_STATE_PREPARED);
     return r;
 }
 
@@ -98,6 +112,7 @@ rk_aiq_uapi_sysctl_start_ipc(void *args){
     rk_aiq_uapi_sysctl_start_t  *fun_st = args;
     rk_aiq_sys_ctx_t* ctx = fun_st->ctx;
     XCamReturn r = rk_aiq_uapi_sysctl_start(ctx);
+    rk_aiq_set_state(AIQ_STATE_RUNNING);
     return r;
 }
 
@@ -109,17 +124,26 @@ rk_aiq_uapi_sysctl_start_ipc(void *args){
  */
 XCamReturn
 rk_aiq_uapi_sysctl_stop_ipc(void *args){
-    rk_aiq_uapi_sysctl_start_t  *fun_st = args;
+    rk_aiq_uapi_sysctl_stop_t  *fun_st = args;
     rk_aiq_sys_ctx_t* ctx = fun_st->ctx;
     XCamReturn r = rk_aiq_uapi_sysctl_stop(ctx);
+    rk_aiq_set_state(AIQ_STATE_STOPPED);
     return r;
 }
 
-rk_aiq_static_info_t*
-rk_aiq_uapi_sysctl_getStaticMetas_ipc(void *args){return 0;}
+XCamReturn
+rk_aiq_uapi_sysctl_getStaticMetas_ipc(void *args){
+    rk_aiq_uapi_sysctl_getStaticMetas_t *fun_st = args;
+    XCamReturn r = rk_aiq_uapi_sysctl_getStaticMetas(fun_st->sns_ent_name, &fun_st->static_info);
+    return r;
+}
 
-rk_aiq_metas_t*
-rk_aiq_uapi_sysctl_getMetaData_ipc(void *args){return 0;}
+XCamReturn
+rk_aiq_uapi_sysctl_getMetaData_ipc(void *args){
+    rk_aiq_uapi_sysctl_getMetaData_t *fun_st = args;
+    XCamReturn r = rk_aiq_uapi_sysctl_getMetaData(fun_st->ctx, fun_st->frame_id, &fun_st->metas);
+    return r;
+}
 
 #if 0
 int32_t
@@ -200,6 +224,7 @@ rk_aiq_uapi_sysctl_getAxlibStatus_ipc(void *args){return 0;}
  */
 const RkAiqAlgoContext*
 rk_aiq_uapi_sysctl_getEnabledAxlibCtx_ipc(void *args){return 0;}
+
 
 RKAIQ_END_DECLARE
 

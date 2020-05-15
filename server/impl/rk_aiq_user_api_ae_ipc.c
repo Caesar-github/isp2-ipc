@@ -15,7 +15,7 @@ XCamReturn rk_aiq_user_api_ae_setExpSwAttr_ipc(void* args){
 }
 XCamReturn rk_aiq_user_api_ae_getExpSwAttr_ipc(void* args){
     //TOD QIUEN
-    // CALL_GET_AIQ(rk_aiq_user_api_ae_setExpSwAttr, Uapi_ExpSwAttr_t);
+    CALL_GET_AIQ(rk_aiq_user_api_ae_getExpSwAttr);
     return 0;
 }
 XCamReturn rk_aiq_user_api_ae_setLinAeRouteAttr_ipc(void* args){

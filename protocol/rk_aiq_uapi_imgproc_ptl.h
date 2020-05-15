@@ -222,7 +222,17 @@ typedef struct rk_aiq_uapi_getExpPwrLineFreqMode {
    XCamReturn returnvalue;
 } rk_aiq_uapi_getExpPwrLineFreqMode_t;
 
+typedef struct rk_aiq_uapi_setAntiFlickerMode {
+   rk_aiq_sys_ctx_t* sys_ctx;
+   antiFlickerMode_t attr;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_setAntiFlickerMode_t;
 
+typedef struct rk_aiq_uapi_getAntiFlickerMode {
+   rk_aiq_sys_ctx_t* sys_ctx;
+   antiFlickerMode_t attr;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_getAntiFlickerMode_t;
 /*
 *****************************
 *

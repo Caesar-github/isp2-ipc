@@ -148,6 +148,8 @@ XCamReturn rk_aiq_uapi_getLExpMode_ipc(void *args);
 XCamReturn rk_aiq_uapi_setMLExp_ipc(void *args);
 XCamReturn rk_aiq_uapi_getMLExp_ipc(void *args);
 
+XCamReturn rk_aiq_uapi_setAntiFlickerMode_ipc(void *args);
+XCamReturn rk_aiq_uapi_getAntiFlickerMode_ipc(void *args);
 /*
 *****************************
 *

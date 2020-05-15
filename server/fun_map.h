@@ -34,6 +34,8 @@ struct FunMap map[] = {
     {"rk_aiq_uapi_getLExpMode", &rk_aiq_uapi_getLExpMode_ipc},
     {"rk_aiq_uapi_setMLExp", &rk_aiq_uapi_setMLExp_ipc},
     {"rk_aiq_uapi_getMLExp", &rk_aiq_uapi_getMLExp_ipc},
+    {"rk_aiq_uapi_setAntiFlickerMode", &rk_aiq_uapi_setAntiFlickerMode_ipc},
+    {"rk_aiq_uapi_getAntiFlickerMode", &rk_aiq_uapi_getAntiFlickerMode_ipc},
     {"rk_aiq_uapi_setExpPwrLineFreqMode", &rk_aiq_uapi_setExpPwrLineFreqMode_ipc},
     {"rk_aiq_uapi_getExpPwrLineFreqMode", &rk_aiq_uapi_getExpPwrLineFreqMode_ipc},
     {"rk_aiq_uapi_setDayNSwMode", &rk_aiq_uapi_setDayNSwMode_ipc},
