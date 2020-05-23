@@ -28,6 +28,9 @@ aux_source_directory(./impl SRCS)
 add_executable(${PROJECT_NAME}
 	${SRCS})
 
+if(DEFINED CONFIG_OEM)
+   add_definitions(-DCONFIG_OEM=${CONFIG_OEM})
+endif()
 
 target_link_libraries(${PROJECT_NAME}
         PkgConfig::GLIB

@@ -53,7 +53,6 @@
      if (ENABLE_TEST == 0) \
      r = fun(ctx,  &fun_st->level); \
      fun_st->returnvalue = r;
-    
 
 #define CLIENT_CALL_SET_AIQ(fun)\
      DBG("===enter %s, line=%d\n",__FUNCTION__,__LINE__);\

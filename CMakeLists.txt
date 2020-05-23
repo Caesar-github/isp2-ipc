@@ -12,7 +12,7 @@ add_compile_options(-Wno-unused-variable
                                         -Wno-unused-but-set-variable
                                         -Wno-reorder
                                         -Wno-unused-function
-										-fpermissive)
+					-fpermissive)
 
 add_subdirectory(server)
 add_subdirectory(client)
