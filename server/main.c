@@ -336,8 +336,8 @@ void *thread_func(void *arg) {
     if (rkaiq_get_media1_info(&media_info))
       errno_exit("Bad media1 topology\n");
 
-    isp_fd = open(media_info.vd_params_path, O_RDWR);
-    // isp_fd = open(media_info.sd_ispp_path, O_RDWR);
+    //isp_fd = open(media_info.vd_params_path, O_RDWR);
+    isp_fd = open(media_info.sd_ispp_path, O_RDWR);
     if (isp_fd < 0) {
       DBG("open %s failed %s\n", media_info.sd_ispp_path, strerror(errno));
       pthread_exit(0);
