@@ -32,6 +32,10 @@ if(DEFINED CONFIG_OEM)
    add_definitions(-DCONFIG_OEM=${CONFIG_OEM})
 endif()
 
+if(DEFINED CONFIG_DBUS)
+   add_definitions(-DCONFIG_DBUS=${CONFIG_DBUS})
+endif()
+
 target_link_libraries(${PROJECT_NAME}
         PkgConfig::GLIB
         PkgConfig::DBUS

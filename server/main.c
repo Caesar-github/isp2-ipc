@@ -17,7 +17,6 @@
 #include "config.h"
 #include "fun_map.h"
 #include "mediactl/mediactl.h"
-
 #define CLEAR(x) memset(&(x), 0, sizeof(x))
 
 /* Private v4l2 event */
@@ -39,6 +38,7 @@ const char *iq_file_dir = "/oem/etc/iqfiles/";
 #else
 const char *iq_file_dir = "/etc/iqfiles/";
 #endif
+
 
 struct rkaiq_media_info {
   char sd_isp_path[RKAIQ_FILE_PATH_LEN];
@@ -322,7 +322,7 @@ void *thread_func(void *arg) {
   int isp_fd;
   unsigned int stream_event = -1;
 
-  pthread_detach(pthread_self());
+
 
   /* Line buffered so that printf can flash every line if redirected to
    * no-interactive device.
@@ -370,16 +370,22 @@ void *thread_func(void *arg) {
 
 static void main_exit(void) {
   printf("server %s\n", __func__);
+#if CONFIG_DBUS
   call_fun_ipc_server_deinit();
+#endif
 }
 
 void signal_crash_handler(int sig) {
+#if CONFIG_DBUS
   call_fun_ipc_server_deinit();
+#endif
   exit(-1);
 }
 
 void signal_exit_handler(int sig) {
+#if CONFIG_DBUS
   call_fun_ipc_server_deinit();
+#endif
   exit(0);
 }
 
@@ -387,7 +393,8 @@ int main(int argc, char **argv) {
   pthread_t tidp;
   if (pthread_create(&tidp, NULL, thread_func, NULL) != 0)
     return -1;
-
+#if CONFIG_DBUS
+  pthread_detach(pthread_self());
   GMainLoop *main_loop;
   atexit(main_exit);
   signal(SIGTERM, signal_exit_handler);
@@ -407,6 +414,9 @@ int main(int argc, char **argv) {
   g_main_loop_run(main_loop);
   if (main_loop)
     g_main_loop_unref(main_loop);
-
+#else
+  void* ret;
+  pthread_join(tidp,&ret);
+#endif
   return 0;
 }
