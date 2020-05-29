@@ -17,6 +17,11 @@
 #include "config.h"
 #include "fun_map.h"
 #include "mediactl/mediactl.h"
+
+#if CONFIG_DBSERVER
+#include "db_monitor.h"
+#endif
+
 #define CLEAR(x) memset(&(x), 0, sizeof(x))
 
 /* Private v4l2 event */
@@ -230,16 +235,40 @@ int rkaiq_get_media1_info(struct rkaiq_media_info *media_info) {
 static void init_engine(void) {
   int index;
 
+#if CONFIG_DBSERVER
+  char *hdr_mode_db = dbserver_image_hdr_mode_get();
+  while (!hdr_mode_db) {
+    printf("Get data is empty, please start dbserver\n");
+    hdr_mode_db = dbserver_image_hdr_mode_get();
+    sleep(1);
+  }
+  char *nr_mode_db = dbserver_image_nr_mode_get();
+  if (!nr_mode_db) {
+    printf("nr_mode_db is null, set to close by default\n");
+    nr_mode_db = "close";
+  }
+  char *fec_mode_db = dbserver_image_fec_mode_get();
+  if (!fec_mode_db) {
+    printf("fec_mode_db is null, set to close by default\n");
+    fec_mode_db = "close";
+  }
+  DBG("hdr_mode_db: %s \n", hdr_mode_db);
+  if (!strcmp(hdr_mode_db, "close"))
+    setenv("HDR_MODE", "0", 1);
+  else
+    setenv("HDR_MODE", "1", 1);
+#endif
+
   char *hdr_mode = getenv("HDR_MODE");
-    if (hdr_mode) {
-      DBG("hdr mode: %s \n", hdr_mode);
-      if (0 == atoi(hdr_mode))
-        mode = RK_AIQ_WORKING_MODE_NORMAL;
-      else if (1 == atoi(hdr_mode))
-        mode = RK_AIQ_WORKING_MODE_ISP_HDR2;
-      else if (2 == atoi(hdr_mode))
-        mode = RK_AIQ_WORKING_MODE_ISP_HDR3;
-    }
+  if (hdr_mode) {
+    DBG("hdr mode: %s \n", hdr_mode);
+    if (0 == atoi(hdr_mode))
+      mode = RK_AIQ_WORKING_MODE_NORMAL;
+    else if (1 == atoi(hdr_mode))
+      mode = RK_AIQ_WORKING_MODE_ISP_HDR2;
+    else if (2 == atoi(hdr_mode))
+      mode = RK_AIQ_WORKING_MODE_ISP_HDR3;
+  }
 
   for (index = 0; index < RKAIQ_CAMS_NUM_MAX; index++)
     if (media_info.cams[index].link_enabled)
@@ -252,6 +281,11 @@ static void init_engine(void) {
     DBG("rkaiq engine prepare failed !\n");
     exit(-1);
   }
+
+#if CONFIG_DBSERVER
+  NR_mode_set(nr_mode_db);
+  FEC_mode_set(fec_mode_db);
+#endif
 }
 
 static void start_engine(void) {
@@ -409,6 +443,12 @@ int main(int argc, char **argv) {
                            DBUS_IF, DBUS_PATH, 0);
 
   main_loop = g_main_loop_new(NULL, FALSE);
+
+#if CONFIG_DBSERVER
+  pthread_t thread_id;
+  pthread_create(&thread_id, NULL, (void*)database_init, NULL);
+#endif
+
   printf("call_fun_ipc_demo_server init\n");
 
   g_main_loop_run(main_loop);

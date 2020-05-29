@@ -36,6 +36,10 @@ if(DEFINED CONFIG_DBUS)
    add_definitions(-DCONFIG_DBUS=${CONFIG_DBUS})
 endif()
 
+if(DEFINED CONFIG_DBSERVER)
+   add_definitions(-DCONFIG_DBSERVER=${CONFIG_DBSERVER})
+endif()
+
 target_link_libraries(${PROJECT_NAME}
         PkgConfig::GLIB
         PkgConfig::DBUS
@@ -45,6 +49,9 @@ target_link_libraries(${PROJECT_NAME}
         CallFunIpc
         rkaiq
         )
+if(CONFIG_DBSERVER)
+   target_link_libraries(${PROJECT_NAME} IPCProtocol)
+endif()
 
 install(TARGETS ${PROJECT_NAME}
 	RUNTIME DESTINATION bin)
