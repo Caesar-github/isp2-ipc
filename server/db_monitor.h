@@ -1,3 +1,5 @@
+#if CONFIG_DBSERVER
+
 #ifndef __DB_MONITOR_H
 #define __DB_MONITOR_H
 
@@ -14,6 +16,8 @@ void FEC_mode_set(char *mode);
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif
 
 #endif

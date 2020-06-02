@@ -1,3 +1,5 @@
+#if CONFIG_DBSERVER
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -201,3 +203,5 @@ void database_init(void)
 
     printf("database_init over\n");
 }
+
+#endif
