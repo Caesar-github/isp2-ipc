@@ -1,23 +1,14 @@
 #if CONFIG_DBSERVER
 
+#include <errno.h>
+#include <gdbus.h>
+#include <glib.h>
+#include <linux/kernel.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
 #include <stdbool.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <ctype.h>
-#include <inttypes.h>
-
-#include <glib.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <sqlite3.h>
-
-#include <pthread.h>
-#include <gdbus.h>
 
 #include "call_fun_ipc.h"
 #include "config.h"
@@ -27,7 +18,6 @@
 #include "rkaiq/uAPI/rk_aiq_user_api_imgproc.h"
 #include "rkaiq/uAPI/rk_aiq_user_api_sysctl.h"
 #include "dbserver.h"
-#include <linux/kernel.h>
 
 extern char *aiq_NR_mode;
 extern char *aiq_FEC_mode;

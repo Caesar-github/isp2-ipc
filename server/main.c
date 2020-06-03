@@ -1,8 +1,6 @@
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h> /* low-level i/o */
-#include <gdbus.h>
-#include <glib.h>
 #include <inttypes.h>
 #include <linux/videodev2.h>
 #include <stdbool.h>
@@ -17,6 +15,10 @@
 #include "config.h"
 #include "fun_map.h"
 #include "mediactl/mediactl.h"
+
+#if CONFIG_DBUS
+#include <gdbus.h>
+#endif
 
 #if CONFIG_DBSERVER
 #include "db_monitor.h"

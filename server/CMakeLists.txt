@@ -3,9 +3,6 @@ cmake_minimum_required(VERSION 3.8)
 project(ispserver)
 
 include(FindPkgConfig)
-pkg_check_modules (GLIB REQUIRED IMPORTED_TARGET glib-2.0)
-pkg_check_modules (DBUS REQUIRED IMPORTED_TARGET dbus-1)
-pkg_check_modules (JSON-C REQUIRED IMPORTED_TARGET json-c)
 message("=================================")
 message("$PROJECT_SOURCE_DIR")
 
@@ -33,24 +30,26 @@ if(DEFINED CONFIG_OEM)
 endif()
 
 if(DEFINED CONFIG_DBUS)
+   pkg_check_modules (GLIB REQUIRED IMPORTED_TARGET glib-2.0)
+   pkg_check_modules (DBUS REQUIRED IMPORTED_TARGET dbus-1)
    add_definitions(-DCONFIG_DBUS=${CONFIG_DBUS})
 endif()
 
 if(DEFINED CONFIG_DBSERVER)
+   pkg_check_modules (JSON-C REQUIRED IMPORTED_TARGET json-c)
    add_definitions(-DCONFIG_DBSERVER=${CONFIG_DBSERVER})
 endif()
 
 target_link_libraries(${PROJECT_NAME}
-        PkgConfig::GLIB
-        PkgConfig::DBUS
-        PkgConfig::JSON-C
-        gdbus
         pthread
         CallFunIpc
         rkaiq
         )
+if(CONFIG_DBUS)
+   target_link_libraries(${PROJECT_NAME} PkgConfig::GLIB PkgConfig::DBUS gdbus)
+endif()
 if(CONFIG_DBSERVER)
-   target_link_libraries(${PROJECT_NAME} IPCProtocol)
+   target_link_libraries(${PROJECT_NAME} IPCProtocol PkgConfig::JSON-C)
 endif()
 
 install(TARGETS ${PROJECT_NAME}
