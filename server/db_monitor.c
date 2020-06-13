@@ -51,7 +51,7 @@ static DBusConnection *connection = 0;
 
 static void DataChanged(char *json_str)
 {
-    printf("DataChanged, json is %s\n\n", json_str);
+    printf("DataChanged, json is %s\n", json_str);
     json_object *j_cfg;
     json_object *j_key = 0;
     json_object *j_data = 0;
@@ -64,26 +64,30 @@ static void DataChanged(char *json_str)
     char *cmd = (char *)json_object_get_string(json_object_object_get(j_cfg, "cmd"));
 
     if (g_str_equal(table, TABLE_IMAGE_BLC)) {
-        char *HDR_mode = (char *)json_object_get_string(json_object_object_get(j_data, "sHDR"));
-        printf("ispserver, HDR_mode is %s\n", HDR_mode);
-
         if (!g_str_equal(cmd, "Update"))
             return;
+        json_object *sHDR = json_object_object_get(j_data, "sHDR");
+        if (sHDR) {
+            char *HDR_mode = (char *)json_object_get_string(sHDR);
+            printf("%s, HDR_mode is %s\n", __func__, HDR_mode);
+        }
         // if (!strcmp(HDR_mode, "close"))
         //     rk_aiq_uapi_setHDRMode(aiq_ctx, OP_AUTO);
         // else
         //     rk_aiq_uapi_setHDRMode(aiq_ctx, OP_MANUALl);
     } else if (g_str_equal(table, TABLE_IMAGE_ENHANCEMENT)) {
-        char *NR_mode = (char *)json_object_get_string(json_object_object_get(j_data, "sNoiseReduceMode"));
-        char *FEC_mode = (char *)json_object_get_string(json_object_object_get(j_data, "sFEC"));
-        printf("ispserver, NR_mode is %s\n", NR_mode);
-        printf("ispserver, FEC_mode is %s\n", FEC_mode);
-
         if (!g_str_equal(cmd, "Update"))
             return;
-
-        NR_mode_set(NR_mode);
-        FEC_mode_set(FEC_mode);
+        json_object *sNoiseReduceMode = json_object_object_get(j_data, "sNoiseReduceMode");
+        json_object *sFEC = json_object_object_get(j_data, "sFEC");
+        if (sNoiseReduceMode) {
+            char *NR_mode = (char *)json_object_get_string(sNoiseReduceMode);
+            NR_mode_set(NR_mode);
+        }
+        if (sFEC) {
+            char *FEC_mode = (char *)json_object_get_string(sFEC);
+            FEC_mode_set(FEC_mode);
+        }
     }
     json_object_put(j_cfg);
 }
