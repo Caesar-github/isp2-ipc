@@ -404,6 +404,13 @@ void *thread_func(void *arg) {
 
 static void main_exit(void) {
   printf("server %s\n", __func__);
+  if (aiq_ctx) {
+     DBG("stop engine...\n");
+     stop_engine();
+     DBG("deinit engine...\n");
+     deinit_engine();
+     aiq_ctx = NULL;
+}
 #if CONFIG_DBUS
   call_fun_ipc_server_deinit();
 #endif
