@@ -259,6 +259,14 @@ static void init_engine(void) {
     setenv("HDR_MODE", "0", 1);
   else
     setenv("HDR_MODE", "1", 1);
+
+  int brightness = 50;
+  int contrast = 50;
+  int saturation = 50;
+  int sharpness = 50;
+  dbserver_image_adjustment_get(&brightness, &contrast, &saturation, &sharpness);
+  printf("brightness:%d, contrast:%d, saturation:%d, sharpness:%d\n",
+         brightness, contrast, saturation, sharpness);
 #endif
 
   char *hdr_mode = getenv("HDR_MODE");
@@ -287,6 +295,10 @@ static void init_engine(void) {
 #if CONFIG_DBSERVER
   NR_mode_set(nr_mode_db);
   FEC_mode_set(fec_mode_db);
+  rk_aiq_uapi_setBrightness(aiq_ctx, brightness);
+  rk_aiq_uapi_setContrast(aiq_ctx, contrast);
+  rk_aiq_uapi_setSaturation(aiq_ctx, saturation);
+  rk_aiq_uapi_setSharpness(aiq_ctx, sharpness);
 #endif
 }
 
