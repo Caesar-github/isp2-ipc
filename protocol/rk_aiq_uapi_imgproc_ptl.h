@@ -475,13 +475,13 @@ typedef struct rk_aiq_uapi_getMWBGain {
 */
 typedef struct rk_aiq_uapi_setMWBCT {
    rk_aiq_sys_ctx_t* sys_ctx;
-    rk_aiq_wb_cct_t attr;
+    unsigned int attr;
    XCamReturn returnvalue;
 } rk_aiq_uapi_setMWBCT_t;
 
 typedef struct rk_aiq_uapi_getMWBCT {
    rk_aiq_sys_ctx_t* sys_ctx;
-    rk_aiq_wb_cct_t  attr;
+    unsigned int  attr;
    XCamReturn returnvalue;
 } rk_aiq_uapi_getMWBCT_t;
 

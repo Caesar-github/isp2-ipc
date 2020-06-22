@@ -121,7 +121,7 @@ void test_imgproc(const rk_aiq_sys_ctx_t* ctx) {
     expPwrLineFreq_t freq;
     rk_aiq_wb_scene_t scene;
     rk_aiq_wb_gain_t gain;
-    rk_aiq_wb_cct_t ct;
+    unsigned int ct;
     antiFlickerMode_t flicker;
     switch (key)
     {
@@ -210,14 +210,13 @@ void test_imgproc(const rk_aiq_sys_ctx_t* ctx) {
         printf("getMWBGain=[%f %f %f %f]\n",gain.rgain,gain.grgain,gain.gbgain,gain.bgain);
         break;
     case 'g':
-        ct.CCT = 0.5f;
-        ct.CCRI = 0.5f;
-        rk_aiq_uapi_setMWBCT(ctx,ct);
+        ct = 5500;
+        rk_aiq_uapi_setMWBCT(ctx, &ct);
         printf("setMWBCT\n");
         break;
     case 'h':
         rk_aiq_uapi_getMWBCT(ctx,&ct);
-        printf("getMWBCT=[%f %f]\n",ct.CCT,ct.CCRI);
+        printf("getMWBCT=[%d]\n",ct);
         break;
     case 'i':
         rk_aiq_uapi_setAntiFlickerMode(ctx,ANTIFLICKER_NORMAL_MODE);
@@ -232,11 +231,11 @@ void test_imgproc(const rk_aiq_sys_ctx_t* ctx) {
         printf("getAntiFlickerMode=%d\n",flicker);
         break;
     case 'l':
-        rk_aiq_uapi_setSaturation(ctx, 50.0);
+        rk_aiq_uapi_setSaturation(ctx, 50);
         printf("setSaturation\n");
         break;
     case 'm':
-        float level1;
+        unsigned int level1;
         rk_aiq_uapi_getSaturation(ctx, &level1);
         printf("getSaturation=%f\n",level1);
         break;

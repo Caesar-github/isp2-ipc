@@ -261,29 +261,11 @@ static void init_engine(void) {
     hdr_mode_db = dbserver_image_hdr_mode_get();
     sleep(1);
   }
-  char *nr_mode_db = dbserver_image_nr_mode_get();
-  if (!nr_mode_db) {
-    printf("nr_mode_db is null, set to close by default\n");
-    nr_mode_db = "close";
-  }
-  char *fec_mode_db = dbserver_image_fec_mode_get();
-  if (!fec_mode_db) {
-    printf("fec_mode_db is null, set to close by default\n");
-    fec_mode_db = "close";
-  }
   DBG("hdr_mode_db: %s \n", hdr_mode_db);
   if (!strcmp(hdr_mode_db, "close"))
     setenv("HDR_MODE", "0", 1);
   else
     setenv("HDR_MODE", "1", 1);
-
-  int brightness = 50;
-  int contrast = 50;
-  int saturation = 50;
-  int sharpness = 50;
-  dbserver_image_adjustment_get(&brightness, &contrast, &saturation, &sharpness);
-  printf("brightness:%d, contrast:%d, saturation:%d, sharpness:%d\n",
-         brightness, contrast, saturation, sharpness);
 #endif
 
   char *hdr_mode = getenv("HDR_MODE");
@@ -310,12 +292,56 @@ static void init_engine(void) {
   }
 
 #if CONFIG_DBSERVER
-  NR_mode_set(nr_mode_db);
-  FEC_mode_set(fec_mode_db);
+  /* BLC */
+  int hdr_level = 0;
+  dbserver_image_blc_get(NULL, &hdr_level);
+  blc_hdr_level_set(hdr_level);
+  /* IMAGE_ADJUSTMENT */
+  int brightness = 50;
+  int contrast = 50;
+  int saturation = 50;
+  int sharpness = 50;
+  dbserver_image_adjustment_get(&brightness, &contrast, &saturation, &sharpness);
+  printf("brightness:%d, contrast:%d, saturation:%d, sharpness:%d\n\n",
+         brightness, contrast, saturation, sharpness);
   rk_aiq_uapi_setBrightness(aiq_ctx, brightness);
   rk_aiq_uapi_setContrast(aiq_ctx, contrast);
-  //rk_aiq_uapi_setSaturation(aiq_ctx, saturation);
+  rk_aiq_uapi_setSaturation(aiq_ctx, saturation);
   rk_aiq_uapi_setSharpness(aiq_ctx, sharpness);
+  /* EXPOSURE */
+  char exposure_time [20] = "1";
+  int exposure_gain = 0;
+  dbserver_image_exposure_get(exposure_time, &exposure_gain);
+  printf("exposure_time is %s, exposure_gain is %d\n\n", exposure_time, exposure_gain);
+  exposure_time_set(exposure_time);
+  exposure_gain_set(exposure_gain);
+  /* WHITE_BALANCE */
+  char white_balance_style [20];
+  dbserver_image_white_balance_get(white_balance_style, NULL, NULL);
+  printf("white_balance_style is %s\n\n", white_balance_style);
+  white_balance_style_set(white_balance_style);
+  /* IMAGE_ENHANCEMENT */
+  char nr_mode [20] = "close";
+  char fec_mode [20] = "close";
+  char dehaze_mode [20] = "close";
+  int denoise_level = 0;
+  int spatial_level = 0;
+  int temporal_level = 0;
+  int dehaze_level = 0;
+  dbserver_image_enhancement_get(nr_mode, fec_mode, dehaze_mode, &denoise_level, &spatial_level, &temporal_level, &dehaze_level);
+  printf("nr_mode:%s, fec_mode:%s, dehaze_mode:%s, denoise_level:%d, spatial_level:%d, temporal_level:%d, dehaze_level:%d\n\n",
+          nr_mode, fec_mode, dehaze_mode, denoise_level, spatial_level, temporal_level, dehaze_level);
+  nr_mode_set(nr_mode);
+  fec_mode_set(fec_mode);
+  dehaze_mode_set(dehaze_mode);
+  /* IMAGE_ADJUSTMENT */
+  char frequency_mode[20] = "PAL(50HZ)";
+  dbserver_image_video_adjustment_get(frequency_mode);
+  printf("frequency_mode is %s\n\n", frequency_mode);
+  frequency_mode_set(frequency_mode);
+  /* NIGHT_TO_DAY*/
+  night_to_day_param_set();
+
 #endif
 }
 

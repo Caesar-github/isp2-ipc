@@ -538,19 +538,18 @@ XCamReturn rk_aiq_uapi_getMWBGain(const rk_aiq_sys_ctx_t* ctx, rk_aiq_wb_gain_t 
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setMWBCT(const rk_aiq_sys_ctx_t* ctx, rk_aiq_wb_cct_t ct)
+XCamReturn rk_aiq_uapi_setMWBCT(const rk_aiq_sys_ctx_t* ctx, unsigned int ct)
 {    
     const rk_aiq_sys_ctx_t* sys_ctx = ctx;
-    rk_aiq_wb_cct_t attr;
-    memcpy(&attr, &ct, sizeof(rk_aiq_wb_cct_t));
+    unsigned int attr = &ct;
     CLIENT_CALL_SET_AIQ(rk_aiq_uapi_setMWBCT);
 
 }
 
-XCamReturn rk_aiq_uapi_getMWBCT(const rk_aiq_sys_ctx_t* ctx, rk_aiq_wb_cct_t *ct)
+XCamReturn rk_aiq_uapi_getMWBCT(const rk_aiq_sys_ctx_t* ctx, unsigned int *ct)
 {   
     const rk_aiq_sys_ctx_t* sys_ctx = ctx;
-    rk_aiq_wb_cct_t *attr = ct;
+    unsigned int *attr = ct;
     CLIENT_CALL_GET_AIQ(rk_aiq_uapi_getMWBCT);
 }
 
@@ -957,13 +956,13 @@ XCamReturn rk_aiq_uapi_getBrightness(const rk_aiq_sys_ctx_t* ctx, unsigned int *
 *    level: contrast level, [0, 100]
 *****************************
 */
-XCamReturn rk_aiq_uapi_setSaturation(const rk_aiq_sys_ctx_t* ctx, float level)
+XCamReturn rk_aiq_uapi_setSaturation(const rk_aiq_sys_ctx_t* ctx, unsigned int level)
 {   
      const rk_aiq_sys_ctx_t* sys_ctx = ctx;
     CLIENT_CALL_SET_AIQ_EXT(rk_aiq_uapi_setSaturation);
 }
 
-XCamReturn rk_aiq_uapi_getSaturation(const rk_aiq_sys_ctx_t* ctx, float* level)
+XCamReturn rk_aiq_uapi_getSaturation(const rk_aiq_sys_ctx_t* ctx, unsigned int *level)
 {    
     const rk_aiq_sys_ctx_t* sys_ctx = ctx;
     CLIENT_CALL_GET_AIQ_EXT(rk_aiq_uapi_getSaturation);
