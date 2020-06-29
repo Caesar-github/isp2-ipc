@@ -20,6 +20,7 @@
 #include "rkaiq/uAPI/rk_aiq_user_api_imgproc.h"
 #include "rkaiq/uAPI/rk_aiq_user_api_sysctl.h"
 #include "dbserver.h"
+#include "../utils/log.h"
 
 #ifdef __cplusplus
 extern "C" {

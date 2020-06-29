@@ -15,6 +15,7 @@ include_directories(
         ${CMAKE_SYSROOT}/usr/include/rkaiq/common
         ${CMAKE_SYSROOT}/usr/include/rkaiq/xcore
         ${CMAKE_SYSROOT}/usr/include/rkaiq/iq_parser
+        ${PROJECT_SOURCE_DIR}/../utils/
 if(DEFINED CONFIG_DBUS)
         ${PROJECT_SOURCE_DIR}/../../CallFunIpc
 endif()
@@ -40,6 +41,13 @@ endif()
 if(DEFINED CONFIG_DBSERVER)
    pkg_check_modules (JSON-C REQUIRED IMPORTED_TARGET json-c)
    add_definitions(-DCONFIG_DBSERVER=${CONFIG_DBSERVER})
+endif()
+
+option(ENABLE_MINILOGGER  "enbale minilogger" OFF)
+if (${ENABLE_MINILOGGER})
+    find_package(MiniLogger REQUIRED)
+    add_definitions(-DENABLE_MINILOGGER)
+    target_link_libraries(${PROJECT_NAME} MiniLogger::MiniLogger)
 endif()
 
 target_link_libraries(${PROJECT_NAME}

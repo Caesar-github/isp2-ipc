@@ -26,10 +26,10 @@
 #include "rk_aiq_user_api_asharp_ipc.h"
 #include "rk_aiq_user_api_awb_ipc.h"
 #include "rk_aiq_user_api_sysctl_ipc.h"
+#include "mediactl/mediactl.h"
 
 #include "config.h"
-
-#include "mediactl/mediactl.h"
+#include "../utils/log.h"
 
 #if CONFIG_DBUS
 #include <gdbus.h>
@@ -40,6 +40,17 @@
 #if CONFIG_DBSERVER
 #include "db_monitor.h"
 #endif
+
+enum {
+  LOG_ERROR,
+  LOG_WARN,
+  LOG_INFO,
+  LOG_DEBUG
+};
+
+int enable_minilog = 0;
+#define LOG_TAG "ispserver"
+int ispserver_log_level = LOG_INFO;
 
 #define CLEAR(x) memset(&(x), 0, sizeof(x))
 
@@ -83,7 +94,7 @@ struct rkaiq_media_info {
 static struct rkaiq_media_info media_info;
 
 static void errno_exit(const char *s) {
-  DBG("%s error %d, %s\n", s, errno, strerror(errno));
+  LOG_INFO("%s error %d, %s\n", s, errno, strerror(errno));
   exit(EXIT_FAILURE);
 }
 
@@ -109,13 +120,13 @@ static int rkaiq_get_devname(struct media_device *device, const char *name,
   devname = media_entity_get_devname(entity);
 
   if (!devname) {
-    fprintf(stderr, "can't find %s device path!", name);
+    LOG_ERROR("can't find %s device path!", name);
     return -1;
   }
 
   strncpy(dev_name, devname, RKAIQ_FILE_PATH_LEN);
 
-  DBG("get %s devname: %s\n", name, dev_name);
+  LOG_INFO("get %s devname: %s\n", name, dev_name);
 
   return 0;
 }
@@ -142,7 +153,7 @@ static int rkaiq_enumrate_modules(struct media_device *device,
       continue;
 
     if (ef->name[0] != 'm' && ef->name[3] != '_') {
-      fprintf(stderr, "sensor/lens/flash entity name format is incorrect,"
+      LOG_ERROR("sensor/lens/flash entity name format is incorrect,"
                       "pls check driver version !\n");
       return -1;
     }
@@ -154,7 +165,7 @@ static int rkaiq_enumrate_modules(struct media_device *device,
       */
     module_idx = atoi(ef->name + 1);
     if (module_idx >= RKAIQ_CAMS_NUM_MAX) {
-      fprintf(stderr, "sensors more than two not supported, %s\n", ef->name);
+      LOG_ERROR("sensors more than two not supported, %s\n", ef->name);
       continue;
     }
 
@@ -187,8 +198,7 @@ static int rkaiq_enumrate_modules(struct media_device *device,
   }
 
   if (active_sensor < 0) {
-    fprintf(stderr,
-            "Not sensor link is enabled, does sensor probe correctly?\n");
+    LOG_ERROR("Not sensor link is enabled, does sensor probe correctly?\n");
     return -1;
   }
 
@@ -259,11 +269,11 @@ static void init_engine(void) {
 if (need_sync_db) {
   char *hdr_mode_db = dbserver_image_hdr_mode_get();
   while (!hdr_mode_db) {
-    printf("Get data is empty, please start dbserver\n");
+    LOG_INFO("Get data is empty, please start dbserver\n");
     hdr_mode_db = dbserver_image_hdr_mode_get();
     sleep(1);
   }
-  DBG("hdr_mode_db: %s \n", hdr_mode_db);
+  LOG_INFO("hdr_mode_db: %s \n", hdr_mode_db);
   if (!strcmp(hdr_mode_db, "close"))
     setenv("HDR_MODE", "0", 1);
   else
@@ -273,7 +283,7 @@ if (need_sync_db) {
 
   char *hdr_mode = getenv("HDR_MODE");
   if (hdr_mode) {
-    DBG("hdr mode: %s \n", hdr_mode);
+    LOG_INFO("hdr mode: %s \n", hdr_mode);
     if (0 == atoi(hdr_mode))
       mode = RK_AIQ_WORKING_MODE_NORMAL;
     else if (1 == atoi(hdr_mode))
@@ -290,7 +300,7 @@ if (need_sync_db) {
                                     iq_file_dir, NULL, NULL);
 
   if (rk_aiq_uapi_sysctl_prepare(aiq_ctx, width, height, mode)) {
-    DBG("rkaiq engine prepare failed !\n");
+    LOG_INFO("rkaiq engine prepare failed !\n");
     exit(-1);
   }
 
@@ -306,7 +316,7 @@ if (need_sync_db) {
   int saturation = 50;
   int sharpness = 50;
   dbserver_image_adjustment_get(&brightness, &contrast, &saturation, &sharpness);
-  printf("brightness:%d, contrast:%d, saturation:%d, sharpness:%d\n\n",
+  LOG_INFO("brightness:%d, contrast:%d, saturation:%d, sharpness:%d\n\n",
          brightness, contrast, saturation, sharpness);
   rk_aiq_uapi_setBrightness(aiq_ctx, brightness);
   rk_aiq_uapi_setContrast(aiq_ctx, contrast);
@@ -316,13 +326,13 @@ if (need_sync_db) {
   char exposure_time [20] = "1";
   int exposure_gain = 0;
   dbserver_image_exposure_get(exposure_time, &exposure_gain);
-  printf("exposure_time is %s, exposure_gain is %d\n\n", exposure_time, exposure_gain);
+  LOG_INFO("exposure_time is %s, exposure_gain is %d\n\n", exposure_time, exposure_gain);
   exposure_time_set(exposure_time);
   exposure_gain_set(exposure_gain);
   /* WHITE_BALANCE */
   char white_balance_style [20];
   dbserver_image_white_balance_get(white_balance_style, NULL, NULL);
-  printf("white_balance_style is %s\n\n", white_balance_style);
+  LOG_INFO("white_balance_style is %s\n\n", white_balance_style);
   white_balance_style_set(white_balance_style);
   /* IMAGE_ENHANCEMENT */
   char nr_mode [20] = "close";
@@ -333,7 +343,7 @@ if (need_sync_db) {
   int temporal_level = 0;
   int dehaze_level = 0;
   dbserver_image_enhancement_get(nr_mode, fec_mode, dehaze_mode, &denoise_level, &spatial_level, &temporal_level, &dehaze_level);
-  printf("nr_mode:%s, fec_mode:%s, dehaze_mode:%s, denoise_level:%d, spatial_level:%d, temporal_level:%d, dehaze_level:%d\n\n",
+  LOG_INFO("nr_mode:%s, fec_mode:%s, dehaze_mode:%s, denoise_level:%d, spatial_level:%d, temporal_level:%d, dehaze_level:%d\n\n",
           nr_mode, fec_mode, dehaze_mode, denoise_level, spatial_level, temporal_level, dehaze_level);
   nr_mode_set(nr_mode);
   fec_mode_set(fec_mode);
@@ -341,7 +351,7 @@ if (need_sync_db) {
   /* IMAGE_ADJUSTMENT */
   char frequency_mode[20] = "PAL(50HZ)";
   dbserver_image_video_adjustment_get(frequency_mode);
-  printf("frequency_mode is %s\n\n", frequency_mode);
+  LOG_INFO("frequency_mode is %s\n\n", frequency_mode);
   frequency_mode_set(frequency_mode);
   /* NIGHT_TO_DAY*/
   night_to_day_param_cap_set_db();
@@ -354,10 +364,10 @@ if (need_sync_db) {
 static void start_engine(void) {
   rk_aiq_uapi_sysctl_start(aiq_ctx);
   if (aiq_ctx == NULL) {
-    DBG("rkisp_init engine failed\n");
+    LOG_INFO("rkisp_init engine failed\n");
     exit(-1);
   } else {
-    DBG("rkisp_init engine succeed\n");
+    LOG_INFO("rkisp_init engine succeed\n");
   }
 }
 
@@ -397,7 +407,7 @@ static int subscrible_stream_event(int fd, bool subs) {
   ret = xioctl(fd, subs ? VIDIOC_SUBSCRIBE_EVENT : VIDIOC_UNSUBSCRIBE_EVENT,
                &sub);
   if (ret) {
-    DBG("can't subscribe %s start event!\n", media_info.sd_ispp_path);
+    LOG_INFO("can't subscribe %s start event!\n", media_info.sd_ispp_path);
     exit(EXIT_FAILURE);
   }
 
@@ -406,10 +416,10 @@ static int subscrible_stream_event(int fd, bool subs) {
   ret = xioctl(fd, subs ? VIDIOC_SUBSCRIBE_EVENT : VIDIOC_UNSUBSCRIBE_EVENT,
                &sub);
   if (ret) {
-    DBG("can't subscribe %s stop event!\n", media_info.vd_params_path);
+    LOG_INFO("can't subscribe %s stop event!\n", media_info.vd_params_path);
   }
 
-  DBG("subscribe events from %s success !\n", media_info.vd_params_path);
+  LOG_INFO("subscribe events from %s success !\n", media_info.vd_params_path);
 
   return 0;
 }
@@ -436,41 +446,42 @@ void *thread_func(void *arg) {
     //isp_fd = open(media_info.vd_params_path, O_RDWR);
     isp_fd = open(media_info.sd_ispp_path, O_RDWR);
     if (isp_fd < 0) {
-      DBG("open %s failed %s\n", media_info.sd_ispp_path, strerror(errno));
+      LOG_INFO("open %s failed %s\n", media_info.sd_ispp_path, strerror(errno));
       pthread_exit(0);
     }
+
     subscrible_stream_event(isp_fd, true);
     init_engine();
-    DBG("wait stream start event...\n");
+    LOG_INFO("wait stream start event...\n");
     wait_stream_event(isp_fd, CIFISP_V4L2_EVENT_STREAM_START, -1);
-    DBG("wait stream start event success ...\n");
+    LOG_INFO("wait stream start event success ...\n");
     rk_aiq_state_t aiq_state = rk_aiq_get_state();
-    DBG("state=%d\n", aiq_state);
+    LOG_INFO("state=%d\n", aiq_state);
     if (aiq_state == AIQ_STATE_INVALID) {
-      DBG("start engine...\n");
+      LOG_INFO("start engine...\n");
       start_engine();
     }
 
-    DBG("wait stream stop event...\n");
+    LOG_INFO("wait stream stop event...\n");
     wait_stream_event(isp_fd, CIFISP_V4L2_EVENT_STREAM_STOP, -1);
-    DBG("wait stream stop event success ...\n");
+    LOG_INFO("wait stream stop event success ...\n");
     if (aiq_state == AIQ_STATE_INVALID) {
-      DBG("stop engine...\n");
+      LOG_INFO("stop engine...\n");
       stop_engine();
     }
     deinit_engine();
     subscrible_stream_event(isp_fd, false);
     close(isp_fd);
-    DBG("----------------------------------------------\n\n");
+    LOG_INFO("----------------------------------------------\n\n");
   }
 }
 
 static void main_exit(void) {
-  printf("server %s\n", __func__);
+  LOG_INFO("server %s\n", __func__);
   if (aiq_ctx) {
-     DBG("stop engine...\n");
+     LOG_INFO("stop engine...\n");
      stop_engine();
-     DBG("deinit engine...\n");
+     LOG_INFO("deinit engine...\n");
      deinit_engine();
      aiq_ctx = NULL;
 }
@@ -494,6 +505,11 @@ void signal_exit_handler(int sig) {
 }
 
 int main(int argc, char **argv) {
+#ifdef ENABLE_MINILOGGER
+    enable_minilog = 1;
+    __minilog_log_init(argv[0], NULL, false, false, "ispserver","1.0.0");
+#endif
+
   argv += 1;
   if (*argv) {
      if (strcmp(*argv, "-no-sync-db") == 0)
@@ -502,6 +518,7 @@ int main(int argc, char **argv) {
   pthread_t tidp;
   if (pthread_create(&tidp, NULL, thread_func, NULL) != 0)
     return -1;
+
 #if CONFIG_DBUS
   pthread_detach(pthread_self());
   GMainLoop *main_loop;
@@ -524,7 +541,7 @@ int main(int argc, char **argv) {
   pthread_create(&thread_id, NULL, (void*)database_init, NULL);
 #endif
 
-  printf("call_fun_ipc_demo_server init\n");
+  LOG_INFO("call_fun_ipc_demo_server init\n");
 
   g_main_loop_run(main_loop);
   if (main_loop)
