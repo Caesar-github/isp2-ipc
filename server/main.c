@@ -11,13 +11,30 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "call_fun_ipc.h"
+#include "rk_aiq_uapi_imgproc_ipc_ipc.h"
+#include "rk_aiq_user_api_a3dlut_ipc.h"
+#include "rk_aiq_user_api_ablc_ipc.h"
+#include "rk_aiq_user_api_accm_ipc.h"
+#include "rk_aiq_user_api_adebayer_ipc.h"
+#include "rk_aiq_user_api_adehaze_ipc.h"
+#include "rk_aiq_user_api_adpcc_ipc.h"
+#include "rk_aiq_user_api_ae_ipc.h"
+#include "rk_aiq_user_api_agamma_ipc.h"
+#include "rk_aiq_user_api_ahdr_ipc.h"
+#include "rk_aiq_user_api_alsc_ipc.h"
+#include "rk_aiq_user_api_anr_ipc.h"
+#include "rk_aiq_user_api_asharp_ipc.h"
+#include "rk_aiq_user_api_awb_ipc.h"
+#include "rk_aiq_user_api_sysctl_ipc.h"
+
 #include "config.h"
-#include "fun_map.h"
+
 #include "mediactl/mediactl.h"
 
 #if CONFIG_DBUS
 #include <gdbus.h>
+#include "call_fun_ipc.h"
+#include "fun_map.h"
 #endif
 
 #if CONFIG_DBSERVER
@@ -297,7 +314,7 @@ static void init_engine(void) {
   FEC_mode_set(fec_mode_db);
   rk_aiq_uapi_setBrightness(aiq_ctx, brightness);
   rk_aiq_uapi_setContrast(aiq_ctx, contrast);
-  rk_aiq_uapi_setSaturation(aiq_ctx, saturation);
+  //rk_aiq_uapi_setSaturation(aiq_ctx, saturation);
   rk_aiq_uapi_setSharpness(aiq_ctx, sharpness);
 #endif
 }

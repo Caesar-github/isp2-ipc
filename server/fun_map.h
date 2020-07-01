@@ -1,22 +1,5 @@
 #ifndef _RK_AIQ_USER_API_FUN_MAP_H_
 #define _RK_AIQ_USER_API_FUN_MAP_H_
-#if 1
-#include "rk_aiq_uapi_imgproc_ipc_ipc.h"
-#include "rk_aiq_user_api_a3dlut_ipc.h"
-#include "rk_aiq_user_api_ablc_ipc.h"
-#include "rk_aiq_user_api_accm_ipc.h"
-#include "rk_aiq_user_api_adebayer_ipc.h"
-#include "rk_aiq_user_api_adehaze_ipc.h"
-#include "rk_aiq_user_api_adpcc_ipc.h"
-#include "rk_aiq_user_api_ae_ipc.h"
-#include "rk_aiq_user_api_agamma_ipc.h"
-#include "rk_aiq_user_api_ahdr_ipc.h"
-#include "rk_aiq_user_api_alsc_ipc.h"
-#include "rk_aiq_user_api_anr_ipc.h"
-#include "rk_aiq_user_api_asharp_ipc.h"
-#include "rk_aiq_user_api_awb_ipc.h"
-#endif
-#include "rk_aiq_user_api_sysctl_ipc.h"
 
 struct FunMap map[] = {
 #if 1

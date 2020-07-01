@@ -15,7 +15,9 @@ include_directories(
         ${CMAKE_SYSROOT}/usr/include/rkaiq/common
         ${CMAKE_SYSROOT}/usr/include/rkaiq/xcore
         ${CMAKE_SYSROOT}/usr/include/rkaiq/iq_parser
+if(DEFINED CONFIG_DBUS)
         ${PROJECT_SOURCE_DIR}/../../CallFunIpc
+endif()
 	)
 
 
@@ -42,11 +44,10 @@ endif()
 
 target_link_libraries(${PROJECT_NAME}
         pthread
-        CallFunIpc
         rkaiq
         )
 if(CONFIG_DBUS)
-   target_link_libraries(${PROJECT_NAME} PkgConfig::GLIB PkgConfig::DBUS gdbus)
+   target_link_libraries(${PROJECT_NAME} PkgConfig::GLIB PkgConfig::DBUS gdbus CallFunIpc)
 endif()
 if(CONFIG_DBSERVER)
    target_link_libraries(${PROJECT_NAME} IPCProtocol PkgConfig::JSON-C)
