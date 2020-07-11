@@ -193,7 +193,7 @@ char *dbserver_image_hdr_mode_get(void)
     json_object *j_data_array = json_object_object_get(j_cfg, "jData");
     json_object *j_data = json_object_array_get_idx(j_data_array, 0);
     char *HDR_mode = (char *)json_object_get_string(json_object_object_get(j_data, "sHDR"));
-
+    json_object_put(j_cfg);
     free(json_str);
     return HDR_mode;
 }
@@ -205,7 +205,7 @@ void dbserver_image_blc_get(char *hdr_mode, int *hdr_level)
     printf("%s, json_str is %s\n", __func__, json_str);
     if (json_str == NULL) {
         printf("image blc table is null\n");
-        return NULL;
+        return;
     }
     json_object *j_cfg = json_tokener_parse(json_str);
     json_object *j_data_array = json_object_object_get(j_cfg, "jData");
@@ -217,7 +217,7 @@ void dbserver_image_blc_get(char *hdr_mode, int *hdr_level)
     }
     if (hdr_level)
         *hdr_level = (int)json_object_get_int(json_object_object_get(j_data, "iHDRLevel"));
-
+    json_object_put(j_cfg);
     free(json_str);
 }
 
@@ -229,7 +229,7 @@ void dbserver_image_enhancement_get(char *nr_mode, char *fec_mode, char *dehaze_
     printf("%s, json_str is %s\n", __func__, json_str);
     if (json_str == NULL) {
         printf("image enhancement table is null\n");
-        return NULL;
+        return;
     }
     json_object *j_cfg = json_tokener_parse(json_str);
     json_object *j_data_array = json_object_object_get(j_cfg, "jData");
@@ -257,7 +257,7 @@ void dbserver_image_enhancement_get(char *nr_mode, char *fec_mode, char *dehaze_
         *temporal_level = (int)json_object_get_int(json_object_object_get(j_data, "iTemporalDenoiseLevel"));
     if (dehaze_level)
         *dehaze_level = (int)json_object_get_int(json_object_object_get(j_data, "iDehazeLevel"));
-
+    json_object_put(j_cfg);
     free(json_str);
 }
 
@@ -268,7 +268,7 @@ void dbserver_image_adjustment_get(int *brightness, int *contrast, int *saturati
     printf("%s, json_str is %s\n", __func__, json_str);
     if (json_str == NULL) {
         printf("image adjustment table is null\n");
-        return NULL;
+        return;
     }
     json_object *j_cfg = json_tokener_parse(json_str);
     json_object *j_data_array = json_object_object_get(j_cfg, "jData");
@@ -277,7 +277,7 @@ void dbserver_image_adjustment_get(int *brightness, int *contrast, int *saturati
     *contrast = (int)json_object_get_int(json_object_object_get(j_data, "iContrast"));
     *saturation = (int)json_object_get_int(json_object_object_get(j_data, "iSaturation"));
     *sharpness = (int)json_object_get_int(json_object_object_get(j_data, "iSharpness"));
-
+    json_object_put(j_cfg);
     free(json_str);
 }
 
@@ -288,7 +288,7 @@ void dbserver_image_exposure_get(char *exposure_time, int *exposure_gain)
     printf("%s, json_str is %s\n", __func__, json_str);
     if (json_str == NULL) {
         printf("image exposure table is null\n");
-        return NULL;
+        return;
     }
     json_object *j_cfg = json_tokener_parse(json_str);
     json_object *j_data_array = json_object_object_get(j_cfg, "jData");
@@ -297,6 +297,7 @@ void dbserver_image_exposure_get(char *exposure_time, int *exposure_gain)
     strncpy(exposure_time, time, strlen(time));
     exposure_time[strlen(time)] = '\0';
     *exposure_gain = (int)json_object_get_int(json_object_object_get(j_data, "iExposureGain"));
+    json_object_put(j_cfg);
     free(json_str);
 }
 
@@ -307,7 +308,7 @@ void dbserver_image_white_balance_get(char *white_balance_style, int *red_gain, 
     printf("%s, json_str is %s\n", __func__, json_str);
     if (json_str == NULL) {
         printf("image white balance table is null\n");
-        return NULL;
+        return;
     }
     json_object *j_cfg = json_tokener_parse(json_str);
     json_object *j_data_array = json_object_object_get(j_cfg, "jData");
@@ -321,7 +322,7 @@ void dbserver_image_white_balance_get(char *white_balance_style, int *red_gain, 
         *red_gain = (int)json_object_get_int(json_object_object_get(j_data, "iWhiteBalanceRed"));
     if (blue_gain)
         *blue_gain = (int)json_object_get_int(json_object_object_get(j_data, "iWhiteBalanceBlue"));
-
+    json_object_put(j_cfg);
     free(json_str);
 }
 
@@ -332,7 +333,7 @@ void dbserver_image_video_adjustment_get(char *frequency_mode)
     printf("%s, json_str is %s\n", __func__, json_str);
     if (json_str == NULL) {
         printf("image video adjustment table is null\n");
-        return NULL;
+        return;
     }
     json_object *j_cfg = json_tokener_parse(json_str);
     json_object *j_data_array = json_object_object_get(j_cfg, "jData");
@@ -340,6 +341,7 @@ void dbserver_image_video_adjustment_get(char *frequency_mode)
     char *frequency = (char *)json_object_get_string(json_object_object_get(j_data, "sPowerLineFrequencyMode"));
     strncpy(frequency_mode, frequency, strlen(frequency));
     frequency_mode[strlen(frequency)] = '\0';
+    json_object_put(j_cfg);
     free(json_str);
 }
 
@@ -350,7 +352,7 @@ void dbserver_image_night_to_day_get(rk_aiq_cpsl_cfg_t *cpsl_cfg)
     printf("%s, json_str is %s\n", __func__, json_str);
     if (json_str == NULL) {
         printf("image video adjustment table is null\n");
-        return NULL;
+        return;
     }
     json_object *j_cfg = json_tokener_parse(json_str);
     json_object *j_data_array = json_object_object_get(j_cfg, "jData");
@@ -365,12 +367,19 @@ void dbserver_image_night_to_day_get(rk_aiq_cpsl_cfg_t *cpsl_cfg)
         cpsl_cfg->mode = RK_AIQ_OP_MODE_MANUAL;
         cpsl_cfg->gray_on = true;
         cpsl_cfg->u.m.on = 1;
-        // TODO: cpsl_cfg->u.m.strength
+        cpsl_cfg->u.m.strength = (float)json_object_get_int(json_object_object_get(j_data, "iLightBrightness"));
     } else {
         printf("Not currently supported\n");
         cpsl_cfg->mode = RK_AIQ_OP_MODE_INVALID;
     }
-    // TODO: cpsl_cfg->lght_src
+    char *fill_light_mode = (char *)json_object_get_string(json_object_object_get(j_data, "sFillLightMode"));
+    if (!strcmp(fill_light_mode, "LED"))
+        cpsl_cfg->lght_src = RK_AIQ_CPSLS_LED;
+    else if (!strcmp(fill_light_mode, "IR"))
+        cpsl_cfg->lght_src = RK_AIQ_CPSLS_IR;
+    else if (!strcmp(fill_light_mode, "MIX"))
+        cpsl_cfg->lght_src = RK_AIQ_CPSLS_MIX;
+    json_object_put(j_cfg);
     free(json_str);
 }
 
@@ -479,7 +488,7 @@ void manual_white_balance_set()
     rk_aiq_uapi_setMWBGain(aiq_ctx, &gain);
 }
 
-void white_balance_style_set(int style)
+void white_balance_style_set(char *style)
 {
     printf("%s, style is %s\n", __func__, style);
     if (!strcmp(style, "lockingWhiteBalance")) {
@@ -515,27 +524,39 @@ void frequency_mode_set(char *mode)
         rk_aiq_uapi_setExpPwrLineFreqMode(aiq_ctx, EXP_PWR_LINE_FREQ_60HZ);
 }
 
+void night_to_day_param_cap_set_db(void)
+{
+    rk_aiq_cpsl_cap_t compensate_light_cap;
+    memset(&compensate_light_cap, 0, sizeof(rk_aiq_cpsl_cap_t));
+    /* Write the supported capability set to the database */
+    rk_aiq_uapi_sysctl_queryCpsLtCap(aiq_ctx, &compensate_light_cap);
+    json_object *j_cfg = json_object_new_array();
+    for (int i = 0; i < RK_AIQ_CPSLS_MAX; i++) {
+        int lght_src = compensate_light_cap.supported_lght_src[i];
+        if ((!lght_src) || (lght_src >= RK_AIQ_CPSLS_MAX))
+            continue;
+        if (lght_src == RK_AIQ_CPSLS_LED)
+            json_object_array_add(j_cfg, json_object_new_string("LED"));
+        else if (lght_src == RK_AIQ_CPSLS_IR)
+            json_object_array_add(j_cfg, json_object_new_string("IR"));
+        else if (lght_src == RK_AIQ_CPSLS_MIX)
+            json_object_array_add(j_cfg, json_object_new_string("MIX"));
+    }
+    char *support_list = (char *)json_object_get_string(j_cfg);
+    printf("lght src support list is %s\n", support_list);
+    struct StaticLocation st_lo = {
+        .cap_name = "image_night_to_day",
+        .target_key = "sFillLightMode"
+    };
+    dbserver_set_static_cap_option(st_lo, support_list);
+    json_object_put(j_cfg);
+}
+
 void night_to_day_param_set(void)
 {
     printf("%s\n", __func__);
     rk_aiq_cpsl_cfg_t compensate_light_cfg;
-    rk_aiq_cpsl_cap_t compensate_light_cap;
     memset(&compensate_light_cfg, 0, sizeof(rk_aiq_cpsl_cfg_t));
-    memset(&compensate_light_cap, 0, sizeof(rk_aiq_cpsl_cap_t));
-    rk_aiq_uapi_sysctl_queryCpsLtCap(aiq_ctx, &compensate_light_cap);
-    // for (int i = 0; i < RK_AIQ_CPSLS_MAX; i++) {
-    //     printf("test is %d\n", compensate_light_cap.supported_lght_src[i]);
-    // }
-    // Temporarily use the first one supported,
-    // and then specified by external settings
-    for (int i = 0; i < RK_AIQ_CPSLS_MAX; i++) {
-        int lght_src = compensate_light_cap.supported_lght_src[i];
-        if ((lght_src) && (lght_src < RK_AIQ_CPSLS_MAX)) {
-            printf("lght_src is %d\n", lght_src);
-            compensate_light_cfg.lght_src = lght_src;
-        }
-    }
-
     dbserver_image_night_to_day_get(&compensate_light_cfg);
     if (compensate_light_cfg.mode != RK_AIQ_OP_MODE_INVALID) {
         int ret = rk_aiq_uapi_sysctl_setCpsLtCfg(aiq_ctx, &compensate_light_cfg);

@@ -43,9 +43,11 @@ void dehaze_mode_set(char *mode);
 void exposure_time_set(char *time);
 void exposure_gain_set(int gain);
 void manual_white_balance_set();
-void white_balance_style_set(int style);
+void white_balance_style_set(char *style);
 void frequency_mode_set(char *mode);
 void night_to_day_param_set(void);
+
+void night_to_day_param_cap_set_db(void);
 
 #ifdef __cplusplus
 }

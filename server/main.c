@@ -340,6 +340,7 @@ static void init_engine(void) {
   printf("frequency_mode is %s\n\n", frequency_mode);
   frequency_mode_set(frequency_mode);
   /* NIGHT_TO_DAY*/
+  night_to_day_param_cap_set_db();
   night_to_day_param_set();
 
 #endif
