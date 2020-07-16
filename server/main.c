@@ -57,6 +57,7 @@ static int silent = 0;
 static int width = 2688;
 static int height = 1520;
 static const char *mdev_path = NULL;
+static bool need_sync_db = true;
 #if CONFIG_OEM
 const char *iq_file_dir = "/oem/etc/iqfiles/";
 #else
@@ -255,6 +256,7 @@ static void init_engine(void) {
   int index;
 
 #if CONFIG_DBSERVER
+if (need_sync_db) {
   char *hdr_mode_db = dbserver_image_hdr_mode_get();
   while (!hdr_mode_db) {
     printf("Get data is empty, please start dbserver\n");
@@ -266,6 +268,7 @@ static void init_engine(void) {
     setenv("HDR_MODE", "0", 1);
   else
     setenv("HDR_MODE", "1", 1);
+}
 #endif
 
   char *hdr_mode = getenv("HDR_MODE");
@@ -292,6 +295,7 @@ static void init_engine(void) {
   }
 
 #if CONFIG_DBSERVER
+if (need_sync_db) {
   /* BLC */
   int hdr_level = 0;
   dbserver_image_blc_get(NULL, &hdr_level);
@@ -343,6 +347,7 @@ static void init_engine(void) {
   night_to_day_param_cap_set_db();
   night_to_day_param_set();
 
+}
 #endif
 }
 
@@ -489,6 +494,11 @@ void signal_exit_handler(int sig) {
 }
 
 int main(int argc, char **argv) {
+  argv += 1;
+  if (*argv) {
+     if (strcmp(*argv, "-no-sync-db") == 0)
+         need_sync_db = false;
+  }
   pthread_t tidp;
   if (pthread_create(&tidp, NULL, thread_func, NULL) != 0)
     return -1;
