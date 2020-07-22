@@ -126,7 +126,7 @@ void test_imgproc(const rk_aiq_sys_ctx_t* ctx) {
     switch (key)
     {
     case '0':
-       rk_aiq_uapi_setExpMode(ctx, OP_MANUALl);
+       rk_aiq_uapi_setExpMode(ctx, OP_MANUAL);
        printf("set exp manual\n");
        break;
     case '.':
@@ -170,7 +170,7 @@ void test_imgproc(const rk_aiq_sys_ctx_t* ctx) {
         printf("getExpPwrLineFreqMode=%d\n",freq);
         break;
     case '8':
-        rk_aiq_uapi_setWBMode(ctx, OP_MANUALl);
+        rk_aiq_uapi_setWBMode(ctx, OP_MANUAL);
         printf("setWBMode manual\n");
         break;
     case '/':
@@ -253,7 +253,7 @@ void test_imgproc(const rk_aiq_sys_ctx_t* ctx) {
         printf("setHDRMode\n");
         break;
     case 'q':
-        rk_aiq_uapi_setHDRMode(ctx, OP_MANUALl);
+        rk_aiq_uapi_setHDRMode(ctx, OP_MANUAL);
         printf("setHDRMode\n");
         break;
     case 'r':
@@ -261,7 +261,7 @@ void test_imgproc(const rk_aiq_sys_ctx_t* ctx) {
         printf("getHDRMode=%d\n",mode);
         break;
     case 's':
-        rk_aiq_uapi_setNRMode(ctx, OP_MANUALl);
+        rk_aiq_uapi_setNRMode(ctx, OP_MANUAL);
         printf("setNRMode\n");
         break;
     case 't':
@@ -269,7 +269,7 @@ void test_imgproc(const rk_aiq_sys_ctx_t* ctx) {
         printf("getNRMode=%d\n",mode);
         break;
      case 'u':
-        rk_aiq_uapi_setDhzMode(ctx, OP_MANUALl);
+        rk_aiq_uapi_setDhzMode(ctx, OP_MANUAL);
         printf("setDhzMode\n");
         break;
     case 'v':

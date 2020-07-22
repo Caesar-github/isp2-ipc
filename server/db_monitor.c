@@ -47,7 +47,7 @@ static void DataChanged(char *json_str)
             // if (!strcmp(HDR_mode, "close"))
             //     rk_aiq_uapi_setHDRMode(aiq_ctx, OP_AUTO);
             // else
-            //     rk_aiq_uapi_setHDRMode(aiq_ctx, OP_MANUALl);
+            //     rk_aiq_uapi_setHDRMode(aiq_ctx, OP_MANUAL);
         }
         if (iHDRLevel) {
             int level = json_object_get_int(iHDRLevel);
@@ -367,7 +367,7 @@ void dbserver_image_night_to_day_get(rk_aiq_cpsl_cfg_t *cpsl_cfg)
         cpsl_cfg->mode = RK_AIQ_OP_MODE_MANUAL;
         cpsl_cfg->gray_on = true;
         cpsl_cfg->u.m.on = 1;
-        cpsl_cfg->u.m.strength = (float)json_object_get_int(json_object_object_get(j_data, "iLightBrightness"));
+        cpsl_cfg->u.m.strength_led = (float)json_object_get_int(json_object_object_get(j_data, "iLightBrightness"));
     } else {
         LOG_INFO("Not currently supported\n");
         cpsl_cfg->mode = RK_AIQ_OP_MODE_INVALID;
@@ -427,7 +427,7 @@ void dehaze_mode_set(char *mode)
     LOG_INFO("%s, mode is %s\n", __func__, mode);
     if (!strcmp(mode,"close")) {
         rk_aiq_uapi_sysctl_setModuleCtl(aiq_ctx, RK_MODULE_DHAZ, true);
-        rk_aiq_uapi_setDhzMode(aiq_ctx, OP_MANUALl);
+        rk_aiq_uapi_setDhzMode(aiq_ctx, OP_MANUAL);
         rk_aiq_uapi_setMDhzStrth(aiq_ctx, true, 0);
         // dynamic switch is not supported, and contrast cannot be set after close
         // rk_aiq_uapi_sysctl_setModuleCtl(aiq_ctx, RK_MODULE_DHAZ, false);
@@ -436,7 +436,7 @@ void dehaze_mode_set(char *mode)
         if (!strcmp(mode,"auto")) {
             rk_aiq_uapi_setDhzMode(aiq_ctx, OP_AUTO);
         } else {
-            rk_aiq_uapi_setDhzMode(aiq_ctx, OP_MANUALl);
+            rk_aiq_uapi_setDhzMode(aiq_ctx, OP_MANUAL);
             int dehaze_level = 0;
             dbserver_image_enhancement_get(NULL, NULL, NULL, NULL, NULL, NULL, &dehaze_level);
             rk_aiq_uapi_setMDhzStrth(aiq_ctx, true, dehaze_level);
@@ -498,7 +498,7 @@ void white_balance_style_set(char *style)
     }
 
     if (!strcmp(style, "manualWhiteBalance")) {
-        rk_aiq_uapi_setWBMode(aiq_ctx, OP_MANUALl);
+        rk_aiq_uapi_setWBMode(aiq_ctx, OP_MANUAL);
         manual_white_balance_set();
     } else if (!strcmp(style, "autoWhiteBalance1")) {
         rk_aiq_uapi_setWBMode(aiq_ctx, OP_AUTO);
