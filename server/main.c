@@ -75,6 +75,7 @@ const char *iq_file_dir = "/oem/etc/iqfiles/";
 const char *iq_file_dir = "/etc/iqfiles/";
 #endif
 
+#define MAX_MEDIA_DEV_NUM  10
 
 struct rkaiq_media_info {
   char sd_isp_path[RKAIQ_FILE_PATH_LEN];
@@ -205,59 +206,76 @@ static int rkaiq_enumrate_modules(struct media_device *device,
   return 0;
 }
 
-int rkaiq_get_media0_info(struct rkaiq_media_info *media_info) {
+int rkaiq_get_media_info() {
+  int ret = 0;
+  unsigned int i, index = 0;
+  char sys_path[64];
+  int find_sensor = 0;
+  int find_isp = 0;
+  int find_ispp = 0;
   struct media_device *device = NULL;
-  int ret;
+  while (index < MAX_MEDIA_DEV_NUM) {
+    snprintf(sys_path, 64, "/dev/media%d", index++);
+    LOG_INFO("media get sys_path: %s\n", sys_path);
+    if(access(sys_path,F_OK))
+      continue;
 
-  device = media_device_new("/dev/media0");
-  if (!device)
-    return -ENOMEM;
-  /* Enumerate entities, pads and links. */
-  ret = media_device_enumerate(device);
-  if (ret)
-    return ret;
-  if (!ret) {
+    device = media_device_new(sys_path);
+    if (device == NULL) {
+      LOG_ERROR("Failed to create media %s\n", sys_path);
+      continue;
+    }
+
+    ret = media_device_enumerate(device);
+    if (ret < 0) {
+      LOG_ERROR("Failed to enumerate %s (%d)\n", sys_path, ret);
+      media_device_unref(device);
+      continue;
+    }
+
+    /* Try Sensor */
+    if (!find_sensor) {
+      unsigned int nents = media_get_entities_count(device);
+      for (i = 0; i < nents; ++i) {
+        struct media_entity *entity = media_get_entity(device, i);
+        const struct media_entity_desc *info = media_entity_get_info(entity);
+        unsigned int type = info->type;
+        if (MEDIA_ENT_T_V4L2_SUBDEV == (type & MEDIA_ENT_TYPE_MASK)) {
+           unsigned int subtype = type & MEDIA_ENT_SUBTYPE_MASK;
+           if (subtype == 1) {
+             ret = rkaiq_enumrate_modules(device, &media_info);
+             find_sensor = 1;
+           }
+        }
+      }
+    }
+
     /* Try rkisp */
-    ret =
-        rkaiq_get_devname(device, "rkisp-isp-subdev", media_info->sd_isp_path);
-    ret |= rkaiq_get_devname(device, "rkisp-input-params",
-                             media_info->vd_params_path);
-    ret |= rkaiq_get_devname(device, "rkisp-statistics",
-                             media_info->vd_stats_path);
-  }
-  if (ret) {
+    if (!find_isp) {
+      ret = rkaiq_get_devname(device, "rkisp-isp-subdev", media_info.sd_isp_path);
+      ret |= rkaiq_get_devname(device, "rkisp-input-params", media_info.vd_params_path);
+      ret |= rkaiq_get_devname(device, "rkisp-statistics", media_info.vd_stats_path);
+      if (ret == 0) {
+        find_isp = 1;
+      }
+    }
+
+    /* Try rkispp */
+    if (!find_ispp) {
+      ret = rkaiq_get_devname(device, "rkispp_input_params", media_info.sd_ispp_path);
+      if (ret == 0) {
+        find_ispp = 1;
+      }
+    }
+
     media_device_unref(device);
-    return ret;
   }
 
-  ret = rkaiq_enumrate_modules(device, media_info);
-  media_device_unref(device);
+  if (find_sensor && find_isp && find_ispp)
+    return 0;
 
-  return ret;
-}
-
-int rkaiq_get_media1_info(struct rkaiq_media_info *media_info) {
-  struct media_device *device = NULL;
-  int ret;
-
-  device = media_device_new("/dev/media1");
-  if (!device)
-    return -ENOMEM;
-  /* Enumerate entities, pads and links. */
-  ret = media_device_enumerate(device);
-  if (ret)
-    return ret;
-  if (!ret) {
-    /* Try rkisp */
-    ret = rkaiq_get_devname(device, "rkispp_input_params",
-                            media_info->sd_ispp_path);
-  }
-  if (ret) {
-    media_device_unref(device);
-    return ret;
-  }
-
-  media_device_unref(device);
+  LOG_ERROR("find_sensor %d find_isp %d find_ispp %d\n",
+            find_sensor, find_isp, find_ispp);
 
   return ret;
 }
@@ -429,8 +447,6 @@ void *thread_func(void *arg) {
   int isp_fd;
   unsigned int stream_event = -1;
 
-
-
   /* Line buffered so that printf can flash every line if redirected to
    * no-interactive device.
    */
@@ -438,10 +454,8 @@ void *thread_func(void *arg) {
 
   for (;;) {
     /* Refresh media info so that sensor link status updated */
-    if (rkaiq_get_media0_info(&media_info))
-      errno_exit("Bad media0 topology\n");
-    if (rkaiq_get_media1_info(&media_info))
-      errno_exit("Bad media1 topology\n");
+    if (rkaiq_get_media_info(&media_info))
+      errno_exit("Bad media topology\n");
 
     //isp_fd = open(media_info.vd_params_path, O_RDWR);
     isp_fd = open(media_info.sd_ispp_path, O_RDWR);
