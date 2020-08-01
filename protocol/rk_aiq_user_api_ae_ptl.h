@@ -20,29 +20,53 @@ typedef struct rk_aiq_user_api_ae_getExpSwAttr {
     XCamReturn returnvalue;
 } rk_aiq_user_api_ae_getExpSwAttr_t;
 
-typedef struct rk_aiq_user_api_ae_setLinAeRouteAttr {
+typedef struct rk_aiq_user_api_ae_setLinAeDayRouteAttr {
     rk_aiq_sys_ctx_t*   sys_ctx;
      Uapi_LinAeRouteAttr_t attr;
      XCamReturn returnvalue;
-} rk_aiq_user_api_ae_setLinAeRouteAttr_t;
+} rk_aiq_user_api_ae_setLinAeDayRouteAttr_t;
 
-typedef struct rk_aiq_user_api_ae_getLinAeRouteAttr {
+typedef struct rk_aiq_user_api_ae_getLinAeDayRouteAttr {
     rk_aiq_sys_ctx_t*   sys_ctx;
     Uapi_LinAeRouteAttr_t attr;
     XCamReturn returnvalue;
-} rk_aiq_user_api_ae_getLinAeRouteAttr_t;
+} rk_aiq_user_api_ae_getLinAeDayRouteAttr_t;
 
-typedef struct rk_aiq_user_api_ae_setHdrAeRouteAttr {
+typedef struct rk_aiq_user_api_ae_setLinAeNightRouteAttr {
+    rk_aiq_sys_ctx_t*   sys_ctx;
+     Uapi_LinAeRouteAttr_t attr;
+     XCamReturn returnvalue;
+} rk_aiq_user_api_ae_setLinAeNightRouteAttr_t;
+
+typedef struct rk_aiq_user_api_ae_getLinAeNightRouteAttr {
+    rk_aiq_sys_ctx_t*   sys_ctx;
+    Uapi_LinAeRouteAttr_t attr;
+    XCamReturn returnvalue;
+} rk_aiq_user_api_ae_getLinAeNightRouteAttr_t;
+
+typedef struct rk_aiq_user_api_ae_setHdrAeDayRouteAttr {
     rk_aiq_sys_ctx_t*   sys_ctx;
      Uapi_HdrAeRouteAttr_t attr;
      XCamReturn returnvalue;
-} rk_aiq_user_api_ae_setHdrAeRouteAttr_t;
+} rk_aiq_user_api_ae_setHdrAeDayRouteAttr_t;
 
-typedef struct rk_aiq_user_api_ae_getHdrAeRouteAttr {
+typedef struct rk_aiq_user_api_ae_getHdrAeDayRouteAttr {
     rk_aiq_sys_ctx_t*   sys_ctx;
     Uapi_HdrAeRouteAttr_t attr;
     XCamReturn returnvalue;
-} rk_aiq_user_api_ae_getHdrAeRouteAttr_t;
+} rk_aiq_user_api_ae_getHdrAeDayRouteAttr_t;
+
+typedef struct rk_aiq_user_api_ae_setHdrNightAeRouteAttr {
+    rk_aiq_sys_ctx_t*   sys_ctx;
+     Uapi_HdrAeRouteAttr_t attr;
+     XCamReturn returnvalue;
+} rk_aiq_user_api_ae_setHdrAeNightRouteAttr_t;
+
+typedef struct rk_aiq_user_api_ae_getHdrAeNightRouteAttr {
+    rk_aiq_sys_ctx_t*   sys_ctx;
+    Uapi_HdrAeRouteAttr_t attr;
+    XCamReturn returnvalue;
+} rk_aiq_user_api_ae_getHdrAeNightRouteAttr_t;
 
 typedef struct rk_aiq_user_api_ae_queryExpResInfo {
     rk_aiq_sys_ctx_t*   sys_ctx;

@@ -10,10 +10,14 @@ extern "C"
 
 XCamReturn rk_aiq_user_api_ae_setExpSwAttr_ipc(void* args);
 XCamReturn rk_aiq_user_api_ae_getExpSwAttr_ipc(void* args);
-XCamReturn rk_aiq_user_api_ae_setLinAeRouteAttr_ipc(void* args);
-XCamReturn rk_aiq_user_api_ae_getLinAeRouteAttr_ipc(void* args);
-XCamReturn rk_aiq_user_api_ae_setHdrAeRouteAttr_ipc(void* args);
-XCamReturn rk_aiq_user_api_ae_getHdrAeRouteAttr_ipc(void* args);
+XCamReturn rk_aiq_user_api_ae_setLinAeDayRouteAttr_ipc(void* args);
+XCamReturn rk_aiq_user_api_ae_getLinAeDayRouteAttr_ipc(void* args);
+XCamReturn rk_aiq_user_api_ae_setLinAeNightRouteAttr_ipc(void* args);
+XCamReturn rk_aiq_user_api_ae_getLinAeNightRouteAttr_ipc(void* args);
+XCamReturn rk_aiq_user_api_ae_setHdrAeDayRouteAttr_ipc(void* args);
+XCamReturn rk_aiq_user_api_ae_getHdrAeDayRouteAttr_ipc(void* args);
+XCamReturn rk_aiq_user_api_ae_setHdrAeNightRouteAttr_ipc(void* args);
+XCamReturn rk_aiq_user_api_ae_getHdrAeNightRouteAttr_ipc(void* args);
 XCamReturn rk_aiq_user_api_ae_queryExpResInfo_ipc(void* args);
 
 XCamReturn rk_aiq_user_api_ae_setLinExpAttr_ipc(void* args);

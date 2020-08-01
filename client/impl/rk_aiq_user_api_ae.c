@@ -21,27 +21,49 @@ XCamReturn rk_aiq_user_api_ae_getExpSwAttr(const rk_aiq_sys_ctx_t* ctx, Uapi_Exp
     CLIENT_CALL_GET_AIQ(rk_aiq_user_api_ae_getExpSwAttr);  
 }
 
-XCamReturn rk_aiq_user_api_ae_setLinAeRouteAttr(const rk_aiq_sys_ctx_t* ctx, const Uapi_LinAeRouteAttr_t pLinAeRouteAttr) {
+XCamReturn rk_aiq_user_api_ae_setLinAeDayRouteAttr(const rk_aiq_sys_ctx_t* ctx, const Uapi_LinAeRouteAttr_t pLinAeRouteAttr) {
     rk_aiq_sys_ctx_t* sys_ctx = ctx;
     Uapi_LinAeRouteAttr_t* attr = &pLinAeRouteAttr;
-    CLIENT_CALL_SET_AIQ(rk_aiq_user_api_ae_setLinAeRouteAttr);
+    CLIENT_CALL_SET_AIQ(rk_aiq_user_api_ae_setLinAeDayRouteAttr);
 }
-XCamReturn rk_aiq_user_api_ae_getLinAeRouteAttr(const rk_aiq_sys_ctx_t* ctx, Uapi_LinAeRouteAttr_t* pLinAeRouteAttr) {
+XCamReturn rk_aiq_user_api_ae_getLinAeDayRouteAttr(const rk_aiq_sys_ctx_t* ctx, Uapi_LinAeRouteAttr_t* pLinAeRouteAttr) {
      rk_aiq_sys_ctx_t* sys_ctx = ctx;
      Uapi_LinAeRouteAttr_t*attr =  pLinAeRouteAttr;
-    CLIENT_CALL_GET_AIQ(rk_aiq_user_api_ae_getLinAeRouteAttr); 
+    CLIENT_CALL_GET_AIQ(rk_aiq_user_api_ae_getLinAeDayRouteAttr); 
 }
-XCamReturn rk_aiq_user_api_ae_setHdrAeRouteAttr(const rk_aiq_sys_ctx_t* ctx, \
+XCamReturn rk_aiq_user_api_ae_setLinAeNightRouteAttr(const rk_aiq_sys_ctx_t* ctx, const Uapi_LinAeRouteAttr_t pLinAeRouteAttr) {
+    rk_aiq_sys_ctx_t* sys_ctx = ctx;
+    Uapi_LinAeRouteAttr_t* attr = &pLinAeRouteAttr;
+    CLIENT_CALL_SET_AIQ(rk_aiq_user_api_ae_setLinAeNightRouteAttr);
+}
+XCamReturn rk_aiq_user_api_ae_getLinAeNightRouteAttr(const rk_aiq_sys_ctx_t* ctx, Uapi_LinAeRouteAttr_t* pLinAeRouteAttr) {
+     rk_aiq_sys_ctx_t* sys_ctx = ctx;
+     Uapi_LinAeRouteAttr_t*attr =  pLinAeRouteAttr;
+    CLIENT_CALL_GET_AIQ(rk_aiq_user_api_ae_getLinAeNightRouteAttr); 
+}
+XCamReturn rk_aiq_user_api_ae_setHdrAeDayRouteAttr(const rk_aiq_sys_ctx_t* ctx, \
                                                const Uapi_HdrAeRouteAttr_t pHdrAeRouteAttr) {
     rk_aiq_sys_ctx_t* sys_ctx = ctx;
     Uapi_HdrAeRouteAttr_t* attr = &pHdrAeRouteAttr;
-    CLIENT_CALL_SET_AIQ(rk_aiq_user_api_ae_setHdrAeRouteAttr);
+    CLIENT_CALL_SET_AIQ(rk_aiq_user_api_ae_setHdrAeDayRouteAttr);
 }
 
-XCamReturn rk_aiq_user_api_ae_getHdrAeRouteAttr(const rk_aiq_sys_ctx_t* ctx, Uapi_HdrAeRouteAttr_t* pHdrAeRouteAttr) {
+XCamReturn rk_aiq_user_api_ae_getHdrAeDayRouteAttr(const rk_aiq_sys_ctx_t* ctx, Uapi_HdrAeRouteAttr_t* pHdrAeRouteAttr) {
     rk_aiq_sys_ctx_t* sys_ctx = ctx;
     Uapi_HdrAeRouteAttr_t*attr =  pHdrAeRouteAttr;
-    CLIENT_CALL_GET_AIQ(rk_aiq_user_api_ae_getHdrAeRouteAttr); 
+    CLIENT_CALL_GET_AIQ(rk_aiq_user_api_ae_getHdrAeDayRouteAttr); 
+}
+XCamReturn rk_aiq_user_api_ae_setHdrAeNightRouteAttr(const rk_aiq_sys_ctx_t* ctx, \
+                                               const Uapi_HdrAeRouteAttr_t pHdrAeRouteAttr) {
+    rk_aiq_sys_ctx_t* sys_ctx = ctx;
+    Uapi_HdrAeRouteAttr_t* attr = &pHdrAeRouteAttr;
+    CLIENT_CALL_SET_AIQ(rk_aiq_user_api_ae_setHdrAeNightRouteAttr);
+}
+
+XCamReturn rk_aiq_user_api_ae_getHdrAeNightRouteAttr(const rk_aiq_sys_ctx_t* ctx, Uapi_HdrAeRouteAttr_t* pHdrAeRouteAttr) {
+    rk_aiq_sys_ctx_t* sys_ctx = ctx;
+    Uapi_HdrAeRouteAttr_t*attr =  pHdrAeRouteAttr;
+    CLIENT_CALL_GET_AIQ(rk_aiq_user_api_ae_getHdrAeNightRouteAttr); 
 }
 XCamReturn rk_aiq_user_api_ae_queryExpResInfo(const rk_aiq_sys_ctx_t* ctx, Uapi_ExpQueryInfo_t* pExpResInfo) {
     rk_aiq_sys_ctx_t* sys_ctx = ctx;

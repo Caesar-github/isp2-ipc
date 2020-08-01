@@ -18,20 +18,36 @@ XCamReturn rk_aiq_user_api_ae_getExpSwAttr_ipc(void* args){
     CALL_GET_AIQ(rk_aiq_user_api_ae_getExpSwAttr);
     return 0;
 }
-XCamReturn rk_aiq_user_api_ae_setLinAeRouteAttr_ipc(void* args){
-    CALL_SET_AIQ(rk_aiq_user_api_ae_setLinAeRouteAttr);
+XCamReturn rk_aiq_user_api_ae_setLinAeDayRouteAttr_ipc(void* args){
+    CALL_SET_AIQ(rk_aiq_user_api_ae_setLinAeDayRouteAttr);
     return 0;
 }
-XCamReturn rk_aiq_user_api_ae_getLinAeRouteAttr_ipc(void* args){
-    CALL_GET_AIQ(rk_aiq_user_api_ae_getLinAeRouteAttr);
+XCamReturn rk_aiq_user_api_ae_getLinAeDayRouteAttr_ipc(void* args){
+    CALL_GET_AIQ(rk_aiq_user_api_ae_getLinAeDayRouteAttr);
     return 0;
 }
-XCamReturn rk_aiq_user_api_ae_setHdrAeRouteAttr_ipc(void* args){
-    CALL_SET_AIQ(rk_aiq_user_api_ae_setHdrAeRouteAttr);
+XCamReturn rk_aiq_user_api_ae_setLinAeNightRouteAttr_ipc(void* args){
+    CALL_SET_AIQ(rk_aiq_user_api_ae_setLinAeNightRouteAttr);
     return 0;
 }
-XCamReturn rk_aiq_user_api_ae_getHdrAeRouteAttr_ipc(void* args){
-    CALL_GET_AIQ(rk_aiq_user_api_ae_getHdrAeRouteAttr);
+XCamReturn rk_aiq_user_api_ae_getLinAeNightRouteAttr_ipc(void* args){
+    CALL_GET_AIQ(rk_aiq_user_api_ae_getLinAeNightRouteAttr);
+    return 0;
+}
+XCamReturn rk_aiq_user_api_ae_setHdrAeDayRouteAttr_ipc(void* args){
+    CALL_SET_AIQ(rk_aiq_user_api_ae_setHdrAeDayRouteAttr);
+    return 0;
+}
+XCamReturn rk_aiq_user_api_ae_getHdrAeDayRouteAttr_ipc(void* args){
+    CALL_GET_AIQ(rk_aiq_user_api_ae_getHdrAeDayRouteAttr);
+    return 0;
+}
+XCamReturn rk_aiq_user_api_ae_setHdrAeNightRouteAttr_ipc(void* args){
+    CALL_SET_AIQ(rk_aiq_user_api_ae_setHdrAeNightRouteAttr);
+    return 0;
+}
+XCamReturn rk_aiq_user_api_ae_getHdrAeNightRouteAttr_ipc(void* args){
+    CALL_GET_AIQ(rk_aiq_user_api_ae_getHdrAeNightRouteAttr);
     return 0;
 }
 XCamReturn rk_aiq_user_api_ae_queryExpResInfo_ipc(void* args){
