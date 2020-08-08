@@ -62,7 +62,7 @@ int ispserver_log_level = LOG_INFO;
 #define RKAIQ_CAMS_NUM_MAX 2
 #define RKAIQ_FLASH_NUM_MAX 2
 
-rk_aiq_sys_ctx_t *aiq_ctx = NULL;
+rk_aiq_sys_ctx_t *aiq_ctx[RKAIQ_CAMS_NUM_MAX] = { NULL, NULL};
 rk_aiq_working_mode_t mode = RK_AIQ_WORKING_MODE_ISP_HDR2;
 static int silent = 0;
 static int width = 2688;
@@ -77,6 +77,14 @@ const char *iq_file_dir = "/etc/iqfiles/";
 
 #define MAX_MEDIA_DEV_NUM  10
 
+#define MEDIA_MODEL_RKCIF   "rkcif"
+#define MEDIA_MODEL_RKISP  "rkisp"
+#define MEDIA_MODEL_RKISPP  "rkispp"
+#define MEDIA_MODEL_RKISP0  "rkisp0"
+#define MEDIA_MODEL_RKISP1  "rkisp1"
+#define MEDIA_MODEL_RKISPP0  "rkispp0"
+#define MEDIA_MODEL_RKISPP1 "rkispp1"
+
 struct rkaiq_media_info {
   char sd_isp_path[RKAIQ_FILE_PATH_LEN];
   char vd_params_path[RKAIQ_FILE_PATH_LEN];
@@ -90,9 +98,11 @@ struct rkaiq_media_info {
     bool link_enabled;
     char sensor_entity_name[32];
   } cams[RKAIQ_FLASH_NUM_MAX];
+  int is_exist;
+  int fix_nohdr_mode;
 };
 
-static struct rkaiq_media_info media_info;
+static struct rkaiq_media_info media_info[RKAIQ_CAMS_NUM_MAX];
 
 static void errno_exit(const char *s) {
   LOG_INFO("%s error %d, %s\n", s, errno, strerror(errno));
@@ -208,12 +218,13 @@ static int rkaiq_enumrate_modules(struct media_device *device,
 
 int rkaiq_get_media_info() {
   int ret = 0;
-  unsigned int i, index = 0;
+  unsigned int i, index = 0, cam_id;
   char sys_path[64];
-  int find_sensor = 0;
-  int find_isp = 0;
-  int find_ispp = 0;
+  int find_sensor[RKAIQ_CAMS_NUM_MAX] = { 0 };
+  int find_isp[RKAIQ_CAMS_NUM_MAX] = { 0 };
+  int find_ispp[RKAIQ_CAMS_NUM_MAX] = { 0 };
   struct media_device *device = NULL;
+
   while (index < MAX_MEDIA_DEV_NUM) {
     snprintf(sys_path, 64, "/dev/media%d", index++);
     LOG_INFO("media get sys_path: %s\n", sys_path);
@@ -233,8 +244,22 @@ int rkaiq_get_media_info() {
       continue;
     }
 
+    const struct media_device_info *info = media_get_info(device);
+    if (strcmp(info->model, MEDIA_MODEL_RKISP1) == 0 ||
+        strcmp(info->model, MEDIA_MODEL_RKISPP1) == 0) {
+      cam_id = 0;
+      media_info[cam_id].fix_nohdr_mode = 1;
+    } else if (strcmp(info->model, MEDIA_MODEL_RKISP0) == 0 ||
+        strcmp(info->model, MEDIA_MODEL_RKISPP0) == 0) {
+      cam_id = 1;
+    } else if (strcmp(info->model, MEDIA_MODEL_RKCIF) == 0 ||
+        strcmp(info->model, MEDIA_MODEL_RKISP) == 0 ||
+        strcmp(info->model, MEDIA_MODEL_RKISPP) == 0) {
+      cam_id = 0;
+    }
+
     /* Try Sensor */
-    if (!find_sensor) {
+    if (!find_sensor[cam_id]) {
       unsigned int nents = media_get_entities_count(device);
       for (i = 0; i < nents; ++i) {
         struct media_entity *entity = media_get_entity(device, i);
@@ -243,44 +268,47 @@ int rkaiq_get_media_info() {
         if (MEDIA_ENT_T_V4L2_SUBDEV == (type & MEDIA_ENT_TYPE_MASK)) {
            unsigned int subtype = type & MEDIA_ENT_SUBTYPE_MASK;
            if (subtype == 1) {
-             ret = rkaiq_enumrate_modules(device, &media_info);
-             find_sensor = 1;
+             ret = rkaiq_enumrate_modules(device, &media_info[cam_id]);
+             find_sensor[cam_id] = 1;
            }
         }
       }
     }
 
     /* Try rkisp */
-    if (!find_isp) {
-      ret = rkaiq_get_devname(device, "rkisp-isp-subdev", media_info.sd_isp_path);
-      ret |= rkaiq_get_devname(device, "rkisp-input-params", media_info.vd_params_path);
-      ret |= rkaiq_get_devname(device, "rkisp-statistics", media_info.vd_stats_path);
+    if (!find_isp[cam_id]) {
+      ret = rkaiq_get_devname(device, "rkisp-isp-subdev", media_info[cam_id].sd_isp_path);
+      ret |= rkaiq_get_devname(device, "rkisp-input-params", media_info[cam_id].vd_params_path);
+      ret |= rkaiq_get_devname(device, "rkisp-statistics", media_info[cam_id].vd_stats_path);
       if (ret == 0) {
-        find_isp = 1;
+        find_isp[cam_id] = 1;
       }
     }
 
     /* Try rkispp */
-    if (!find_ispp) {
-      ret = rkaiq_get_devname(device, "rkispp_input_params", media_info.sd_ispp_path);
+    if (!find_ispp[cam_id]) {
+      ret = rkaiq_get_devname(device, "rkispp_input_params", media_info[cam_id].sd_ispp_path);
       if (ret == 0) {
-        find_ispp = 1;
+        find_ispp[cam_id] = 1;
       }
     }
 
     media_device_unref(device);
   }
 
-  if (find_sensor && find_isp && find_ispp)
-    return 0;
+  for (int id = 0; id < RKAIQ_CAMS_NUM_MAX; id++) {
+    LOG_ERROR("cam id %d find_sensor %d find_isp %d find_ispp %d\n",
+               id, find_sensor[id], find_isp[id], find_ispp[id]);
+    if (find_sensor[id] && find_isp[id] && find_ispp[id]) { 
+      media_info[id].is_exist = 1;
+    }
+  }
 
-  LOG_ERROR("find_sensor %d find_isp %d find_ispp %d\n",
-            find_sensor, find_isp, find_ispp);
 
   return ret;
 }
 
-static void init_engine(void) {
+static void init_engine(int cam_id) {
   int index;
 
 #if CONFIG_DBSERVER
@@ -310,14 +338,17 @@ if (need_sync_db) {
       mode = RK_AIQ_WORKING_MODE_ISP_HDR3;
   }
 
+  if (media_info[cam_id].fix_nohdr_mode)
+    mode = RK_AIQ_WORKING_MODE_NORMAL;
+
   for (index = 0; index < RKAIQ_CAMS_NUM_MAX; index++)
-    if (media_info.cams[index].link_enabled)
+    if (media_info[cam_id].cams[index].link_enabled)
       break;
 
-  aiq_ctx = rk_aiq_uapi_sysctl_init(media_info.cams[index].sensor_entity_name,
+  aiq_ctx[cam_id] = rk_aiq_uapi_sysctl_init(media_info[cam_id].cams[index].sensor_entity_name,
                                     iq_file_dir, NULL, NULL);
 
-  if (rk_aiq_uapi_sysctl_prepare(aiq_ctx, width, height, mode)) {
+  if (rk_aiq_uapi_sysctl_prepare(aiq_ctx[cam_id], width, height, mode)) {
     LOG_INFO("rkaiq engine prepare failed !\n");
     exit(-1);
   }
@@ -336,10 +367,10 @@ if (need_sync_db) {
   dbserver_image_adjustment_get(&brightness, &contrast, &saturation, &sharpness);
   LOG_INFO("brightness:%d, contrast:%d, saturation:%d, sharpness:%d\n\n",
          brightness, contrast, saturation, sharpness);
-  rk_aiq_uapi_setBrightness(aiq_ctx, brightness);
-  rk_aiq_uapi_setContrast(aiq_ctx, contrast);
-  rk_aiq_uapi_setSaturation(aiq_ctx, saturation);
-  rk_aiq_uapi_setSharpness(aiq_ctx, sharpness);
+  rk_aiq_uapi_setBrightness(aiq_ctx[cam_id], brightness);
+  rk_aiq_uapi_setContrast(aiq_ctx[cam_id], contrast);
+  rk_aiq_uapi_setSaturation(aiq_ctx[cam_id], saturation);
+  rk_aiq_uapi_setSharpness(aiq_ctx[cam_id], sharpness);
   /* EXPOSURE */
   char exposure_time [20] = "1";
   int exposure_gain = 0;
@@ -379,9 +410,9 @@ if (need_sync_db) {
 #endif
 }
 
-static void start_engine(void) {
-  rk_aiq_uapi_sysctl_start(aiq_ctx);
-  if (aiq_ctx == NULL) {
+static void start_engine(int cam_id) {
+  rk_aiq_uapi_sysctl_start(aiq_ctx[cam_id]);
+  if (aiq_ctx[cam_id] == NULL) {
     LOG_INFO("rkisp_init engine failed\n");
     exit(-1);
   } else {
@@ -389,9 +420,9 @@ static void start_engine(void) {
   }
 }
 
-static void stop_engine(void) { rk_aiq_uapi_sysctl_stop(aiq_ctx); }
+static void stop_engine(int cam_id) { rk_aiq_uapi_sysctl_stop(aiq_ctx[cam_id]); }
 
-static void deinit_engine(void) { rk_aiq_uapi_sysctl_deinit(aiq_ctx); }
+static void deinit_engine(int cam_id) { rk_aiq_uapi_sysctl_deinit(aiq_ctx[cam_id]); }
 
 // blocked func
 static int wait_stream_event(int fd, unsigned int event_type, int time_out_ms) {
@@ -416,7 +447,7 @@ static int wait_stream_event(int fd, unsigned int event_type, int time_out_ms) {
   return -1;
 }
 
-static int subscrible_stream_event(int fd, bool subs) {
+static int subscrible_stream_event(int cam_id, int fd, bool subs) {
   struct v4l2_event_subscription sub;
   int ret = 0;
 
@@ -425,7 +456,7 @@ static int subscrible_stream_event(int fd, bool subs) {
   ret = xioctl(fd, subs ? VIDIOC_SUBSCRIBE_EVENT : VIDIOC_UNSUBSCRIBE_EVENT,
                &sub);
   if (ret) {
-    LOG_INFO("can't subscribe %s start event!\n", media_info.sd_ispp_path);
+    LOG_INFO("can't subscribe %s start event!\n", media_info[cam_id].sd_ispp_path);
     exit(EXIT_FAILURE);
   }
 
@@ -434,10 +465,10 @@ static int subscrible_stream_event(int fd, bool subs) {
   ret = xioctl(fd, subs ? VIDIOC_SUBSCRIBE_EVENT : VIDIOC_UNSUBSCRIBE_EVENT,
                &sub);
   if (ret) {
-    LOG_INFO("can't subscribe %s stop event!\n", media_info.vd_params_path);
+    LOG_INFO("can't subscribe %s stop event!\n", media_info[cam_id].vd_params_path);
   }
 
-  LOG_INFO("subscribe events from %s success !\n", media_info.vd_params_path);
+  LOG_INFO("subscribe events from %s success !\n", media_info[cam_id].vd_params_path);
 
   return 0;
 }
@@ -446,6 +477,9 @@ void *thread_func(void *arg) {
   int ret = 0;
   int isp_fd;
   unsigned int stream_event = -1;
+  int cam_id = *(int *)arg;
+
+  LOG_INFO("thread_func cam_id %d...\n", cam_id);
 
   /* Line buffered so that printf can flash every line if redirected to
    * no-interactive device.
@@ -454,18 +488,19 @@ void *thread_func(void *arg) {
 
   for (;;) {
     /* Refresh media info so that sensor link status updated */
-    if (rkaiq_get_media_info(&media_info))
-      errno_exit("Bad media topology\n");
+    //memset(media_info, 0, sizeof(media_info));
+    //if (rkaiq_get_media_info())
+    //  errno_exit("Bad media topology\n");
 
-    //isp_fd = open(media_info.vd_params_path, O_RDWR);
-    isp_fd = open(media_info.sd_ispp_path, O_RDWR);
+    //isp_fd = open(media_info[cam_id].vd_params_path, O_RDWR);
+    isp_fd = open(media_info[cam_id].sd_ispp_path, O_RDWR);
     if (isp_fd < 0) {
-      LOG_INFO("open %s failed %s\n", media_info.sd_ispp_path, strerror(errno));
+      LOG_INFO("open %s failed %s\n", media_info[cam_id].sd_ispp_path, strerror(errno));
       pthread_exit(0);
     }
 
-    subscrible_stream_event(isp_fd, true);
-    init_engine();
+    subscrible_stream_event(cam_id, isp_fd, true);
+    init_engine(cam_id);
     LOG_INFO("wait stream start event...\n");
     wait_stream_event(isp_fd, CIFISP_V4L2_EVENT_STREAM_START, -1);
     LOG_INFO("wait stream start event success ...\n");
@@ -473,7 +508,7 @@ void *thread_func(void *arg) {
     LOG_INFO("state=%d\n", aiq_state);
     if (aiq_state == AIQ_STATE_INVALID) {
       LOG_INFO("start engine...\n");
-      start_engine();
+      start_engine(cam_id);
     }
 
     LOG_INFO("wait stream stop event...\n");
@@ -481,10 +516,10 @@ void *thread_func(void *arg) {
     LOG_INFO("wait stream stop event success ...\n");
     if (aiq_state == AIQ_STATE_INVALID) {
       LOG_INFO("stop engine...\n");
-      stop_engine();
+      stop_engine(cam_id);
     }
-    deinit_engine();
-    subscrible_stream_event(isp_fd, false);
+    deinit_engine(cam_id);
+    subscrible_stream_event(cam_id, isp_fd, false);
     close(isp_fd);
     LOG_INFO("----------------------------------------------\n\n");
   }
@@ -492,13 +527,15 @@ void *thread_func(void *arg) {
 
 static void main_exit(void) {
   LOG_INFO("server %s\n", __func__);
-  if (aiq_ctx) {
-     LOG_INFO("stop engine...\n");
-     stop_engine();
-     LOG_INFO("deinit engine...\n");
-     deinit_engine();
-     aiq_ctx = NULL;
-}
+  for(int id = 0; id < RKAIQ_CAMS_NUM_MAX; id++) {
+    if (aiq_ctx[id]) {
+      LOG_INFO("stop engine camera index %d...\n", id);
+      stop_engine(id);
+      LOG_INFO("deinit engine camera index %d...\n", id);
+      deinit_engine(id);
+      aiq_ctx[id] = NULL;
+    }
+  }
 #if CONFIG_DBUS
   call_fun_ipc_server_deinit();
 #endif
@@ -529,9 +566,33 @@ int main(int argc, char **argv) {
      if (strcmp(*argv, "-no-sync-db") == 0)
          need_sync_db = false;
   }
-  pthread_t tidp;
-  if (pthread_create(&tidp, NULL, thread_func, NULL) != 0)
-    return -1;
+
+  pthread_t tidp[RKAIQ_CAMS_NUM_MAX];
+  memset(media_info, 0, sizeof(media_info));
+  if (rkaiq_get_media_info())
+    errno_exit("Bad media topology...\n");
+
+  int cam_num = 0;
+  for(int id = 0; id < RKAIQ_CAMS_NUM_MAX; id++) {
+    int camid[RKAIQ_CAMS_NUM_MAX];
+    camid[id] = id;
+    if (media_info[id].is_exist) {
+      cam_num++;
+    }
+  }
+
+  for(int id = 0; id < RKAIQ_CAMS_NUM_MAX; id++) {
+    int camid[RKAIQ_CAMS_NUM_MAX];
+    camid[id] = id;
+    if (media_info[id].is_exist) {
+      LOG_INFO("enter wait thread for cam index %d\n", id);
+      if (pthread_create(&tidp[camid[id]], NULL, thread_func, &camid[id]) != 0) {
+        LOG_INFO("enter wait thread for cam index %d error\n", id);
+      }
+      if (cam_num != 1)
+        usleep(2*1000*1000);
+    }
+  }
 
 #if CONFIG_DBUS
   pthread_detach(pthread_self());
@@ -562,7 +623,11 @@ int main(int argc, char **argv) {
     g_main_loop_unref(main_loop);
 #else
   void* ret;
-  pthread_join(tidp,&ret);
+  for(int id = 0; id < RKAIQ_CAMS_NUM_MAX; id++) {
+    if (media_info[id].is_exist) {
+      pthread_join(tidp[id], &ret);
+    }
+  }
 #endif
   return 0;
 }
