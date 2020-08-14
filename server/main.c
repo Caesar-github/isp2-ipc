@@ -63,6 +63,7 @@ int ispserver_log_level = LOG_INFO;
 #define RKAIQ_FLASH_NUM_MAX 2
 
 rk_aiq_sys_ctx_t *aiq_ctx[RKAIQ_CAMS_NUM_MAX] = { NULL, NULL};
+rk_aiq_sys_ctx_t *db_aiq_ctx = NULL;
 rk_aiq_working_mode_t mode[RKAIQ_CAMS_NUM_MAX] = { RK_AIQ_WORKING_MODE_ISP_HDR2, RK_AIQ_WORKING_MODE_ISP_HDR2};
 static int silent = 0;
 static int width = 2688;
@@ -367,6 +368,7 @@ if (need_sync_db) {
     LOG_INFO("rkaiq engine prepare failed !\n");
     exit(-1);
   }
+  db_aiq_ctx = aiq_ctx[cam_id];
   save_prepare_status(cam_id, 1);
 
 #if CONFIG_DBSERVER

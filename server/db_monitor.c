@@ -4,7 +4,7 @@
 
 extern char *aiq_NR_mode;
 extern char *aiq_FEC_mode;
-extern rk_aiq_sys_ctx_t *aiq_ctx;
+extern rk_aiq_sys_ctx_t *db_aiq_ctx;
 
 static DBusConnection *connection = 0;
 
@@ -45,9 +45,9 @@ static void DataChanged(char *json_str)
             char *HDR_mode = (char *)json_object_get_string(sHDR);
             LOG_INFO("%s, HDR_mode is %s\n", __func__, HDR_mode);
             // if (!strcmp(HDR_mode, "close"))
-            //     rk_aiq_uapi_setHDRMode(aiq_ctx, OP_AUTO);
+            //     rk_aiq_uapi_setHDRMode(db_aiq_ctx, OP_AUTO);
             // else
-            //     rk_aiq_uapi_setHDRMode(aiq_ctx, OP_MANUAL);
+            //     rk_aiq_uapi_setHDRMode(db_aiq_ctx, OP_MANUAL);
         }
         if (iHDRLevel) {
             int level = json_object_get_int(iHDRLevel);
@@ -69,15 +69,15 @@ static void DataChanged(char *json_str)
         }
         if (iDenoiseLevel) {
             int level = json_object_get_int(iDenoiseLevel);
-            rk_aiq_uapi_setANRStrth(aiq_ctx, level);
+            rk_aiq_uapi_setANRStrth(db_aiq_ctx, level);
         }
         if (iSpatialDenoiseLevel) {
             int level = json_object_get_int(iSpatialDenoiseLevel);
-            rk_aiq_uapi_setMTNRStrth(aiq_ctx, true, level);
+            rk_aiq_uapi_setMTNRStrth(db_aiq_ctx, true, level);
         }
         if (iTemporalDenoiseLevel) {
             int level = json_object_get_int(iTemporalDenoiseLevel);
-            rk_aiq_uapi_setMSpaNRStrth(aiq_ctx, true, level);
+            rk_aiq_uapi_setMSpaNRStrth(db_aiq_ctx, true, level);
         }
         if (sFEC) {
             char *FEC_mode = (char *)json_object_get_string(sFEC);
@@ -89,7 +89,7 @@ static void DataChanged(char *json_str)
         }
         if (iDehazeLevel) {
             int level = json_object_get_int(iDehazeLevel);
-            rk_aiq_uapi_setMDhzStrth(aiq_ctx, true, level);
+            rk_aiq_uapi_setMDhzStrth(db_aiq_ctx, true, level);
         }
     } else if (g_str_equal(table, TABLE_IMAGE_ADJUSTMENT)) {
         if (!g_str_equal(cmd, "Update"))
@@ -100,19 +100,19 @@ static void DataChanged(char *json_str)
         json_object *iSharpness = json_object_object_get(j_data, "iSharpness");
         if (iBrightness) {
             int brightness = json_object_get_int(iBrightness);
-            rk_aiq_uapi_setBrightness(aiq_ctx, brightness);
+            rk_aiq_uapi_setBrightness(db_aiq_ctx, brightness);
         }
         if (iContrast) {
             int contrast = json_object_get_int(iContrast);
-            rk_aiq_uapi_setContrast(aiq_ctx, contrast);
+            rk_aiq_uapi_setContrast(db_aiq_ctx, contrast);
         }
         if (iSaturation) {
             int saturation = json_object_get_int(iSaturation);
-            rk_aiq_uapi_setSaturation(aiq_ctx, saturation);
+            rk_aiq_uapi_setSaturation(db_aiq_ctx, saturation);
         }
         if (iSharpness) {
             int sharpness = json_object_get_int(iSharpness);
-            rk_aiq_uapi_setSharpness(aiq_ctx, sharpness);
+            rk_aiq_uapi_setSharpness(db_aiq_ctx, sharpness);
         }
     } else if (g_str_equal(table, TABLE_IMAGE_EXPOSURE)) {
         if (!g_str_equal(cmd, "Update"))
@@ -387,29 +387,29 @@ void blc_hdr_level_set(int level)
 {
     LOG_INFO("%s, level is %d\n", __func__, level);
     if (level)
-        rk_aiq_uapi_setMHDRStrth(aiq_ctx, true, level);
+        rk_aiq_uapi_setMHDRStrth(db_aiq_ctx, true, level);
     else
-        rk_aiq_uapi_setMHDRStrth(aiq_ctx, true, 1);
+        rk_aiq_uapi_setMHDRStrth(db_aiq_ctx, true, 1);
 }
 
 void nr_mode_set(char *mode)
 {
     LOG_INFO("%s, mode is %s\n", __func__, mode);
     if (!strcmp(mode,"close"))
-        rk_aiq_uapi_sysctl_setModuleCtl(aiq_ctx, RK_MODULE_TNR, false);
+        rk_aiq_uapi_sysctl_setModuleCtl(db_aiq_ctx, RK_MODULE_TNR, false);
     else
-        rk_aiq_uapi_sysctl_setModuleCtl(aiq_ctx, RK_MODULE_TNR, true);
+        rk_aiq_uapi_sysctl_setModuleCtl(db_aiq_ctx, RK_MODULE_TNR, true);
 
     if (!strcmp(mode, "general")) {
         int denoise_level = 0;
         dbserver_image_enhancement_get(NULL, NULL, NULL, &denoise_level, NULL, NULL, NULL);
-        rk_aiq_uapi_setANRStrth(aiq_ctx, denoise_level);
+        rk_aiq_uapi_setANRStrth(db_aiq_ctx, denoise_level);
     } else if (!strcmp(mode, "advanced")){
         int spatial_level = 0;
         int temporal_level = 0;
         dbserver_image_enhancement_get(NULL, NULL, NULL, NULL, &spatial_level, &temporal_level, NULL);
-        rk_aiq_uapi_setMTNRStrth(aiq_ctx, true, spatial_level);
-        rk_aiq_uapi_setMSpaNRStrth(aiq_ctx, true, temporal_level);
+        rk_aiq_uapi_setMTNRStrth(db_aiq_ctx, true, spatial_level);
+        rk_aiq_uapi_setMSpaNRStrth(db_aiq_ctx, true, temporal_level);
     }
 }
 
@@ -417,29 +417,29 @@ void fec_mode_set(char *mode)
 {
     LOG_INFO("%s, mode is %s\n", __func__, mode);
     if (!strcmp(mode,"close"))
-        rk_aiq_uapi_sysctl_setModuleCtl(aiq_ctx, RK_MODULE_FEC, false);
+        rk_aiq_uapi_sysctl_setModuleCtl(db_aiq_ctx, RK_MODULE_FEC, false);
     else
-        rk_aiq_uapi_sysctl_setModuleCtl(aiq_ctx, RK_MODULE_FEC, true);
+        rk_aiq_uapi_sysctl_setModuleCtl(db_aiq_ctx, RK_MODULE_FEC, true);
 }
 
 void dehaze_mode_set(char *mode)
 {
     LOG_INFO("%s, mode is %s\n", __func__, mode);
     if (!strcmp(mode,"close")) {
-        rk_aiq_uapi_sysctl_setModuleCtl(aiq_ctx, RK_MODULE_DHAZ, true);
-        rk_aiq_uapi_setDhzMode(aiq_ctx, OP_MANUAL);
-        rk_aiq_uapi_setMDhzStrth(aiq_ctx, true, 0);
+        rk_aiq_uapi_sysctl_setModuleCtl(db_aiq_ctx, RK_MODULE_DHAZ, true);
+        rk_aiq_uapi_setDhzMode(db_aiq_ctx, OP_MANUAL);
+        rk_aiq_uapi_setMDhzStrth(db_aiq_ctx, true, 0);
         // dynamic switch is not supported, and contrast cannot be set after close
-        // rk_aiq_uapi_sysctl_setModuleCtl(aiq_ctx, RK_MODULE_DHAZ, false);
+        // rk_aiq_uapi_sysctl_setModuleCtl(db_aiq_ctx, RK_MODULE_DHAZ, false);
     } else {
-        rk_aiq_uapi_sysctl_setModuleCtl(aiq_ctx, RK_MODULE_DHAZ, true);
+        rk_aiq_uapi_sysctl_setModuleCtl(db_aiq_ctx, RK_MODULE_DHAZ, true);
         if (!strcmp(mode,"auto")) {
-            rk_aiq_uapi_setDhzMode(aiq_ctx, OP_AUTO);
+            rk_aiq_uapi_setDhzMode(db_aiq_ctx, OP_AUTO);
         } else {
-            rk_aiq_uapi_setDhzMode(aiq_ctx, OP_MANUAL);
+            rk_aiq_uapi_setDhzMode(db_aiq_ctx, OP_MANUAL);
             int dehaze_level = 0;
             dbserver_image_enhancement_get(NULL, NULL, NULL, NULL, NULL, NULL, &dehaze_level);
-            rk_aiq_uapi_setMDhzStrth(aiq_ctx, true, dehaze_level);
+            rk_aiq_uapi_setMDhzStrth(db_aiq_ctx, true, dehaze_level);
         }
     }
 }
@@ -457,7 +457,7 @@ void exposure_time_set(char *time)
         sscanf(time, "%f", &range.max);
     }
     LOG_INFO("%s, min is %f, max is %f\n", __func__, range.min, range.max);
-    rk_aiq_uapi_setExpTimeRange(aiq_ctx, &range);
+    rk_aiq_uapi_setExpTimeRange(db_aiq_ctx, &range);
 }
 
 void exposure_gain_set(int gain)
@@ -468,7 +468,7 @@ void exposure_gain_set(int gain)
     if (gain)
         range.max = (float)gain;
     LOG_INFO("%s, min is %f, max is %f\n", __func__, range.min, range.max);
-    rk_aiq_uapi_setExpGainRange(aiq_ctx, &range);
+    rk_aiq_uapi_setExpGainRange(db_aiq_ctx, &range);
 }
 
 void manual_white_balance_set()
@@ -485,33 +485,33 @@ void manual_white_balance_set()
     gain.bgain = 1.0f + ratio_bg * 3.0f;
     gain.grgain = 1.0f;
     gain.gbgain = 1.0f;
-    rk_aiq_uapi_setMWBGain(aiq_ctx, &gain);
+    rk_aiq_uapi_setMWBGain(db_aiq_ctx, &gain);
 }
 
 void white_balance_style_set(char *style)
 {
     LOG_INFO("%s, style is %s\n", __func__, style);
     if (!strcmp(style, "lockingWhiteBalance")) {
-        rk_aiq_uapi_lockAWB(aiq_ctx);
+        rk_aiq_uapi_lockAWB(db_aiq_ctx);
     } else {
-        rk_aiq_uapi_unlockAWB(aiq_ctx);
+        rk_aiq_uapi_unlockAWB(db_aiq_ctx);
     }
 
     if (!strcmp(style, "manualWhiteBalance")) {
-        rk_aiq_uapi_setWBMode(aiq_ctx, OP_MANUAL);
+        rk_aiq_uapi_setWBMode(db_aiq_ctx, OP_MANUAL);
         manual_white_balance_set();
     } else if (!strcmp(style, "autoWhiteBalance1")) {
-        rk_aiq_uapi_setWBMode(aiq_ctx, OP_AUTO);
+        rk_aiq_uapi_setWBMode(db_aiq_ctx, OP_AUTO);
     } else if (!strcmp(style, "autoWhiteBalance2")) {
         LOG_INFO("%s, tmp no such mode\n", __func__);
     } else if (!strcmp(style, "fluorescentLamp")) {
-        rk_aiq_uapi_setMWBScene(aiq_ctx, RK_AIQ_WBCT_DAYLIGHT);
+        rk_aiq_uapi_setMWBScene(db_aiq_ctx, RK_AIQ_WBCT_DAYLIGHT);
     } else if (!strcmp(style, "incandescent")) {
-        rk_aiq_uapi_setMWBScene(aiq_ctx, RK_AIQ_WBCT_INCANDESCENT);
+        rk_aiq_uapi_setMWBScene(db_aiq_ctx, RK_AIQ_WBCT_INCANDESCENT);
     } else if (!strcmp(style, "warmLight")) {
-        rk_aiq_uapi_setMWBScene(aiq_ctx, RK_AIQ_WBCT_WARM_FLUORESCENT);
+        rk_aiq_uapi_setMWBScene(db_aiq_ctx, RK_AIQ_WBCT_WARM_FLUORESCENT);
     } else if (!strcmp(style, "naturalLight")) {
-        rk_aiq_uapi_setMWBCT(aiq_ctx, 5500);
+        rk_aiq_uapi_setMWBCT(db_aiq_ctx, 5500);
     }
 }
 
@@ -519,9 +519,9 @@ void frequency_mode_set(char *mode)
 {
     LOG_INFO("%s, mode is %s\n", __func__, mode);
     if (!strcmp(mode,"PAL(50HZ)"))
-        rk_aiq_uapi_setExpPwrLineFreqMode(aiq_ctx, EXP_PWR_LINE_FREQ_50HZ);
+        rk_aiq_uapi_setExpPwrLineFreqMode(db_aiq_ctx, EXP_PWR_LINE_FREQ_50HZ);
     else
-        rk_aiq_uapi_setExpPwrLineFreqMode(aiq_ctx, EXP_PWR_LINE_FREQ_60HZ);
+        rk_aiq_uapi_setExpPwrLineFreqMode(db_aiq_ctx, EXP_PWR_LINE_FREQ_60HZ);
 }
 
 void night_to_day_param_cap_set_db(void)
@@ -529,7 +529,7 @@ void night_to_day_param_cap_set_db(void)
     rk_aiq_cpsl_cap_t compensate_light_cap;
     memset(&compensate_light_cap, 0, sizeof(rk_aiq_cpsl_cap_t));
     /* Write the supported capability set to the database */
-    rk_aiq_uapi_sysctl_queryCpsLtCap(aiq_ctx, &compensate_light_cap);
+    rk_aiq_uapi_sysctl_queryCpsLtCap(db_aiq_ctx, &compensate_light_cap);
     json_object *j_cfg = json_object_new_array();
     for (int i = 0; i < RK_AIQ_CPSLS_MAX; i++) {
         int lght_src = compensate_light_cap.supported_lght_src[i];
@@ -559,7 +559,7 @@ void night_to_day_param_set(void)
     memset(&compensate_light_cfg, 0, sizeof(rk_aiq_cpsl_cfg_t));
     dbserver_image_night_to_day_get(&compensate_light_cfg);
     if (compensate_light_cfg.mode != RK_AIQ_OP_MODE_INVALID) {
-        int ret = rk_aiq_uapi_sysctl_setCpsLtCfg(aiq_ctx, &compensate_light_cfg);
+        int ret = rk_aiq_uapi_sysctl_setCpsLtCfg(db_aiq_ctx, &compensate_light_cfg);
         LOG_INFO("%s, ret is %d\n", __func__, ret);
     }
 }
