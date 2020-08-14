@@ -63,7 +63,7 @@ int ispserver_log_level = LOG_INFO;
 #define RKAIQ_FLASH_NUM_MAX 2
 
 rk_aiq_sys_ctx_t *aiq_ctx[RKAIQ_CAMS_NUM_MAX] = { NULL, NULL};
-rk_aiq_working_mode_t mode = RK_AIQ_WORKING_MODE_ISP_HDR2;
+rk_aiq_working_mode_t mode[RKAIQ_CAMS_NUM_MAX] = { RK_AIQ_WORKING_MODE_ISP_HDR2, RK_AIQ_WORKING_MODE_ISP_HDR2};
 static int silent = 0;
 static int width = 2688;
 static int height = 1520;
@@ -331,15 +331,15 @@ if (need_sync_db) {
   if (hdr_mode) {
     LOG_INFO("hdr mode: %s \n", hdr_mode);
     if (0 == atoi(hdr_mode))
-      mode = RK_AIQ_WORKING_MODE_NORMAL;
+      mode[cam_id] = RK_AIQ_WORKING_MODE_NORMAL;
     else if (1 == atoi(hdr_mode))
-      mode = RK_AIQ_WORKING_MODE_ISP_HDR2;
+      mode[cam_id] = RK_AIQ_WORKING_MODE_ISP_HDR2;
     else if (2 == atoi(hdr_mode))
-      mode = RK_AIQ_WORKING_MODE_ISP_HDR3;
+      mode[cam_id] = RK_AIQ_WORKING_MODE_ISP_HDR3;
   }
 
   if (media_info[cam_id].fix_nohdr_mode)
-    mode = RK_AIQ_WORKING_MODE_NORMAL;
+    mode[cam_id] = RK_AIQ_WORKING_MODE_NORMAL;
 
   for (index = 0; index < RKAIQ_CAMS_NUM_MAX; index++)
     if (media_info[cam_id].cams[index].link_enabled)
@@ -348,7 +348,7 @@ if (need_sync_db) {
   aiq_ctx[cam_id] = rk_aiq_uapi_sysctl_init(media_info[cam_id].cams[index].sensor_entity_name,
                                     iq_file_dir, NULL, NULL);
 
-  if (rk_aiq_uapi_sysctl_prepare(aiq_ctx[cam_id], width, height, mode)) {
+  if (rk_aiq_uapi_sysctl_prepare(aiq_ctx[cam_id], width, height, mode[cam_id])) {
     LOG_INFO("rkaiq engine prepare failed !\n");
     exit(-1);
   }
@@ -589,8 +589,6 @@ int main(int argc, char **argv) {
       if (pthread_create(&tidp[camid[id]], NULL, thread_func, &camid[id]) != 0) {
         LOG_INFO("enter wait thread for cam index %d error\n", id);
       }
-      if (cam_num != 1)
-        usleep(2*1000*1000);
     }
   }
 
