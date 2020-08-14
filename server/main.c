@@ -234,13 +234,25 @@ static int rkaiq_enumrate_modules(struct media_device *device,
 
 int rkaiq_get_media_info() {
   int ret = 0;
-  unsigned int i, index = 0, cam_id;
+  unsigned int i, index = 0, cam_id, cam_num;
   char sys_path[64];
   int find_sensor[RKAIQ_CAMS_NUM_MAX] = { 0 };
   int find_isp[RKAIQ_CAMS_NUM_MAX] = { 0 };
   int find_ispp[RKAIQ_CAMS_NUM_MAX] = { 0 };
   struct media_device *device = NULL;
 
+  while(index < RKAIQ_CAMS_NUM_MAX) {
+    rk_aiq_static_info_t static_info;
+    ret = rk_aiq_uapi_sysctl_enumStaticMetas(index, &static_info);
+    if (ret)
+      break;
+    LOG_INFO("get sensor name %s\n", static_info.sensor_info.sensor_name);
+    index++;
+  }
+  cam_num = index;
+  LOG_INFO("get cam_num %d\n", cam_num);
+
+  index = 0;
   while (index < MAX_MEDIA_DEV_NUM) {
     snprintf(sys_path, 64, "/dev/media%d", index++);
     LOG_INFO("media get sys_path: %s\n", sys_path);
@@ -271,6 +283,10 @@ int rkaiq_get_media_info() {
     } else if (strcmp(info->model, MEDIA_MODEL_RKCIF) == 0 ||
         strcmp(info->model, MEDIA_MODEL_RKISP) == 0 ||
         strcmp(info->model, MEDIA_MODEL_RKISPP) == 0) {
+      cam_id = 0;
+    }
+
+    if (cam_num == 1) {
       cam_id = 0;
     }
 
