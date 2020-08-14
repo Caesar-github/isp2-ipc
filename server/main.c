@@ -119,6 +119,21 @@ static int xioctl(int fh, int request, void *arg) {
   return r;
 }
 
+static int save_prepare_status(int cam_id, int status) {
+  char pipe_name[128];
+  char data[32];
+  sprintf(pipe_name, "/tmp/.ispserver_cam%d", cam_id);
+  int fd = open(pipe_name, O_RDWR | O_CREAT | O_TRUNC | O_SYNC);
+  if (fd > 0) {
+      snprintf(data, sizeof(data), "%d", status);
+      write(fd, data, strlen(data));
+      close(fd);
+      sync();
+  }else{
+      printf("save_prepare_status open err\n");
+  }   
+}
+
 static int rkaiq_get_devname(struct media_device *device, const char *name,
                              char *dev_name) {
   const char *devname;
@@ -352,6 +367,7 @@ if (need_sync_db) {
     LOG_INFO("rkaiq engine prepare failed !\n");
     exit(-1);
   }
+  save_prepare_status(cam_id, 1);
 
 #if CONFIG_DBSERVER
 if (need_sync_db) {
@@ -422,7 +438,10 @@ static void start_engine(int cam_id) {
 
 static void stop_engine(int cam_id) { rk_aiq_uapi_sysctl_stop(aiq_ctx[cam_id]); }
 
-static void deinit_engine(int cam_id) { rk_aiq_uapi_sysctl_deinit(aiq_ctx[cam_id]); }
+static void deinit_engine(int cam_id) { 
+  rk_aiq_uapi_sysctl_deinit(aiq_ctx[cam_id]); 
+  save_prepare_status(cam_id, 0);
+}
 
 // blocked func
 static int wait_stream_event(int fd, unsigned int event_type, int time_out_ms) {
