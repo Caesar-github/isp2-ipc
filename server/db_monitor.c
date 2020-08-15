@@ -424,6 +424,7 @@ void fec_mode_set(char *mode)
 
 void dehaze_mode_set(char *mode)
 {
+#if 0
     LOG_INFO("%s, mode is %s\n", __func__, mode);
     if (!strcmp(mode,"close")) {
         rk_aiq_uapi_sysctl_setModuleCtl(db_aiq_ctx, RK_MODULE_DHAZ, true);
@@ -442,6 +443,7 @@ void dehaze_mode_set(char *mode)
             rk_aiq_uapi_setMDhzStrth(db_aiq_ctx, true, dehaze_level);
         }
     }
+#endif
 }
 
 void exposure_time_set(char *time)

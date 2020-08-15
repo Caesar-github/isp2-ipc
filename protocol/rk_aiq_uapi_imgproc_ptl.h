@@ -136,7 +136,7 @@ typedef struct rk_aiq_uapi_getExpTimeRange {
 typedef struct rk_aiq_uapi_setBLCMode {
    rk_aiq_sys_ctx_t* sys_ctx;
     bool on;
-    paRect_t rect;
+    aeMeasAreaType_t areaType;
    XCamReturn returnvalue;
 } rk_aiq_uapi_setBLCMode_t;
 
@@ -154,8 +154,6 @@ typedef struct rk_aiq_uapi_setBLCMode {
 typedef struct rk_aiq_uapi_setHLCMode {
    rk_aiq_sys_ctx_t* sys_ctx;
     bool on;
-    paRect_t rect;
-   XCamReturn returnvalue;
 } rk_aiq_uapi_setHLCMode_t;
 /*
 *****************************

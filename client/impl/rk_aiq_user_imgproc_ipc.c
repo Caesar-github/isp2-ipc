@@ -144,13 +144,13 @@ XCamReturn rk_aiq_uapi_getExpTimeRange(const rk_aiq_sys_ctx_t* ctx, paRange_t *t
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setBLCMode(const rk_aiq_sys_ctx_t* ctx, bool on, paRect_t *rect)
+XCamReturn rk_aiq_uapi_setBLCMode(const rk_aiq_sys_ctx_t* ctx, bool on, aeMeasAreaType_t areaType)
 {   
     DBG("enter %s, line=%d\n",__FUNCTION__,__LINE__);
     rk_aiq_uapi_setBLCMode_t  para; 
     para.sys_ctx = ctx;
     para.on = on;
-    memcpy(&para.rect, (void*)rect, sizeof(para.rect)); 
+    memcpy(&para.areaType, (void*)&areaType, sizeof(para.areaType)); 
     call_fun_ipc_call((char *)__func__, &para, sizeof(para), 1);
     return para.returnvalue;
 }
@@ -166,13 +166,12 @@ XCamReturn rk_aiq_uapi_setBLCMode(const rk_aiq_sys_ctx_t* ctx, bool on, paRect_t
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setHLCMode(const rk_aiq_sys_ctx_t* ctx, bool on, paRect_t *rect)
+XCamReturn rk_aiq_uapi_setHLCMode(const rk_aiq_sys_ctx_t* ctx, bool on)
 {    
     DBG("enter %s, line=%d\n",__FUNCTION__,__LINE__);
     rk_aiq_uapi_setBLCMode_t  para; 
     para.sys_ctx = ctx;
     para.on = on;
-    memcpy(&para.rect, (void*)rect, sizeof(para.rect)); 
     call_fun_ipc_call((char *)__func__, &para, sizeof(para), 1);
     return 0;;
 
