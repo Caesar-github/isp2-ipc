@@ -515,7 +515,8 @@ void *thread_func(void *arg) {
   int isp_fd;
   unsigned int stream_event = -1;
   int cam_id = *(int *)arg;
-
+  if(cam_id < 0)
+      cam_id = 0;
   LOG_INFO("thread_func cam_id %d...\n", cam_id);
 
   /* Line buffered so that printf can flash every line if redirected to
