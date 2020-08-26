@@ -354,8 +354,10 @@ if (need_sync_db) {
   LOG_INFO("hdr_mode_db: %s \n", hdr_mode_db);
   if (!strcmp(hdr_mode_db, "close"))
     setenv("HDR_MODE", "0", 1);
-  else
+  else if (!strcmp(hdr_mode_db, "HDR2"))
     setenv("HDR_MODE", "1", 1);
+  else if (!strcmp(hdr_mode_db, "HDR3"))
+    setenv("HDR_MODE", "2", 1);
 }
 #endif
 
