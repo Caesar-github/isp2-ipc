@@ -78,7 +78,7 @@ const char *iq_file_dir = "/etc/iqfiles/";
 
 #define MAX_MEDIA_DEV_NUM  10
 
-#define MEDIA_MODEL_RKCIF   "rkcif"
+#define MEDIA_MODEL_RKCIF   "rkcif_mipi_lvds"
 #define MEDIA_MODEL_RKISP  "rkisp"
 #define MEDIA_MODEL_RKISPP  "rkispp"
 #define MEDIA_MODEL_RKISP0  "rkisp0"
