@@ -100,19 +100,19 @@ static void DataChanged(char *json_str)
         json_object *iSharpness = json_object_object_get(j_data, "iSharpness");
         if (iBrightness) {
             int brightness = json_object_get_int(iBrightness);
-            rk_aiq_uapi_setBrightness(db_aiq_ctx, brightness);
+            brightness_set(brightness);
         }
         if (iContrast) {
             int contrast = json_object_get_int(iContrast);
-            rk_aiq_uapi_setContrast(db_aiq_ctx, contrast);
+            contrast_set(contrast);
         }
         if (iSaturation) {
             int saturation = json_object_get_int(iSaturation);
-            rk_aiq_uapi_setSaturation(db_aiq_ctx, saturation);
+            saturation_set(saturation);
         }
         if (iSharpness) {
             int sharpness = json_object_get_int(iSharpness);
-            rk_aiq_uapi_setSharpness(db_aiq_ctx, sharpness);
+            sharpness_set(sharpness);
         }
     } else if (g_str_equal(table, TABLE_IMAGE_EXPOSURE)) {
         if (!g_str_equal(cmd, "Update"))
@@ -408,8 +408,8 @@ void nr_mode_set(char *mode)
         int spatial_level = 0;
         int temporal_level = 0;
         dbserver_image_enhancement_get(NULL, NULL, NULL, NULL, &spatial_level, &temporal_level, NULL);
-        rk_aiq_uapi_setMTNRStrth(db_aiq_ctx, true, spatial_level);
-        rk_aiq_uapi_setMSpaNRStrth(db_aiq_ctx, true, temporal_level);
+        rk_aiq_uapi_setMTNRStrth(db_aiq_ctx, true, spatial_level);  // [0,100]
+        rk_aiq_uapi_setMSpaNRStrth(db_aiq_ctx, true, temporal_level); // [0,100]
     }
 }
 
@@ -429,7 +429,7 @@ void dehaze_mode_set(char *mode)
     if (!strcmp(mode,"close")) {
         rk_aiq_uapi_sysctl_setModuleCtl(db_aiq_ctx, RK_MODULE_DHAZ, true);
         rk_aiq_uapi_setDhzMode(db_aiq_ctx, OP_MANUAL);
-        rk_aiq_uapi_setMDhzStrth(db_aiq_ctx, true, 0);
+        rk_aiq_uapi_setMDhzStrth(db_aiq_ctx, true, 0); // [0,10]
         // dynamic switch is not supported, and contrast cannot be set after close
         // rk_aiq_uapi_sysctl_setModuleCtl(db_aiq_ctx, RK_MODULE_DHAZ, false);
     } else {
@@ -440,7 +440,7 @@ void dehaze_mode_set(char *mode)
             rk_aiq_uapi_setDhzMode(db_aiq_ctx, OP_MANUAL);
             int dehaze_level = 0;
             dbserver_image_enhancement_get(NULL, NULL, NULL, NULL, NULL, NULL, &dehaze_level);
-            rk_aiq_uapi_setMDhzStrth(db_aiq_ctx, true, dehaze_level);
+            rk_aiq_uapi_setMDhzStrth(db_aiq_ctx, true, dehaze_level); // [0,10]
         }
     }
 #endif
@@ -483,8 +483,8 @@ void manual_white_balance_set()
     float ratio_rg, ratio_bg;
     ratio_rg = rg_level / 100.0f;
     ratio_bg = bg_level / 100.0f;
-    gain.rgain = 1.0f + ratio_rg * 3.0f;
-    gain.bgain = 1.0f + ratio_bg * 3.0f;
+    gain.rgain = 1.0f + ratio_rg * 3.0f; // [0, 100]->[1.0, 4.0]
+    gain.bgain = 1.0f + ratio_bg * 3.0f; // [0, 100]->[1.0, 4.0]
     gain.grgain = 1.0f;
     gain.gbgain = 1.0f;
     rk_aiq_uapi_setMWBGain(db_aiq_ctx, &gain);
@@ -564,6 +564,22 @@ void night_to_day_param_set(void)
         int ret = rk_aiq_uapi_sysctl_setCpsLtCfg(db_aiq_ctx, &compensate_light_cfg);
         LOG_INFO("%s, ret is %d\n", __func__, ret);
     }
+}
+
+void brightness_set(int level) {
+    rk_aiq_uapi_setBrightness(db_aiq_ctx, (int)(level*2.55)); // [0, 100]->[0, 255]
+}
+
+void contrast_set(int level) {
+    rk_aiq_uapi_setContrast(db_aiq_ctx, (int)(level*2.55)); // [0, 100]->[0, 255]
+}
+
+void saturation_set(int level) {
+    rk_aiq_uapi_setSaturation(db_aiq_ctx, (int)(level*2.55)); // [0, 100]->[0, 255]
+}
+
+void sharpness_set(int level) {
+    rk_aiq_uapi_setSharpness(db_aiq_ctx, (int)(level*2.55)); // [0, 100]->[0, 255]
 }
 
 void database_init(void)

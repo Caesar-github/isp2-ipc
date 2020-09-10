@@ -403,10 +403,10 @@ if (need_sync_db) {
   dbserver_image_adjustment_get(&brightness, &contrast, &saturation, &sharpness);
   LOG_INFO("brightness:%d, contrast:%d, saturation:%d, sharpness:%d\n\n",
          brightness, contrast, saturation, sharpness);
-  rk_aiq_uapi_setBrightness(aiq_ctx[cam_id], brightness);
-  rk_aiq_uapi_setContrast(aiq_ctx[cam_id], contrast);
-  rk_aiq_uapi_setSaturation(aiq_ctx[cam_id], saturation);
-  rk_aiq_uapi_setSharpness(aiq_ctx[cam_id], sharpness);
+  brightness_set(brightness);
+  contrast_set(contrast);
+  saturation_set(saturation);
+  sharpness_set(sharpness);
   /* EXPOSURE */
   char exposure_time [20] = "1";
   int exposure_gain = 0;

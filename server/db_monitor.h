@@ -50,6 +50,11 @@ void night_to_day_param_set(void);
 
 void night_to_day_param_cap_set_db(void);
 
+void brightness_set(int level);
+void contrast_set(int level);
+void saturation_set(int level);
+void sharpness_set(int level);
+
 #ifdef __cplusplus
 }
 #endif
