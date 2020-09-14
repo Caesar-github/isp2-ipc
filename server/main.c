@@ -67,8 +67,9 @@ int ispserver_log_level = LOG_INFO;
 #define RKAIQ_FLASH_NUM_MAX 2
 
 rk_aiq_sys_ctx_t *aiq_ctx[RKAIQ_CAMS_NUM_MAX] = { NULL, NULL};
-rk_aiq_sys_ctx_t *db_aiq_ctx = NULL;
 rk_aiq_working_mode_t mode[RKAIQ_CAMS_NUM_MAX] = { RK_AIQ_WORKING_MODE_ISP_HDR2, RK_AIQ_WORKING_MODE_ISP_HDR2};
+rk_aiq_sys_ctx_t *db_aiq_ctx = NULL;
+rk_aiq_working_mode_t db_aiq_mode;
 static int silent = 0;
 static int width = 2688;
 static int height = 1520;
@@ -393,6 +394,7 @@ if (need_sync_db) {
     exit(-1);
   }
   db_aiq_ctx = aiq_ctx[cam_id];
+  db_aiq_mode = mode[cam_id];
   save_prepare_status(cam_id, 1);
 
   if (fixfps > 0) {
@@ -664,6 +666,7 @@ int main(int argc, char **argv) {
 
   call_fun_ipc_server_init(map, sizeof(map) / sizeof(struct FunMap), DBUS_NAME,
                            DBUS_IF, DBUS_PATH, 0);
+  LOG_INFO("call_fun_ipc_demo_server init\n");
 
   main_loop = g_main_loop_new(NULL, FALSE);
 
@@ -671,8 +674,6 @@ int main(int argc, char **argv) {
   pthread_t thread_id;
   pthread_create(&thread_id, NULL, (void*)database_init, NULL);
 #endif
-
-  LOG_INFO("call_fun_ipc_demo_server init\n");
 
   g_main_loop_run(main_loop);
   if (main_loop)

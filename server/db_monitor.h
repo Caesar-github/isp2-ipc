@@ -26,6 +26,10 @@
 extern "C" {
 #endif
 
+#define ISPSERVER   "rockchip.ispserver"
+#define ISPSERVER_PATH      "/"
+#define ISPSERVER_INTERFACE ISPSERVER ".server"
+
 void database_init(void);
 char *dbserver_image_hdr_mode_get(void);
 void dbserver_image_blc_get(char *hdr_mode, int *hdr_level);

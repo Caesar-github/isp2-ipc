@@ -5,8 +5,7 @@
 extern char *aiq_NR_mode;
 extern char *aiq_FEC_mode;
 extern rk_aiq_sys_ctx_t *db_aiq_ctx;
-
-static DBusConnection *connection = 0;
+extern rk_aiq_working_mode_t db_aiq_mode;
 
 #define DBSERVER  "rockchip.dbserver"
 #define DBSERVER_PATH      "/"
@@ -165,7 +164,7 @@ static DBusHandlerResult database_monitor_changed(
     DBusConnection *connection,
     DBusMessage *message, void *user_data)
 {
-    LOG_INFO("database_monitor_changed\n");
+    LOG_DEBUG("database_monitor_changed\n");
     bool *enabled = user_data;
     DBusMessageIter iter;
     DBusHandlerResult handled;
@@ -596,14 +595,80 @@ void hue_set(int level) {
     rk_aiq_uapi_setHue(db_aiq_ctx, (int)(level*2.55)); // [0, 100]->[0, 255]
 }
 
+static DBusMessage *get_dump_exposure_info(DBusConnection *conn,
+                                DBusMessage *msg, void *data)
+{
+    const char *sender;
+    char *interface;
+    char str[128] = {'\0'};
+    DBusMessage *reply;
+    DBusMessageIter array;
+    dbus_bool_t onoff;
+    LOG_DEBUG("get_dump_exposure_info\n");
+
+    sender = dbus_message_get_sender(msg);
+    dbus_message_get_args(msg, NULL, DBUS_TYPE_STRING, &interface,
+                          DBUS_TYPE_INVALID);
+
+    Uapi_ExpQueryInfo_t stExpInfo;
+    rk_aiq_wb_cct_t stCCT;
+    rk_aiq_user_api_ae_queryExpResInfo(db_aiq_ctx, &stExpInfo);
+    rk_aiq_user_api_awb_GetCCT(db_aiq_ctx, &stCCT);
+    if (db_aiq_mode == RK_AIQ_WORKING_MODE_NORMAL) {
+        sprintf(str, "M:%.0f-%.1f LM:%.1f CT:%.1f",
+                stExpInfo.CurExpInfo.LinearExp.exp_real_params.integration_time *
+                    1000 * 1000,
+                stExpInfo.CurExpInfo.LinearExp.exp_real_params.analog_gain,
+                stExpInfo.MeanLuma, stCCT.CCT);
+    } else {
+        sprintf(str, "S:%.0f-%.1f M:%.0f-%.1f L:%.0f-%.1f SLM:%.1f MLM:%.1f "
+                    "LLM:%.1f CT:%.1f",
+                stExpInfo.CurExpInfo.HdrExp[0].exp_real_params.integration_time *
+                    1000 * 1000,
+                stExpInfo.CurExpInfo.HdrExp[0].exp_real_params.analog_gain,
+                stExpInfo.CurExpInfo.HdrExp[1].exp_real_params.integration_time *
+                    1000 * 1000,
+                stExpInfo.CurExpInfo.HdrExp[1].exp_real_params.analog_gain,
+                stExpInfo.CurExpInfo.HdrExp[2].exp_real_params.integration_time *
+                    1000 * 1000,
+                stExpInfo.CurExpInfo.HdrExp[2].exp_real_params.analog_gain,
+                stExpInfo.HdrMeanLuma[0], stExpInfo.HdrMeanLuma[1],
+                stExpInfo.HdrMeanLuma[2], stCCT.CCT);
+    }
+    LOG_DEBUG("isp exposure dump: %s\n", str);
+
+    reply = dbus_message_new_method_return(msg);
+    if (!reply)
+        return NULL;
+    dbus_message_iter_init_append(reply, &array);
+    const char *str_const = &str;
+    dbus_message_iter_append_basic(&array, DBUS_TYPE_STRING, &str_const); // must const
+
+    return reply;
+}
+
+static const GDBusMethodTable server_methods[] = {
+    {
+        GDBUS_METHOD("GetDumpExposureInfo", NULL, GDBUS_ARGS({ "str", "s" }),
+        get_dump_exposure_info)
+    },
+    { },
+};
+
 void database_init(void)
 {
     LOG_INFO("database_init\n");
     DBusError err;
+    DBusConnection *connection;
 
     dbus_error_init(&err);
     connection = g_dbus_setup_bus(DBUS_BUS_SYSTEM, NULL, &err);
-
+    if (!connection) {
+        LOG_ERROR("connect fail\n");
+        return;
+    }
+    g_dbus_register_interface(connection, "/", ISPSERVER_INTERFACE,
+                              server_methods, NULL, NULL, NULL, NULL);
     dbus_connection_add_filter(connection,
                                database_monitor_changed, NULL, NULL);
     dbus_bus_add_match(connection,
