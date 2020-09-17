@@ -579,7 +579,7 @@ void saturation_set(int level) {
 }
 
 void sharpness_set(int level) {
-    rk_aiq_uapi_setSharpness(db_aiq_ctx, (int)(level*2.55)); // [0, 100]->[0, 255]
+    rk_aiq_uapi_setSharpness(db_aiq_ctx, level); // [0, 100]
 }
 
 void database_init(void)
