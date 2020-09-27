@@ -358,11 +358,17 @@ void dbserver_image_night_to_day_get(rk_aiq_cpsl_cfg_t *cpsl_cfg)
     json_object *j_data_array = json_object_object_get(j_cfg, "jData");
     json_object *j_data = json_object_array_get_idx(j_data_array, 0);
     char *mode = (char *)json_object_get_string(json_object_object_get(j_data, "sNightToDay"));
-    if ((!strcmp(mode, "day")) || (!strcmp(mode, "auto"))) {
+    if (!strcmp(mode, "auto")) {
         cpsl_cfg->mode = RK_AIQ_OP_MODE_AUTO;
         cpsl_cfg->gray_on = false;
         cpsl_cfg->u.a.sensitivity = (float)json_object_get_int(json_object_object_get(j_data, "iNightToDayFilterLevel"));
         cpsl_cfg->u.a.sw_interval = (uint32_t)json_object_get_int(json_object_object_get(j_data, "iNightToDayFilterTime"));
+    } else if (!strcmp(mode, "day")) {
+        cpsl_cfg->mode = RK_AIQ_OP_MODE_MANUAL;
+        cpsl_cfg->gray_on = false;
+        cpsl_cfg->u.m.on = 1;
+        // set iLightBrightness=0 to force switch to day mode
+        cpsl_cfg->u.m.strength_led = (float)0;
     } else if (!strcmp(mode, "night")) {
         cpsl_cfg->mode = RK_AIQ_OP_MODE_MANUAL;
         cpsl_cfg->gray_on = true;
@@ -502,10 +508,8 @@ void white_balance_style_set(char *style)
     if (!strcmp(style, "manualWhiteBalance")) {
         rk_aiq_uapi_setWBMode(db_aiq_ctx, OP_MANUAL);
         manual_white_balance_set();
-    } else if (!strcmp(style, "autoWhiteBalance1")) {
+    } else if (!strcmp(style, "autoWhiteBalance")) {
         rk_aiq_uapi_setWBMode(db_aiq_ctx, OP_AUTO);
-    } else if (!strcmp(style, "autoWhiteBalance2")) {
-        LOG_INFO("%s, tmp no such mode\n", __func__);
     } else if (!strcmp(style, "fluorescentLamp")) {
         rk_aiq_uapi_setMWBScene(db_aiq_ctx, RK_AIQ_WBCT_DAYLIGHT);
     } else if (!strcmp(style, "incandescent")) {
