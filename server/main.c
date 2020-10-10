@@ -456,7 +456,7 @@ static void start_engine(int cam_id) {
   }
 }
 
-static void stop_engine(int cam_id) { rk_aiq_uapi_sysctl_stop(aiq_ctx[cam_id]); }
+static void stop_engine(int cam_id) { rk_aiq_uapi_sysctl_stop(aiq_ctx[cam_id], false); }
 
 static void deinit_engine(int cam_id) { 
   rk_aiq_uapi_sysctl_deinit(aiq_ctx[cam_id]); 

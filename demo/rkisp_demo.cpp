@@ -1025,7 +1025,7 @@ static void deinit()
         stop_capturing_pp_oneframe();
 	if (aiq_ctx) {
         printf("-------- stop aiq -------------\n");
-		rk_aiq_uapi_sysctl_stop(aiq_ctx);
+		rk_aiq_uapi_sysctl_stop(aiq_ctx, false);
         printf("-------- deinit aiq -------------\n");
 		rk_aiq_uapi_sysctl_deinit(aiq_ctx);
         printf("-------- deinit aiq end -------------\n");

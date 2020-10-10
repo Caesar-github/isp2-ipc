@@ -126,7 +126,7 @@ XCamReturn
 rk_aiq_uapi_sysctl_stop_ipc(void *args){
     rk_aiq_uapi_sysctl_stop_t  *fun_st = args;
     rk_aiq_sys_ctx_t* ctx = fun_st->ctx;
-    XCamReturn r = rk_aiq_uapi_sysctl_stop(ctx);
+    XCamReturn r = rk_aiq_uapi_sysctl_stop(ctx, false);
     rk_aiq_set_state(AIQ_STATE_STOPPED);
     return r;
 }
