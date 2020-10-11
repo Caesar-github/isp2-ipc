@@ -10,7 +10,11 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <getopt.h>
 
+#include "rk_aiq_user_api_imgproc.h"
 #include "rk_aiq_uapi_imgproc_ipc_ipc.h"
 #include "rk_aiq_user_api_a3dlut_ipc.h"
 #include "rk_aiq_user_api_ablc_ipc.h"
@@ -68,6 +72,7 @@ rk_aiq_working_mode_t mode[RKAIQ_CAMS_NUM_MAX] = { RK_AIQ_WORKING_MODE_ISP_HDR2,
 static int silent = 0;
 static int width = 2688;
 static int height = 1520;
+static int fixfps = -1;
 static const char *mdev_path = NULL;
 static bool need_sync_db = true;
 #if CONFIG_OEM
@@ -104,6 +109,7 @@ struct rkaiq_media_info {
 };
 
 static struct rkaiq_media_info media_info[RKAIQ_CAMS_NUM_MAX];
+static void parse_args(int argc, char **argv);
 
 static void errno_exit(const char *s) {
   LOG_INFO("%s error %d, %s\n", s, errno, strerror(errno));
@@ -389,6 +395,14 @@ if (need_sync_db) {
   db_aiq_ctx = aiq_ctx[cam_id];
   save_prepare_status(cam_id, 1);
 
+  if (fixfps > 0) {
+    frameRateInfo_t info;
+    rk_aiq_uapi_getFrameRate(aiq_ctx[cam_id], &info);
+    info.fps = fixfps;
+    info.mode = OP_MANUAL;
+    rk_aiq_uapi_setFrameRate(aiq_ctx[cam_id], info);
+  }
+
 #if CONFIG_DBSERVER
 if (need_sync_db) {
   /* BLC */
@@ -601,6 +615,7 @@ int main(int argc, char **argv) {
     __minilog_log_init(argv[0], NULL, false, false, "ispserver","1.0.0");
 #endif
 
+  parse_args(argc, argv);
   argv += 1;
   if (*argv) {
      if (strcmp(*argv, "-no-sync-db") == 0)
@@ -668,4 +683,33 @@ int main(int argc, char **argv) {
   }
 #endif
   return 0;
+}
+
+static const char short_options[] = "nf:";
+static const struct option long_options[] = {
+    {"nodb", no_argument, NULL, 'n'},
+    {"fps", required_argument, NULL, 'f'},
+    {0, 0, 0, 0}};
+void parse_args(int argc, char **argv) {
+  for (;;) {
+    int idx;
+    int c;
+    c = getopt_long(argc, argv, short_options, long_options, &idx);
+    if (-1 == c)
+      break;
+    switch (c) {
+    case 0: /* getopt_long() flag */
+      break;
+    case 'f':
+      fixfps = atoi(optarg);
+      LOG_INFO("## fixfps: %d\n", fixfps);
+      break;
+    case 'n':
+      need_sync_db = false;
+      LOG_INFO("## need_sync_db: %d\n", need_sync_db);
+      break;
+    default:
+      break;
+    }
+  }
 }
