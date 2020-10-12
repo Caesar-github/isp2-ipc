@@ -50,6 +50,11 @@ if (${ENABLE_MINILOGGER})
     target_link_libraries(${PROJECT_NAME} MiniLogger::MiniLogger)
 endif()
 
+option(ENABLE_MEDIASERVER  "enbale mediaserver" OFF)
+if (${ENABLE_MEDIASERVER})
+    add_definitions(-DENABLE_MEDIASERVER)
+endif()
+
 target_link_libraries(${PROJECT_NAME}
         pthread
         rkaiq
