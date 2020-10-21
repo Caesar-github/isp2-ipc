@@ -871,7 +871,24 @@ typedef struct rk_aiq_uapi_getSharpness {
    unsigned int  level;
    XCamReturn returnvalue;
 } rk_aiq_uapi_getSharpness_t;
-
+/*
+*****************************
+*
+* Desc: Adjust image hue level
+* Argument:
+*    level: hue level, [0, 100]
+*****************************
+*/
+typedef struct rk_aiq_uapi_setHue {
+   rk_aiq_sys_ctx_t* sys_ctx;
+    unsigned int level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_setHue_t;
+typedef struct rk_aiq_uapi_getHue {
+   rk_aiq_sys_ctx_t* sys_ctx;
+   unsigned int  level;
+   XCamReturn returnvalue;
+} rk_aiq_uapi_getHue_t;
 RKAIQ_END_DECLARE
 
 #endif

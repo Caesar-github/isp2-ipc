@@ -98,6 +98,7 @@ static void DataChanged(char *json_str)
         json_object *iContrast = json_object_object_get(j_data, "iContrast");
         json_object *iSaturation = json_object_object_get(j_data, "iSaturation");
         json_object *iSharpness = json_object_object_get(j_data, "iSharpness");
+        json_object *iHue = json_object_object_get(j_data, "iHue");
         if (iBrightness) {
             int brightness = json_object_get_int(iBrightness);
             brightness_set(brightness);
@@ -113,6 +114,10 @@ static void DataChanged(char *json_str)
         if (iSharpness) {
             int sharpness = json_object_get_int(iSharpness);
             sharpness_set(sharpness);
+        }
+        if (iHue) {
+            int hue = json_object_get_int(iHue);
+            hue_set(hue);
         }
     } else if (g_str_equal(table, TABLE_IMAGE_EXPOSURE)) {
         if (!g_str_equal(cmd, "Update"))
@@ -261,7 +266,7 @@ void dbserver_image_enhancement_get(char *nr_mode, char *fec_mode, char *dehaze_
     free(json_str);
 }
 
-void dbserver_image_adjustment_get(int *brightness, int *contrast, int *saturation, int *sharpness)
+void dbserver_image_adjustment_get(int *brightness, int *contrast, int *saturation, int *sharpness, int *hue)
 {
     char *json_str = NULL;
     json_str = dbserver_media_get(TABLE_IMAGE_ADJUSTMENT);
@@ -277,6 +282,7 @@ void dbserver_image_adjustment_get(int *brightness, int *contrast, int *saturati
     *contrast = (int)json_object_get_int(json_object_object_get(j_data, "iContrast"));
     *saturation = (int)json_object_get_int(json_object_object_get(j_data, "iSaturation"));
     *sharpness = (int)json_object_get_int(json_object_object_get(j_data, "iSharpness"));
+    *hue = (int)json_object_get_int(json_object_object_get(j_data, "iHue"));
     json_object_put(j_cfg);
     free(json_str);
 }
@@ -584,6 +590,10 @@ void saturation_set(int level) {
 
 void sharpness_set(int level) {
     rk_aiq_uapi_setSharpness(db_aiq_ctx, level); // [0, 100]
+}
+
+void hue_set(int level) {
+    rk_aiq_uapi_setHue(db_aiq_ctx, (int)(level*2.55)); // [0, 100]->[0, 255]
 }
 
 void database_init(void)

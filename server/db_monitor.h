@@ -31,7 +31,7 @@ char *dbserver_image_hdr_mode_get(void);
 void dbserver_image_blc_get(char *hdr_mode, int *hdr_level);
 void dbserver_image_enhancement_get(char *nr_mode, char *fec_mode, char *dehaze_mode,
             int *denoise_level, int *spatial_level, int *temporal_level, int *dehaze_level);
-void dbserver_image_adjustment_get(int *brightness, int *contrast, int *saturation, int *sharpness);
+void dbserver_image_adjustment_get(int *brightness, int *contrast, int *saturation, int *sharpness, int *hue);
 void dbserver_image_exposure_get(char *exposure_time, int *exposure_gain);
 void dbserver_image_white_balance_get(char *white_balance_style, int *red_gain, int *blue_gain);
 void dbserver_image_video_adjustment_get(char *frequency_mode);

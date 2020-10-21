@@ -414,13 +414,15 @@ if (need_sync_db) {
   int contrast = 50;
   int saturation = 50;
   int sharpness = 50;
-  dbserver_image_adjustment_get(&brightness, &contrast, &saturation, &sharpness);
-  LOG_INFO("brightness:%d, contrast:%d, saturation:%d, sharpness:%d\n\n",
-         brightness, contrast, saturation, sharpness);
+  int hue = 50;
+  dbserver_image_adjustment_get(&brightness, &contrast, &saturation, &sharpness, &hue);
+  LOG_INFO("brightness:%d, contrast:%d, saturation:%d, sharpness:%d, hue:%d\n\n",
+         brightness, contrast, saturation, sharpness, hue);
   brightness_set(brightness);
   contrast_set(contrast);
   saturation_set(saturation);
   sharpness_set(sharpness);
+  hue_set(hue);
   /* EXPOSURE */
   char exposure_time [20] = "1";
   int exposure_gain = 0;

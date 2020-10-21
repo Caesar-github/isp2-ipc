@@ -793,5 +793,26 @@ XCamReturn rk_aiq_uapi_getSharpness_ipc(void *args){
 
 }
 
+/*
+*****************************
+*
+* Desc: Adjust image hue level
+* Argument:
+*    level: hue level, [0, 100]
+*****************************
+*/
+XCamReturn rk_aiq_uapi_setHue_ipc(void *args){
+
+    CALL_SET_AIQ_EXT(rk_aiq_uapi_setHue);
+    return 0;
+
+}
+XCamReturn rk_aiq_uapi_getHue_ipc(void *args){
+
+    CALL_GET_AIQ_EXT(rk_aiq_uapi_getHue);
+    return 0;
+
+}
+
 #endif
 

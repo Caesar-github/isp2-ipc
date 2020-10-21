@@ -77,6 +77,8 @@ struct FunMap map[] = {
     {"rk_aiq_uapi_getSaturation"    ,&rk_aiq_uapi_getSaturation_ipc    },
     {"rk_aiq_uapi_setSharpness"    ,&rk_aiq_uapi_setSharpness_ipc      },
     {"rk_aiq_uapi_getSharpness"    ,&rk_aiq_uapi_getSharpness_ipc      },
+    {"rk_aiq_uapi_setHue"    ,&rk_aiq_uapi_setHue_ipc      },
+    {"rk_aiq_uapi_getHue"    ,&rk_aiq_uapi_getHue_ipc      },
 
      //rk_aiq_user_api_a3dlut_ipc
     {"rk_aiq_user_api_a3dlut_SetAttrib" , &rk_aiq_user_api_a3dlut_SetAttrib_ipc            },

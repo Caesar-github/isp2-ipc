@@ -989,3 +989,24 @@ XCamReturn rk_aiq_uapi_getSharpness(const rk_aiq_sys_ctx_t* ctx, unsigned int *l
     CLIENT_CALL_GET_AIQ_EXT(rk_aiq_uapi_getSharpness);
 }
 
+/*
+*****************************
+*
+* Desc: Adjust image hue level
+* Argument:
+*    level: hue level, [0, 100]
+*****************************
+*/
+XCamReturn rk_aiq_uapi_setHue(const rk_aiq_sys_ctx_t* ctx, unsigned int level)
+{    const rk_aiq_sys_ctx_t* sys_ctx = ctx;
+
+     CLIENT_CALL_SET_AIQ_EXT(rk_aiq_uapi_setHue);
+
+}
+
+XCamReturn rk_aiq_uapi_getHue(const rk_aiq_sys_ctx_t* ctx, unsigned int *level)
+{
+    const rk_aiq_sys_ctx_t* sys_ctx = ctx;
+    CLIENT_CALL_GET_AIQ_EXT(rk_aiq_uapi_getHue);
+}
+
