@@ -577,6 +577,7 @@ void *thread_func(void *arg) {
     deinit_engine(cam_id);
     subscrible_stream_event(cam_id, isp_fd, false);
     close(isp_fd);
+    usleep(100*1000);
     LOG_INFO("----------------------------------------------\n\n");
   }
 }
