@@ -348,7 +348,7 @@ XCamReturn rk_aiq_uapi_unlockAWB_ipc(void *args){return 0;}
 *
 *****************************
 */
-XCamReturn rk_aiq_uapi_setAWBRange_ipc(void *args){
+/*XCamReturn rk_aiq_uapi_setAWBRange_ipc(void *args){
     CALL_SET_AIQ(rk_aiq_uapi_setAWBRange);
     return 0;
 }
@@ -356,7 +356,7 @@ XCamReturn rk_aiq_uapi_getAWBRange_ipc(void *args){
     CALL_GET_AIQ(rk_aiq_uapi_getAWBRange);
     return 0;
 }
-
+*/
 
 /*
 *****************************
