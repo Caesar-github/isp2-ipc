@@ -98,6 +98,7 @@ static void DataChanged(char *json_str)
         json_object *iSaturation = json_object_object_get(j_data, "iSaturation");
         json_object *iSharpness = json_object_object_get(j_data, "iSharpness");
         json_object *iHue = json_object_object_get(j_data, "iHue");
+        json_object *iFPS = json_object_object_get(j_data, "iFPS");
         if (iBrightness) {
             int brightness = json_object_get_int(iBrightness);
             brightness_set(brightness);
@@ -117,6 +118,10 @@ static void DataChanged(char *json_str)
         if (iHue) {
             int hue = json_object_get_int(iHue);
             hue_set(hue);
+        }
+        if (iFPS) {
+            int fps = json_object_get_int(iFPS);
+            fps_set(fps);
         }
     } else if (g_str_equal(table, TABLE_IMAGE_EXPOSURE)) {
         if (!g_str_equal(cmd, "Update"))
@@ -593,6 +598,22 @@ void sharpness_set(int level) {
 
 void hue_set(int level) {
     rk_aiq_uapi_setHue(db_aiq_ctx, (int)(level*2.55)); // [0, 100]->[0, 255]
+}
+
+void fps_set(int fixfps) {
+    if (fixfps > 0) {
+       frameRateInfo_t info;
+       memset(&info, 0, sizeof(info));
+       if(db_aiq_ctx) {
+         rk_aiq_uapi_getFrameRate(db_aiq_ctx, &info);
+         if (info.fps != fixfps) {
+            info.fps = fixfps;
+            info.mode = OP_MANUAL;
+            rk_aiq_uapi_setFrameRate(db_aiq_ctx, info);
+            LOG_INFO("%s, fixfps is %d\n", __func__, fixfps);
+         }
+       }
+  }
 }
 
 static DBusMessage *get_dump_exposure_info(DBusConnection *conn,
