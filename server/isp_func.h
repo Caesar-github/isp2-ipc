@@ -3,10 +3,10 @@
 #ifndef __ISP_FUNC_H
 #define __ISP_FUNC_H
 
+#include <stdbool.h>
 #include "rkaiq/common/rk_aiq_comm.h"
 #include "rkaiq/common/rk_aiq_types.h"
 #include "rkaiq/uAPI/rk_aiq_user_api_imgproc.h"
-#include <stdbool.h>
 // #include "rk_aiq_uapi_ae_int_types.h"
 // #include "rk_aiq_types_awb_algo_int.h"
 
