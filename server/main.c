@@ -483,10 +483,10 @@ static void init_engine(int cam_id) {
     mirror_mode_set(mirror_mode);
     /* only for fbc*/
     bypass_stream_rotation_set(rotation_angle);
+    /* NIGHT_TO_DAY*/
+    night_to_day_para_cap_set_db();
+    night2day_loop_run();
   }
-  /* NIGHT_TO_DAY*/
-  night_to_day_para_cap_set_db();
-  night2day_loop_run();
 #endif
 }
 
@@ -506,7 +506,8 @@ static void stop_engine(int cam_id) {
 
 static void deinit_engine(int cam_id) {
 #if CONFIG_DBSERVER
-  night2day_loop_stop();
+  if (need_sync_db)
+     night2day_loop_stop();
 #endif
   rk_aiq_uapi_sysctl_deinit(aiq_ctx[cam_id]);
   save_prepare_status(cam_id, 0);
