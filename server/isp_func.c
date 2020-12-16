@@ -37,6 +37,7 @@ static int gc_led_mode = LED_OFF;
 static work_mode_2_t gc_dehaze_mode = WM2_INVALID_MODE;
 static dc_mode_t gc_dc_mode = DC_INVALID;
 static int g_stream_on = 0;
+static int g_fix_fps = -1;
 
 static void set_led_state(int status) { gc_led_mode = status; }
 
@@ -210,7 +211,7 @@ static int isp_output_fps_set_no_mutex(int rate) {
   return ret;
 }
 
-int isp_output_fps_set(int rate) {
+static int isp_output_fps_set(int rate) {
   if (!db_aiq_ctx)
     return -1;
   pthread_mutex_lock(&db_aiq_ctx_mutex);
@@ -219,7 +220,11 @@ int isp_output_fps_set(int rate) {
   return ret;
 }
 
-int isp_output_fps_get() {
+static int isp_output_fps_get() {
+  if (g_fix_fps > 0) {
+    LOG_INFO("fps is fixed, rate is %d\n", g_fix_fps);
+    return g_fix_fps;
+  }
   int fps = 30;
   switch (gc_hdr_mode) {
   case RK_AIQ_WORKING_MODE_NORMAL: {
@@ -241,6 +246,21 @@ int isp_output_fps_get() {
   }
 
   return fps;
+}
+
+int isp_fix_fps_set(int rate) {
+  g_fix_fps = rate;
+  if (!db_aiq_ctx)
+    return -1;
+  int ret = -1;
+  if (g_fix_fps > 0) {
+    pthread_mutex_lock(&db_aiq_ctx_mutex);
+    ret = isp_output_fps_set_no_mutex(rate);
+    pthread_mutex_unlock(&db_aiq_ctx_mutex);
+  } else {
+    ret = isp_output_fps_set(isp_output_fps_get());
+  }
+  return ret;
 }
 
 int frequency_mode_set(expPwrLineFreq_t mode) {

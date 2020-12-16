@@ -414,7 +414,9 @@ static void init_engine(int cam_id) {
   }
   db_aiq_ctx = aiq_ctx[cam_id];
   save_prepare_status(cam_id, 1);
-
+  if (fixfps > 0) {
+    isp_fix_fps_set(fixfps);
+  }
 #if CONFIG_DBSERVER
   set_stream_on();
   if (need_sync_db) {

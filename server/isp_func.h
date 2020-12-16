@@ -108,8 +108,8 @@ int manual_white_balance_level_set(int r_level, int g_level, int b_level);
 int white_balance_style_set(white_balance_mode_t style);
 int white_balance_gain_get(rk_aiq_wb_gain_t *gain);
 
-int isp_output_fps_set(int rate);
-int isp_output_fps_get();
+// set fix fps, set -1 to set fps auto
+int isp_fix_fps_set(int rate);
 int frequency_mode_set(expPwrLineFreq_t mode);
 
 int hdr2_normal_set(rk_aiq_working_mode_t hdr_mode);

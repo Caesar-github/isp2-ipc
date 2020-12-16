@@ -999,7 +999,7 @@ static void image_adjustment_set_by_json(json_object *j_data) {
   }
   if (iFPS) {
     int fps = json_object_get_int(iFPS);
-    isp_output_fps_set(fps);
+    isp_fix_fps_set(fps);
   }
 }
 
