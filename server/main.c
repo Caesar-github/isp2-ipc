@@ -414,9 +414,19 @@ static void init_engine(int cam_id) {
   }
   db_aiq_ctx = aiq_ctx[cam_id];
   save_prepare_status(cam_id, 1);
+
   if (fixfps > 0) {
+#if CONFIG_DBSERVER
     isp_fix_fps_set(fixfps);
+#else
+    frameRateInfo_t fps_info;
+    memset(&fps_info, 0, sizeof(fps_info));
+    fps_info.fps = fixfps;
+    fps_info.mode = OP_MANUAL;
+    rk_aiq_uapi_setFrameRate(db_aiq_ctx, fps_info);
+#endif
   }
+
 #if CONFIG_DBSERVER
   set_stream_on();
   if (need_sync_db) {
