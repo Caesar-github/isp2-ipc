@@ -521,8 +521,8 @@ static void deinit_engine(int cam_id) {
   if (need_sync_db)
      night2day_loop_stop();
 #endif
-  rk_aiq_uapi_sysctl_deinit(aiq_ctx[cam_id]);
   save_prepare_status(cam_id, 0);
+  rk_aiq_uapi_sysctl_deinit(aiq_ctx[cam_id]);
 }
 
 // blocked func
