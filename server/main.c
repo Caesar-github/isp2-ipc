@@ -613,22 +613,24 @@ void *thread_func(void *arg) {
 
     subscrible_stream_event(cam_id, isp_fd, true);
     init_engine(cam_id);
-    LOG_INFO("wait stream start event...\n");
-    wait_stream_event(isp_fd, CIFISP_V4L2_EVENT_STREAM_START, -1);
-    LOG_INFO("wait stream start event success ...\n");
-    rk_aiq_state_t aiq_state = rk_aiq_get_state();
-    LOG_INFO("state=%d\n", aiq_state);
-    if (aiq_state == AIQ_STATE_INVALID) {
-      LOG_INFO("start engine...\n");
-      start_engine(cam_id);
-    }
+    while(1) {
+      LOG_INFO("wait stream start event...\n");
+      wait_stream_event(isp_fd, CIFISP_V4L2_EVENT_STREAM_START, -1);
+      LOG_INFO("wait stream start event success ...\n");
+      rk_aiq_state_t aiq_state = rk_aiq_get_state();
+      LOG_INFO("state=%d\n", aiq_state);
+      if (aiq_state == AIQ_STATE_INVALID) {
+        LOG_INFO("start engine...\n");
+        start_engine(cam_id);
+      }
 
-    LOG_INFO("wait stream stop event...\n");
-    wait_stream_event(isp_fd, CIFISP_V4L2_EVENT_STREAM_STOP, -1);
-    LOG_INFO("wait stream stop event success ...\n");
-    if (aiq_state == AIQ_STATE_INVALID) {
-      LOG_INFO("stop engine...\n");
-      stop_engine(cam_id);
+      LOG_INFO("wait stream stop event...\n");
+      wait_stream_event(isp_fd, CIFISP_V4L2_EVENT_STREAM_STOP, -1);
+      LOG_INFO("wait stream stop event success ...\n");
+      if (aiq_state == AIQ_STATE_INVALID) {
+        LOG_INFO("stop engine...\n");
+        stop_engine(cam_id);
+      }
     }
     deinit_engine(cam_id);
     subscrible_stream_event(cam_id, isp_fd, false);
