@@ -401,10 +401,12 @@ static void init_engine(int cam_id) {
 
 /* sync fec from db*/
 #if CONFIG_DBSERVER
-  int fec_en;
-  hash_image_fec_enable_get4init(&fec_en, NULL);
-  int fec_ret = rk_aiq_uapi_setFecEn(aiq_ctx[cam_id], fec_en);
-  LOG_INFO("set fec_en: %d, ret is %d\n", fec_en, fec_ret);
+  if (need_sync_db) {
+    int fec_en;
+    hash_image_fec_enable_get4init(&fec_en, NULL);
+    int fec_ret = rk_aiq_uapi_setFecEn(aiq_ctx[cam_id], fec_en);
+    LOG_INFO("set fec_en: %d, ret is %d\n", fec_en, fec_ret);
+  }
 #endif
 
   if (rk_aiq_uapi_sysctl_prepare(aiq_ctx[cam_id], width, height,
