@@ -43,20 +43,23 @@ static void set_led_state(int status) { gc_led_mode = status; }
 
 int get_led_state() { return gc_led_mode; }
 
-void set_stream_on() { g_stream_on = 1; }
+void set_stream_on() {
+  g_stream_on = 1;
+}
+
+int check_stream_status() {
+  return g_stream_on;
+}
 
 void reset_flow() {
 #if ENABLE_MEDIASERVER
-  pthread_mutex_lock(&db_aiq_ctx_mutex);
   g_stream_on = 0;
-  mediaserver_reset_flow();
-  // db_aiq_ctx = NULL;
+  mediaserver_stop_flow();
   while (!g_stream_on) {
     usleep(100);
   }
-  pthread_mutex_unlock(&db_aiq_ctx_mutex);
-  LOG_DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-            "unLock\n");
+  mediaserver_restart_flow();
+  LOG_INFO("reset flow end!\n");
 #else
   LOG_ERROR("no mediaserver, reset flow fail, please overwrite reset_flow in "
             "isp_func.c\n");
@@ -64,7 +67,7 @@ void reset_flow() {
 }
 
 void brightness_set(int level) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return;
   pthread_mutex_lock(&db_aiq_ctx_mutex);
   rk_aiq_uapi_setBrightness(db_aiq_ctx,
@@ -73,7 +76,7 @@ void brightness_set(int level) {
 }
 
 void contrast_set(int level) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return;
   pthread_mutex_lock(&db_aiq_ctx_mutex);
   rk_aiq_uapi_setContrast(db_aiq_ctx,
@@ -82,7 +85,7 @@ void contrast_set(int level) {
 }
 
 void saturation_set(int level) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return;
   pthread_mutex_lock(&db_aiq_ctx_mutex);
   rk_aiq_uapi_setSaturation(db_aiq_ctx,
@@ -91,7 +94,7 @@ void saturation_set(int level) {
 }
 
 void sharpness_set(int level) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return;
   pthread_mutex_lock(&db_aiq_ctx_mutex);
   rk_aiq_uapi_setSharpness(db_aiq_ctx, level); // [0, 100]
@@ -99,7 +102,7 @@ void sharpness_set(int level) {
 }
 
 void hue_set(int level) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return;
   pthread_mutex_lock(&db_aiq_ctx_mutex);
   rk_aiq_uapi_setHue(db_aiq_ctx, (int)(level * 2.55)); // [0, 100]->[0, 255]
@@ -107,7 +110,7 @@ void hue_set(int level) {
 }
 
 int manual_white_balance_level_set(int r_level, int g_level, int b_level) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   int ret = -1;
   rk_aiq_wb_gain_t gain;
@@ -129,7 +132,7 @@ int manual_white_balance_level_set(int r_level, int g_level, int b_level) {
 }
 
 int manual_white_balance_set(int r_level, int g_level, int b_level) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   int ret = -1;
   pthread_mutex_lock(&db_aiq_ctx_mutex);
@@ -142,7 +145,7 @@ int manual_white_balance_set(int r_level, int g_level, int b_level) {
 
 int white_balance_style_set(white_balance_mode_t style) {
   LOG_DEBUG("white balance style is %d\n", style);
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   int ret = -1;
   pthread_mutex_lock(&db_aiq_ctx_mutex);
@@ -196,8 +199,10 @@ int white_balance_style_set(white_balance_mode_t style) {
 }
 
 static int isp_output_fps_set_no_mutex(int rate) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
+  if (g_fix_fps > 0)
+    rate = g_fix_fps;
   int ret = 0;
   frameRateInfo_t info;
   memset(&info, 0, sizeof(info));
@@ -212,7 +217,7 @@ static int isp_output_fps_set_no_mutex(int rate) {
 }
 
 static int isp_output_fps_set(int rate) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   pthread_mutex_lock(&db_aiq_ctx_mutex);
   int ret = isp_output_fps_set_no_mutex(rate);
@@ -250,7 +255,7 @@ static int isp_output_fps_get() {
 
 int isp_fix_fps_set(int rate) {
   g_fix_fps = rate;
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   int ret = -1;
   if (g_fix_fps > 0) {
@@ -265,7 +270,7 @@ int isp_fix_fps_set(int rate) {
 
 int frequency_mode_set(expPwrLineFreq_t mode) {
   LOG_INFO("frequency mode is %d\n", mode);
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   int ret = -1;
   pthread_mutex_lock(&db_aiq_ctx_mutex);
@@ -291,7 +296,7 @@ int frequency_mode_set(expPwrLineFreq_t mode) {
 }
 
 int hdr2_normal_set(rk_aiq_working_mode_t hdr_mode) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   int ret = -1;
   pthread_mutex_lock(&db_aiq_ctx_mutex);
@@ -343,7 +348,7 @@ void hdr_mode_set4db(rk_aiq_working_mode_t mode) {
 
 int blc_hdr_level_set(int level) {
   LOG_INFO("set level is %d\n", level);
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   int ret = -1;
   pthread_mutex_lock(&db_aiq_ctx_mutex);
@@ -360,7 +365,7 @@ int blc_hdr_level_enum_set(unsigned int level) {
   Uapi_HdrExpAttr_t hdrExpAttr;
   LOG_DEBUG("set hdr level: %d, gc_hdr_mode: %d\n", level, gc_hdr_mode);
   pthread_mutex_lock(&db_aiq_ctx_mutex);
-  if (db_aiq_ctx) {
+  if (db_aiq_ctx && g_stream_on) {
     switch (level) {
     case 1: // auto
       rk_aiq_user_api_ahdr_GetAttrib(db_aiq_ctx, &attr);
@@ -519,7 +524,7 @@ int rk_smart_get_scene_param(double *pdLumaDay, double *pdLumaNight,
 }
 
 int night_to_day_para_set(rk_aiq_cpsl_cfg_t compensate_light_cfg) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   int ret = -1;
   if (compensate_light_cfg.mode != RK_AIQ_OP_MODE_INVALID) {
@@ -620,7 +625,7 @@ int set_day_mode(int hdr_mode) {
 
 int bypass_stream_rotation_set(int rotation) {
   LOG_INFO("rotation: %d\n", rotation);
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   rk_aiq_rotation_t rk_rotation = RK_AIQ_ROTATION_0;
   if (rotation == 0) {
@@ -643,7 +648,7 @@ int bypass_stream_rotation_set(int rotation) {
 
 int mirror_mode_set(flip_mode_t mode) {
   LOG_INFO("set mirror mode %d\n", mode);
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   int mirror = 0;
   int flip = 0;
@@ -677,7 +682,7 @@ int mirror_mode_set(flip_mode_t mode) {
 }
 
 static int nr_level_set_no_mutex(int spatial_level, int temporal_level) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   int ret = -1;
   if (spatial_level >= 0) {
@@ -704,7 +709,7 @@ int nr_level_set(int spatial_level, int temporal_level) {
 int nr_para_set(nr_mode_t mode, int spatial_level, int temporal_level) {
   LOG_DEBUG("mode is %d, spatial level is %d, temporal level is %d\n", mode,
             spatial_level, temporal_level);
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   int ret = -1;
   pthread_mutex_lock(&db_aiq_ctx_mutex);
@@ -749,7 +754,7 @@ int nr_para_set(nr_mode_t mode, int spatial_level, int temporal_level) {
 }
 
 static int ldch_level_set_no_mutex(int level) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   level = level < 0 ? 0 : level;
   level = (int)(level * 2.53 + 2);
@@ -769,7 +774,7 @@ int ldch_level_set(int level) {
 
 /* not support modify dynamic */
 static int fec_switch_no_mutex(bool swi) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   rk_aiq_fec_attrib_t attr;
   int ret = -1;
@@ -781,7 +786,7 @@ static int fec_switch_no_mutex(bool swi) {
 void gc_dc_mode_set(dc_mode_t mode) { gc_dc_mode = mode; }
 
 static int fec_level_set_no_mutex(int fec_level) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   fec_level = fec_level < 0 ? 0 : fec_level;
   fec_level = fec_level * 2.55;
@@ -806,8 +811,9 @@ int fec_level_set(int fec_level) {
 int dc_para_set(dc_mode_t mode, int ldch_level, int fec_level) {
   LOG_INFO("mode is %d, ldch_level is %d, fec_level is %d\n", mode, ldch_level,
            fec_level);
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on) {
     return -1;
+  }
   int ret = 0;
   int reset_flag = 0;
   pthread_mutex_lock(&db_aiq_ctx_mutex);
@@ -859,13 +865,14 @@ int dc_para_set(dc_mode_t mode, int ldch_level, int fec_level) {
   }
   }
   pthread_mutex_unlock(&db_aiq_ctx_mutex);
-  if (reset_flag)
+  if (reset_flag) {
     reset_flow();
+  }
   return ret;
 }
 
 int dehaze_strength_set_no_mutex(int level) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   int ret = -1;
   if (level < 0)
@@ -887,7 +894,7 @@ int dehaze_strength_set(int level) {
 int dehaze_para_set(work_mode_2_t mode, int level) {
   int ret = 0;
   LOG_DEBUG("dehaze mode is %d, dehaze level is %d \n", mode, level);
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   if (WM2_INVALID_MODE == gc_dehaze_mode && WM2_INVALID_MODE != mode) {
     gc_dehaze_mode = mode;
@@ -940,7 +947,7 @@ float exposure_time_str2float(char *time) {
 
 int exposure_time_set(char *time) {
   LOG_INFO("time is %s\n", time);
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   paRange_t range;
   range.min = 1e-5; // TODO: obtained from capability
@@ -959,7 +966,7 @@ int exposure_time_set(char *time) {
 }
 
 int exposure_gain_set(int gain) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   int ret = -1;
   paRange_t range;
@@ -976,7 +983,7 @@ int exposure_gain_set(int gain) {
 }
 
 int auto_exposure_set() {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   Uapi_ExpSwAttr_t stExpSwAttr;
   int ret = -1;
@@ -991,7 +998,7 @@ int auto_exposure_set() {
 }
 
 int exposure_info_get(Uapi_ExpQueryInfo_t *stExpInfo, rk_aiq_wb_cct_t *stCCT) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   int ret = 0;
   pthread_mutex_lock(&db_aiq_ctx_mutex);
@@ -1004,7 +1011,7 @@ int exposure_info_get(Uapi_ExpQueryInfo_t *stExpInfo, rk_aiq_wb_cct_t *stCCT) {
 }
 
 int manual_exposure_auto_gain_set_char(char *time) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   Uapi_ExpSwAttr_t stExpSwAttr;
 
@@ -1030,7 +1037,7 @@ int manual_exposure_auto_gain_set_char(char *time) {
 }
 
 int manual_exposure_auto_gain_set_float(float expTime) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   Uapi_ExpSwAttr_t stExpSwAttr;
 
@@ -1055,7 +1062,7 @@ int manual_exposure_auto_gain_set_float(float expTime) {
 }
 
 int manual_exposure_manual_gain_set_char(char *time, int gain) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   Uapi_ExpSwAttr_t stExpSwAttr;
   float expTime = exposure_time_str2float(time);
@@ -1085,7 +1092,7 @@ int manual_exposure_manual_gain_set_char(char *time, int gain) {
 }
 
 int manual_exposure_manual_gain_set_float(float expTime, int gain) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   Uapi_ExpSwAttr_t stExpSwAttr;
   // gain[1~100]; if (int)(gain *2.55) + 1.0 then gain[0~100] ->
@@ -1114,7 +1121,7 @@ int manual_exposure_manual_gain_set_float(float expTime, int gain) {
 }
 
 static int blc_region_strength_set_no_mutex(int strength) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   int ret = -1;
   if (strength >= 0 && strength <= 100) {
@@ -1127,7 +1134,7 @@ static int blc_region_strength_set_no_mutex(int strength) {
 }
 
 int blc_region_para_set(work_mode_1_t mode, int strength) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   int ret = -1;
   pthread_mutex_lock(&db_aiq_ctx_mutex);
@@ -1159,7 +1166,7 @@ int blc_region_strength_set(int strength) {
 }
 
 static int blc_hlc_level_set_no_mutex(int hlc_level, int dark_level) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   int ret = 0;
   if (hlc_level >= 0) {
@@ -1175,7 +1182,7 @@ static int blc_hlc_level_set_no_mutex(int hlc_level, int dark_level) {
 }
 
 int blc_hlc_para_set(work_mode_1_t mode, int hlc_level, int dark_level) {
-  if (!db_aiq_ctx)
+  if (!db_aiq_ctx || !g_stream_on)
     return -1;
   int ret = -1;
   pthread_mutex_lock(&db_aiq_ctx_mutex);

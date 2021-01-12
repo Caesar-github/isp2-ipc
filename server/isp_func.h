@@ -95,6 +95,7 @@ extern "C" {
 
 int get_led_state();
 void set_stream_on();
+int check_stream_status();
 void reset_flow();
 
 void brightness_set(int level);

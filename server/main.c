@@ -417,6 +417,10 @@ static void init_engine(int cam_id) {
   db_aiq_ctx = aiq_ctx[cam_id];
   save_prepare_status(cam_id, 1);
 
+#if CONFIG_DBSERVER
+    set_stream_on();
+#endif
+
   if (fixfps > 0) {
 #if CONFIG_DBSERVER
     isp_fix_fps_set(fixfps);
@@ -430,7 +434,6 @@ static void init_engine(int cam_id) {
   }
 
 #if CONFIG_DBSERVER
-  set_stream_on();
   if (need_sync_db) {
     /* IMAGE_ADJUSTMENT */
     int brightness = 50;
@@ -631,6 +634,10 @@ void *thread_func(void *arg) {
         LOG_INFO("stop engine...\n");
         stop_engine(cam_id);
       }
+#if CONFIG_DBSERVER
+      if (!check_stream_status())
+        break;
+#endif
     }
     deinit_engine(cam_id);
     subscrible_stream_event(cam_id, isp_fd, false);
