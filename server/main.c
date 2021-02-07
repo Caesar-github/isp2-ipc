@@ -241,6 +241,7 @@ int rkaiq_get_media_info() {
   int ret = 0;
   unsigned int i, index = 0, cam_id, cam_num;
   char sys_path[64];
+  int isp0_link_sensor = 0;
   int find_sensor[RKAIQ_CAMS_NUM_MAX] = {0};
   int find_isp[RKAIQ_CAMS_NUM_MAX] = {0};
   int find_ispp[RKAIQ_CAMS_NUM_MAX] = {0};
@@ -278,13 +279,36 @@ int rkaiq_get_media_info() {
     }
 
     const struct media_device_info *info = media_get_info(device);
+    if (strcmp(info->model, MEDIA_MODEL_RKISP0) == 0) {
+      unsigned int nents = media_get_entities_count(device);
+      for (i = 0; i < nents; ++i) {
+        struct media_entity *entity = media_get_entity(device, i);
+        const struct media_entity_desc *info = media_entity_get_info(entity);
+        unsigned int type = info->type;
+        if (MEDIA_ENT_T_V4L2_SUBDEV == (type & MEDIA_ENT_TYPE_MASK)) {
+          unsigned int subtype = type & MEDIA_ENT_SUBTYPE_MASK;
+          if (subtype == 1) {
+            isp0_link_sensor = 1;
+          } else {
+            isp0_link_sensor = 0;
+          }
+        }
+      }
+    }
+
     if (strcmp(info->model, MEDIA_MODEL_RKISP1) == 0 ||
         strcmp(info->model, MEDIA_MODEL_RKISPP1) == 0) {
-      cam_id = 0;
+      if (isp0_link_sensor)
+        cam_id = 0;
+      else
+        cam_id = 1;
       media_info[cam_id].fix_nohdr_mode = 1;
     } else if (strcmp(info->model, MEDIA_MODEL_RKISP0) == 0 ||
                strcmp(info->model, MEDIA_MODEL_RKISPP0) == 0) {
-      cam_id = 1;
+      if (isp0_link_sensor)
+        cam_id = 1;
+      else
+        cam_id = 0;
     } else if (strcmp(info->model, MEDIA_MODEL_RKCIF) == 0 ||
                strcmp(info->model, MEDIA_MODEL_RKISP) == 0 ||
                strcmp(info->model, MEDIA_MODEL_RKISPP) == 0) {
