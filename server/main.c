@@ -289,6 +289,7 @@ int rkaiq_get_media_info() {
           unsigned int subtype = type & MEDIA_ENT_SUBTYPE_MASK;
           if (subtype == 1) {
             isp0_link_sensor = 1;
+            break;
           } else {
             isp0_link_sensor = 0;
           }
