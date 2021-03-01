@@ -59,9 +59,21 @@ target_link_libraries(${PROJECT_NAME}
         pthread
         rkaiq
         )
+
 if(CONFIG_DBUS)
-   target_link_libraries(${PROJECT_NAME} PkgConfig::GLIB PkgConfig::DBUS gdbus CallFunIpc)
+   target_link_libraries(${PROJECT_NAME} PkgConfig::GLIB PkgConfig::DBUS gdbus)
 endif()
+
+option(SYS_START "Enable sys start" 0)
+add_definitions(-DSYS_START=${SYS_START})
+
+if(DEFINED CONFIG_CALLFUNC)
+   add_definitions(-DCONFIG_CALLFUNC=${CONFIG_CALLFUNC})
+if(${CONFIG_CALLFUNC})
+   target_link_libraries(${PROJECT_NAME} CallFunIpc)
+endif()
+endif()
+
 if(CONFIG_DBSERVER)
    target_link_libraries(${PROJECT_NAME} IPCProtocol PkgConfig::JSON-C)
 endif()

@@ -224,6 +224,8 @@ void night2day_loop_run(void) {
 }
 
 void night2day_loop_stop(void) {
+  if (!night2day_loop_flag)
+    return;
   night2day_loop_flag = 0;
   pthread_join(tid, NULL);
 }

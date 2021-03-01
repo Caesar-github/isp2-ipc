@@ -14,6 +14,10 @@
 extern "C" {
 #endif
 
+int dbus_warn_log_status_get();
+void dbus_warn_log_close();
+void dbus_warn_log_open();
+bool wait_dbus_init_func(void);
 char *dbserver_image_hdr_mode_get(void);
 void dbserver_image_adjustment_get(int *brightness, int *contrast,
                                    int *saturation, int *sharpness, int *hue);

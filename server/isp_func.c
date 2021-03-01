@@ -24,8 +24,6 @@
 extern rk_aiq_sys_ctx_t *db_aiq_ctx;
 
 rk_aiq_wb_gain_t gs_wb_gain = {2.083900, 1.000000, 1.000000, 2.018500};
-static pthread_t p_brightness_thread = 0;
-static pthread_t ir_smart_thread = 0;
 static pthread_mutex_t db_aiq_ctx_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t cpsl_cfg_mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -38,13 +36,30 @@ static work_mode_2_t gc_dehaze_mode = WM2_INVALID_MODE;
 static dc_mode_t gc_dc_mode = DC_INVALID;
 static int g_stream_on = 0;
 static int g_fix_fps = -1;
+static ispserver_status_signal_send g_send_func = NULL;
 
 static void set_led_state(int status) { gc_led_mode = status; }
 
 int get_led_state() { return gc_led_mode; }
 
+void send_stream_on_signal() {
+  if (g_send_func) {
+    g_send_func(1);
+  }
+}
+
 void set_stream_on() {
+  if (!g_stream_on && g_send_func) {
+    g_send_func(1);
+  }
   g_stream_on = 1;
+}
+
+void set_stream_off() {
+  if (g_stream_on && g_send_func) {
+    g_send_func(0);
+  }
+  g_stream_on = 0;
 }
 
 int check_stream_status() {
@@ -53,7 +68,7 @@ int check_stream_status() {
 
 void reset_flow() {
 #if ENABLE_MEDIASERVER
-  g_stream_on = 0;
+  set_stream_off();
   mediaserver_stop_flow();
   while (!g_stream_on) {
     usleep(100);
@@ -293,6 +308,27 @@ int frequency_mode_set(expPwrLineFreq_t mode) {
   }
   pthread_mutex_unlock(&db_aiq_ctx_mutex);
   return ret;
+}
+
+int hdr_global_value_set(rk_aiq_working_mode_t hdr_mode) {
+  pthread_mutex_lock(&db_aiq_ctx_mutex);
+  switch (hdr_mode) {
+    case RK_AIQ_WORKING_MODE_NORMAL:
+      gc_hdr_mode = RK_AIQ_WORKING_MODE_NORMAL;
+      break;
+    case RK_AIQ_WORKING_MODE_ISP_HDR2:
+      gc_hdr_mode = RK_AIQ_WORKING_MODE_ISP_HDR2;
+      break;
+    case RK_AIQ_WORKING_MODE_ISP_HDR3:
+      gc_hdr_mode = RK_AIQ_WORKING_MODE_ISP_HDR3;
+      break;
+  }
+  pthread_mutex_unlock(&db_aiq_ctx_mutex);
+  return 0;
+}
+
+rk_aiq_working_mode_t hdr_global_value_get() {
+  return gc_hdr_mode;
 }
 
 int hdr2_normal_set(rk_aiq_working_mode_t hdr_mode) {
@@ -1214,4 +1250,11 @@ int blc_hlc_level_set(int hlc_level, int dark_level) {
   return ret;
 }
 
+int isp_status_sender_register(ispserver_status_signal_send send_func) {
+  if (!send_func)
+    return -1;
+  g_send_func = send_func;
+  LOG_INFO("register success: %p", g_send_func);
+  return 0;
+}
 #endif

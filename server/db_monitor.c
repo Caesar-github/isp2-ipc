@@ -16,6 +16,7 @@
 #include "db_monitor.h"
 #include "dbserver.h"
 #include "dbus_signal.h"
+#include "libipcpro_log_control.h"
 #include "json-c/json.h"
 #include "mediactl/mediactl.h"
 #include "rkaiq/common/rk_aiq_types.h"
@@ -93,7 +94,6 @@ struct VideoAdjustmentConfig {
 };
 
 extern rk_aiq_sys_ctx_t *db_aiq_ctx;
-extern rk_aiq_working_mode_t gc_hdr_mode;
 static GHashTable *db_adjustment_hash = NULL;
 static GHashTable *db_exposure_hash = NULL;
 static GHashTable *db_night2day_hash = NULL;
@@ -102,6 +102,8 @@ static GHashTable *db_white_blance_hash = NULL;
 static GHashTable *db_enhancement_hash = NULL;
 static GHashTable *db_video_adjustment_hash = NULL;
 static DBusConnection *connection = 0;
+static int database_init_flag = 0;
+static pthread_mutex_t init_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static char *scenario_str_get() {
   switch (gc_scenario) {
@@ -318,24 +320,24 @@ int hash_image_hdr_mode_get4init(rk_aiq_working_mode_t *hdr_mode) {
   } else {
     if (blc_cfg->HDR == RK_AIQ_WORKING_MODE_NORMAL ||
         get_led_state() == LED_ON) {
-      gc_hdr_mode = RK_AIQ_WORKING_MODE_NORMAL;
+      hdr_global_value_set(RK_AIQ_WORKING_MODE_NORMAL);
       if (hdr_mode)
         *hdr_mode = RK_AIQ_WORKING_MODE_NORMAL;
     } else if (blc_cfg->HDR == RK_AIQ_WORKING_MODE_ISP_HDR2) {
-      gc_hdr_mode = RK_AIQ_WORKING_MODE_ISP_HDR2;
+      hdr_global_value_set(RK_AIQ_WORKING_MODE_ISP_HDR2);
       if (hdr_mode)
         *hdr_mode = RK_AIQ_WORKING_MODE_ISP_HDR2;
     } else if (blc_cfg->HDR == RK_AIQ_WORKING_MODE_ISP_HDR3) {
-      gc_hdr_mode = RK_AIQ_WORKING_MODE_ISP_HDR3;
+      hdr_global_value_set(RK_AIQ_WORKING_MODE_ISP_HDR3);
       if (hdr_mode)
         *hdr_mode = RK_AIQ_WORKING_MODE_ISP_HDR3;
     } else {
-      gc_hdr_mode = RK_AIQ_WORKING_MODE_NORMAL;
+      hdr_global_value_set(RK_AIQ_WORKING_MODE_NORMAL);
       if (hdr_mode)
         *hdr_mode = RK_AIQ_WORKING_MODE_NORMAL;
     }
   }
-  LOG_DEBUG("gc_hdr_mode: %d\n", gc_hdr_mode);
+  LOG_DEBUG("init_hdr_mode: %d\n", hdr_global_value_get());
   return 0;
 }
 
@@ -841,19 +843,19 @@ static void blc_para_set_by_hash(json_object *j_data) {
 
   if (sHDR) {
     hdr_mode_set4db(blc_cfg->HDR);
-    if (gc_hdr_mode == RK_AIQ_WORKING_MODE_ISP_HDR2) {
+    if (hdr_global_value_get() == RK_AIQ_WORKING_MODE_ISP_HDR2) {
       blc_hdr_level_enum_set(blc_cfg->HDRLevel);
       return;
     }
   }
   if (iHDRLevel) {
-    LOG_INFO("hdr level set gc : %d\n", gc_hdr_mode);
-    if (gc_hdr_mode == RK_AIQ_WORKING_MODE_ISP_HDR2) {
+    LOG_INFO("hdr level set gc : %d\n", hdr_global_value_get());
+    if (hdr_global_value_get() == RK_AIQ_WORKING_MODE_ISP_HDR2) {
       blc_hdr_level_enum_set(blc_cfg->HDRLevel);
       return;
     }
   }
-  if (gc_hdr_mode != RK_AIQ_WORKING_MODE_NORMAL) {
+  if (hdr_global_value_get() != RK_AIQ_WORKING_MODE_NORMAL) {
     return;
   }
   if (sBLCRegion) {
@@ -1641,9 +1643,16 @@ static int video_adjustment_get(void) {
 
 static void hash_data_init_by_id(int id) {
   if (id < SCENARIO_MIN || id > SCENARIO_MAX) {
+    int dbus_log_status = dbus_warn_log_status_get();
     while (scenario_get() != 0) {
+      if (dbus_log_status) {
+        dbus_warn_log_close();
+      }
       LOG_INFO("scenario_get, wait dbserver.\n");
       usleep(50000);
+    }
+    if (dbus_log_status) {
+      dbus_warn_log_open();
     }
   } else {
     gc_scenario = (enum Scenario)id;
@@ -1861,15 +1870,27 @@ void DataChanged(void *user_data) {
 }
 
 void database_init() {
+  pthread_mutex_lock(&init_mutex);
+  if (database_init_flag) {
+    pthread_mutex_unlock(&init_mutex);
+    return;
+  }
+  database_init_flag = 1;
   LOG_INFO("database_init\n");
   disable_loop();
   hash_data_init_by_id(-1);
   dbus_monitor_signal_registered(DBSERVER_MEDIA_INTERFACE,
                                  DS_SIGNAL_DATACHANGED, &DataChanged);
   LOG_INFO("database_init over\n");
+  pthread_mutex_unlock(&init_mutex);
 }
 
 void database_hash_init(void) {
+  pthread_mutex_lock(&init_mutex);
+  if (db_adjustment_hash) {
+    pthread_mutex_unlock(&init_mutex);
+    return;
+  }
   db_adjustment_hash =
       g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
   db_exposure_hash =
@@ -1884,6 +1905,23 @@ void database_hash_init(void) {
   db_video_adjustment_hash =
       g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
   LOG_INFO("database_hash_init init complete\n");
+  pthread_mutex_unlock(&init_mutex);
 }
+
+bool wait_dbus_init_func(void) {
+  return (scenario_get() == 0);
+}
+
+void dbus_warn_log_close() {
+  IPCProtocol_log_en_set(false);
+}
+
+void dbus_warn_log_open() {
+  IPCProtocol_log_en_set(true);
+}
+
+int dbus_warn_log_status_get() {
+  return IPCProtocol_log_en_get();
+};
 
 #endif

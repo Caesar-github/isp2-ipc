@@ -36,8 +36,10 @@
 #include "config.h"
 
 #if CONFIG_DBUS
+#if CONFIG_CALLFUNC
 #include "call_fun_ipc.h"
 #include "fun_map.h"
+#endif
 #include <gdbus.h>
 #endif
 
@@ -74,7 +76,14 @@ static int height = 1520;
 static int fixfps = -1;
 static const char *mdev_path = NULL;
 static bool need_sync_db = true;
-#if CONFIG_OEM
+#if SYS_START
+static bool is_quick_start = true;
+#else
+static bool is_quick_start = false;
+#endif
+#if SYS_START
+const char *iq_file_dir = "/etc/iqfiles/";
+#elif CONFIG_OEM
 const char *iq_file_dir = "/oem/etc/iqfiles/";
 #else
 const char *iq_file_dir = "/etc/iqfiles/";
@@ -373,93 +382,9 @@ int rkaiq_get_media_info() {
   return ret;
 }
 
-static void init_engine(int cam_id) {
-  int index;
-
+static void db_config_sync(char *hdr_mode) {
 #if CONFIG_DBSERVER
-  if (need_sync_db) {
-    rk_aiq_working_mode_t hdr_mode_db = RK_AIQ_WORKING_MODE_NORMAL;
-    while (hash_image_hdr_mode_get4init(&hdr_mode_db)) {
-      LOG_INFO("Get data is empty, please start dbserver\n");
-      sleep(1);
-    }
-    LOG_INFO("hdr_mode_db: %d \n", hdr_mode_db);
-    switch (hdr_mode_db) {
-    case RK_AIQ_WORKING_MODE_NORMAL: {
-      setenv("HDR_MODE", "0", 1);
-      LOG_DEBUG("set hdr normal\n");
-      break;
-    }
-    case RK_AIQ_WORKING_MODE_ISP_HDR2: {
-      setenv("HDR_MODE", "1", 1);
-      break;
-    }
-    case RK_AIQ_WORKING_MODE_ISP_HDR3: {
-      setenv("HDR_MODE", "2", 1);
-      break;
-    }
-    }
-  }
-#endif
-
-  char *hdr_mode = getenv("HDR_MODE");
-  if (hdr_mode) {
-    LOG_INFO("hdr mode: %s\n", hdr_mode);
-    if (0 == atoi(hdr_mode))
-      mode[cam_id] = RK_AIQ_WORKING_MODE_NORMAL;
-    else if (1 == atoi(hdr_mode))
-      mode[cam_id] = RK_AIQ_WORKING_MODE_ISP_HDR2;
-    else if (2 == atoi(hdr_mode))
-      mode[cam_id] = RK_AIQ_WORKING_MODE_ISP_HDR3;
-  }
-
-  if (media_info[cam_id].fix_nohdr_mode)
-    mode[cam_id] = RK_AIQ_WORKING_MODE_NORMAL;
-
-  for (index = 0; index < RKAIQ_CAMS_NUM_MAX; index++)
-    if (media_info[cam_id].cams[index].link_enabled)
-      break;
-
-  aiq_ctx[cam_id] =
-      rk_aiq_uapi_sysctl_init(media_info[cam_id].cams[index].sensor_entity_name,
-                              iq_file_dir, NULL, NULL);
-
-/* sync fec from db*/
-#if CONFIG_DBSERVER
-  if (need_sync_db) {
-    int fec_en;
-    hash_image_fec_enable_get4init(&fec_en, NULL);
-    int fec_ret = rk_aiq_uapi_setFecEn(aiq_ctx[cam_id], fec_en);
-    LOG_INFO("set fec_en: %d, ret is %d\n", fec_en, fec_ret);
-  }
-#endif
-
-  if (rk_aiq_uapi_sysctl_prepare(aiq_ctx[cam_id], width, height,
-                                 mode[cam_id])) {
-    LOG_INFO("rkaiq engine prepare failed !\n");
-    exit(-1);
-  }
-  db_aiq_ctx = aiq_ctx[cam_id];
-  save_prepare_status(cam_id, 1);
-
-#if CONFIG_DBSERVER
-    set_stream_on();
-#endif
-
-  if (fixfps > 0) {
-#if CONFIG_DBSERVER
-    isp_fix_fps_set(fixfps);
-#else
-    frameRateInfo_t fps_info;
-    memset(&fps_info, 0, sizeof(fps_info));
-    fps_info.fps = fixfps;
-    fps_info.mode = OP_MANUAL;
-    rk_aiq_uapi_setFrameRate(db_aiq_ctx, fps_info);
-#endif
-  }
-
-#if CONFIG_DBSERVER
-  if (need_sync_db) {
+  if (need_sync_db && !is_quick_start) {
     /* IMAGE_ADJUSTMENT */
     int brightness = 50;
     int contrast = 50;
@@ -532,12 +457,108 @@ static void init_engine(int cam_id) {
 #endif
 }
 
+static void init_engine(int cam_id) {
+  int index;
+
+#if CONFIG_DBSERVER
+  if (need_sync_db && !is_quick_start) {
+    rk_aiq_working_mode_t hdr_mode_db = RK_AIQ_WORKING_MODE_NORMAL;
+    while (hash_image_hdr_mode_get4init(&hdr_mode_db)) {
+      LOG_INFO("Get data is empty, please start dbserver\n");
+      sleep(1);
+    }
+    LOG_INFO("hdr_mode_db: %d \n", hdr_mode_db);
+    switch (hdr_mode_db) {
+    case RK_AIQ_WORKING_MODE_NORMAL: {
+      setenv("HDR_MODE", "0", 1);
+      LOG_DEBUG("set hdr normal\n");
+      break;
+    }
+    case RK_AIQ_WORKING_MODE_ISP_HDR2: {
+      setenv("HDR_MODE", "1", 1);
+      break;
+    }
+    case RK_AIQ_WORKING_MODE_ISP_HDR3: {
+      setenv("HDR_MODE", "2", 1);
+      break;
+    }
+    }
+  }
+#endif
+
+  char *hdr_mode = getenv("HDR_MODE");
+  if (hdr_mode) {
+    LOG_INFO("hdr mode: %s\n", hdr_mode);
+    if (0 == atoi(hdr_mode))
+      mode[cam_id] = RK_AIQ_WORKING_MODE_NORMAL;
+    else if (1 == atoi(hdr_mode))
+      mode[cam_id] = RK_AIQ_WORKING_MODE_ISP_HDR2;
+    else if (2 == atoi(hdr_mode))
+      mode[cam_id] = RK_AIQ_WORKING_MODE_ISP_HDR3;
+  }
+
+  if (media_info[cam_id].fix_nohdr_mode)
+    mode[cam_id] = RK_AIQ_WORKING_MODE_NORMAL;
+
+  for (index = 0; index < RKAIQ_CAMS_NUM_MAX; index++)
+    if (media_info[cam_id].cams[index].link_enabled)
+      break;
+
+  aiq_ctx[cam_id] =
+      rk_aiq_uapi_sysctl_init(media_info[cam_id].cams[index].sensor_entity_name,
+                              iq_file_dir, NULL, NULL);
+
+#if CONFIG_DBSERVER
+  /* sync fec from db*/
+  if (need_sync_db && !is_quick_start) {
+    int fec_en;
+    hash_image_fec_enable_get4init(&fec_en, NULL);
+    int fec_ret = rk_aiq_uapi_setFecEn(aiq_ctx[cam_id], fec_en);
+    LOG_INFO("set fec_en: %d, ret is %d\n", fec_en, fec_ret);
+  }
+  /* sync hdr mode for quick_start */
+  if (!need_sync_db || is_quick_start) {
+    hdr_global_value_set(mode[cam_id]);
+  }
+#endif
+
+  if (rk_aiq_uapi_sysctl_prepare(aiq_ctx[cam_id], width, height,
+                                 mode[cam_id])) {
+    LOG_INFO("rkaiq engine prepare failed !\n");
+    exit(-1);
+  }
+  db_aiq_ctx = aiq_ctx[cam_id];
+  save_prepare_status(cam_id, 1);
+
+#if CONFIG_DBSERVER
+    set_stream_on();
+#endif
+
+  if (fixfps > 0) {
+#if CONFIG_DBSERVER
+    isp_fix_fps_set(fixfps);
+#else
+    frameRateInfo_t fps_info;
+    memset(&fps_info, 0, sizeof(fps_info));
+    fps_info.fps = fixfps;
+    fps_info.mode = OP_MANUAL;
+    rk_aiq_uapi_setFrameRate(db_aiq_ctx, fps_info);
+#endif
+  }
+  db_config_sync(hdr_mode);
+}
+
 static void start_engine(int cam_id) {
   rk_aiq_uapi_sysctl_start(aiq_ctx[cam_id]);
   if (aiq_ctx[cam_id] == NULL) {
     LOG_INFO("rkisp_init engine failed\n");
     exit(-1);
   } else {
+#if CONFIG_DBSERVER
+#if SYS_START
+    send_stream_on_signal();
+#endif
+#endif
     LOG_INFO("rkisp_init engine succeed\n");
   }
 }
@@ -548,8 +569,10 @@ static void stop_engine(int cam_id) {
 
 static void deinit_engine(int cam_id) {
 #if CONFIG_DBSERVER
-  if (need_sync_db)
-     night2day_loop_stop();
+  if (need_sync_db) {
+    set_stream_off();
+    night2day_loop_stop();
+  }
 #endif
   save_prepare_status(cam_id, 0);
   rk_aiq_uapi_sysctl_deinit(aiq_ctx[cam_id]);
@@ -607,6 +630,45 @@ static int subscrible_stream_event(int cam_id, int fd, bool subs) {
   return 0;
 }
 
+void *wait_thread_func() {
+  LOG_DEBUG("wait_thread_func...q: %d, db: %d\n", is_quick_start, need_sync_db);
+#if CONFIG_DBSERVER
+  database_hash_init();
+  while (!wait_dbus_init_func()) {
+    if (dbus_warn_log_status_get()) {
+      dbus_warn_log_close();
+    }
+    LOG_DEBUG("wait for dbus init\n");
+    usleep(100000);
+  }
+  if (need_sync_db) {
+    dbus_warn_log_open();
+  }
+  database_init();
+  manage_init();
+  rk_aiq_working_mode_t hdr_mode_db = RK_AIQ_WORKING_MODE_NORMAL;
+  hash_image_hdr_mode_get4init(&hdr_mode_db);
+  hdr_mode_set4db(hdr_mode_db);
+  switch(hdr_mode_db) {
+    case RK_AIQ_WORKING_MODE_NORMAL:
+      is_quick_start = false;
+      db_config_sync("0");
+      break;
+    case RK_AIQ_WORKING_MODE_ISP_HDR2:
+      is_quick_start = false;
+      db_config_sync("1");
+      break;
+    case RK_AIQ_WORKING_MODE_ISP_HDR3:
+      is_quick_start = false;
+      db_config_sync("2");
+      break;
+    default:
+      LOG_ERROR("undefine hdr mode: %d, fail to sync db config\n", hdr_mode_db);
+      break;
+  }
+#endif
+}
+
 void *thread_func(void *arg) {
   int ret = 0;
   int isp_fd;
@@ -621,9 +683,12 @@ void *thread_func(void *arg) {
    */
   setlinebuf(stdout);
 #if CONFIG_DBSERVER
-  database_hash_init();
-  database_init();
-  manage_init();
+  if (!is_quick_start && (need_sync_db || wait_dbus_init_func())) {
+    LOG_INFO("init for db\n");
+    database_hash_init();
+    database_init();
+    manage_init();
+  }
 #endif
   for (;;) {
     /* Refresh media info so that sensor link status updated */
@@ -684,20 +749,27 @@ static void main_exit(void) {
     }
   }
 #if CONFIG_DBUS
+#if CONFIG_CALLFUNC
+  LOG_INFO("deinit call_fun_ipc_server...\n");
   call_fun_ipc_server_deinit();
+#endif
 #endif
 }
 
 void signal_crash_handler(int sig) {
 #if CONFIG_DBUS
+#if CONFIG_CALLFUNC
   call_fun_ipc_server_deinit();
+#endif
 #endif
   exit(-1);
 }
 
 void signal_exit_handler(int sig) {
 #if CONFIG_DBUS
+#if CONFIG_CALLFUNC
   call_fun_ipc_server_deinit();
+#endif
 #endif
   exit(0);
 }
@@ -714,7 +786,6 @@ int main(int argc, char **argv) {
     if (strcmp(*argv, "-no-sync-db") == 0)
       need_sync_db = false;
   }
-
   pthread_t tidp[RKAIQ_CAMS_NUM_MAX];
   memset(media_info, 0, sizeof(media_info));
   if (rkaiq_get_media_info())
@@ -729,6 +800,16 @@ int main(int argc, char **argv) {
     }
   }
 
+#if CONFIG_DBSERVER
+  if (!need_sync_db)
+    dbus_warn_log_close();
+
+  if (wait_dbus_init_func()) {
+    LOG_INFO("dbus init complete, alter quick start false\n");
+    is_quick_start = false;
+  }
+#endif
+
   for (int id = 0; id < RKAIQ_CAMS_NUM_MAX; id++) {
     int camid[RKAIQ_CAMS_NUM_MAX];
     camid[id] = id;
@@ -740,6 +821,17 @@ int main(int argc, char **argv) {
       }
     }
   }
+
+#if CONFIG_DBSERVER
+  LOG_DEBUG("before enter wait thread q: %d, db: %d\n", is_quick_start, need_sync_db);
+  if (is_quick_start || !need_sync_db) {
+    pthread_t wait_db_p;
+    if (pthread_create(&wait_db_p, NULL, wait_thread_func, NULL) !=
+        0) {
+      LOG_INFO("enter wait thread for db error\n");
+    }
+  }
+#endif
 
 #if CONFIG_DBUS
   pthread_detach(pthread_self());
@@ -753,9 +845,11 @@ int main(int argc, char **argv) {
   signal(SIGFPE, signal_crash_handler);
   signal(SIGABRT, signal_crash_handler);
 
+#if CONFIG_CALLFUNC
   call_fun_ipc_server_init(map, sizeof(map) / sizeof(struct FunMap), DBUS_NAME,
                            DBUS_IF, DBUS_PATH, 0);
   LOG_INFO("call_fun_ipc_demo_server init\n");
+#endif
 
   main_loop = g_main_loop_new(NULL, FALSE);
 
@@ -775,7 +869,7 @@ int main(int argc, char **argv) {
 
 static const char short_options[] = "nf:";
 static const struct option long_options[] = {
-    {"nodb", no_argument, NULL, 'n'},
+    {"nsd", no_argument, NULL, 'n'},
     {"fps", required_argument, NULL, 'f'},
     {0, 0, 0, 0}};
 void parse_args(int argc, char **argv) {

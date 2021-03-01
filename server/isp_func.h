@@ -18,6 +18,10 @@
 #define HDR_MODE_HDR2 "HDR2"
 #define HDR_MODE_HDR3 "HDR3"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef enum work_mode_0_e {
   WM0_INVALID_MODE = -1,
   WM0_MANAUL_MODE = 0,
@@ -89,12 +93,12 @@ typedef enum flip_mode_e {
   FM_CENTER
 } flip_mode_t;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+typedef int (*ispserver_status_signal_send)(int status);
 
 int get_led_state();
+void send_stream_on_signal();
 void set_stream_on();
+void set_stream_off();
 int check_stream_status();
 void reset_flow();
 
@@ -113,6 +117,8 @@ int white_balance_gain_get(rk_aiq_wb_gain_t *gain);
 int isp_fix_fps_set(int rate);
 int frequency_mode_set(expPwrLineFreq_t mode);
 
+int hdr_global_value_set(rk_aiq_working_mode_t hdr_mode);
+rk_aiq_working_mode_t hdr_global_value_get();
 int hdr2_normal_set(rk_aiq_working_mode_t hdr_mode);
 void hdr_mode_set(rk_aiq_working_mode_t mode, int ledIsOn);
 void hdr_mode_set4db(rk_aiq_working_mode_t mode);
@@ -160,6 +166,8 @@ int blc_region_para_set(work_mode_1_t mode, int strength);
 int blc_region_strength_set(int strength);
 int blc_hlc_para_set(work_mode_1_t mode, int hlc_level, int dark_level);
 int blc_hlc_level_set(int hlc_level, int dark_level);
+
+int isp_status_sender_register(ispserver_status_signal_send send_func);
 
 #ifdef __cplusplus
 }
