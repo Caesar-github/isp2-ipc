@@ -153,6 +153,7 @@ int dehaze_strength_set(int level);
 int dehaze_para_set(work_mode_2_t mode, int level);
 
 float exposure_time_str2float(char *time);
+int exposure_weight_str2array(char *weight,int32_t* g_weight);
 int exposure_time_set(char *time);
 int exposure_gain_set(int gain);
 int auto_exposure_set();
@@ -161,6 +162,7 @@ int manual_exposure_manual_gain_set_char(char *time, int gain);
 int manual_exposure_manual_gain_set_float(float expTime, int gain);
 int manual_exposure_auto_gain_set_char(char *time);
 int manual_exposure_auto_gain_set_float(float expTime);
+int manual_exposure_grid_weight_set(int32_t* weight,int evbias);
 
 int blc_region_para_set(work_mode_1_t mode, int strength);
 int blc_region_strength_set(int strength);

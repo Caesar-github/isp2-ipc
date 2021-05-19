@@ -66,7 +66,6 @@ endif()
 
 option(SYS_START "Enable sys start" 0)
 add_definitions(-DSYS_START=${SYS_START})
-
 if(DEFINED CONFIG_CALLFUNC)
    add_definitions(-DCONFIG_CALLFUNC=${CONFIG_CALLFUNC})
 if(${CONFIG_CALLFUNC})

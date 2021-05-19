@@ -46,7 +46,6 @@ struct ExposureConfig {
   float ExposureTime;                // [0.00001-1]
   int ExposureGain;                  // [0-100]
 };
-
 struct Night2DayConfig {
   night2day_mode_t NightToDay;  // [0-3]
   int NightToDayFilterLevel;    // []
@@ -526,7 +525,7 @@ int hash_image_enhancement_get(nr_mode_t *nr_mode, dc_mode_t *dc_mode,
 }
 
 void dbserver_image_adjustment_get(int *brightness, int *contrast,
-                                   int *saturation, int *sharpness, int *hue) {
+                                   int *saturation, int *sharpness, int *hue,int *evbias) {
   char *json_str = NULL;
   json_str = dbserver_media_get(TABLE_IMAGE_ADJUSTMENT);
   LOG_INFO("%s, json_str is %s\n", __func__, json_str);
@@ -546,6 +545,7 @@ void dbserver_image_adjustment_get(int *brightness, int *contrast,
   *sharpness =
       (int)json_object_get_int(json_object_object_get(j_data, "iSharpness"));
   *hue = (int)json_object_get_int(json_object_object_get(j_data, "iHue"));
+  *evbias = (int)json_object_get_int(json_object_object_get(j_data, "iEvbias"));
   json_object_put(j_cfg);
   free(json_str);
 }
@@ -979,6 +979,7 @@ static void image_adjustment_set_by_json(json_object *j_data) {
   json_object *iSharpness = json_object_object_get(j_data, "iSharpness");
   json_object *iHue = json_object_object_get(j_data, "iHue");
   json_object *iFPS = json_object_object_get(j_data, "iFPS");
+  json_object *sGridWeight = json_object_object_get(j_data, "sGridWeight");
   if (iBrightness) {
     int brightness = (int)json_object_get_int(iBrightness);
     brightness_set(brightness);
@@ -1002,6 +1003,19 @@ static void image_adjustment_set_by_json(json_object *j_data) {
   if (iFPS) {
     int fps = json_object_get_int(iFPS);
     isp_fix_fps_set(fps);
+  }
+  if(sGridWeight) {
+    char *weight_data = (char *)json_object_get_string(sGridWeight);
+    //LOG_INFO("set weight,%s \n", weight_data);
+    int32_t g_weight[225] = {0};
+    int brightness,contrast,saturation,sharpness,hue,evbias = 0;
+    memset(g_weight, 0, sizeof(g_weight));
+    int ret = exposure_weight_str2array(weight_data,g_weight);
+    if(ret == 0){
+      dbserver_image_adjustment_get(&brightness,&contrast,&saturation,&sharpness,&hue,&evbias);
+      LOG_INFO("set weight,%s ,evbias = %d\n", weight_data,evbias);
+      manual_exposure_grid_weight_set(g_weight,evbias);
+    }
   }
 }
 
@@ -1067,6 +1081,7 @@ int exposure_para_set_by_hash(void) {
     LOG_WARN("get no hash data\n");
     return -1;
   }
+
   if (exposure_cfg->AutoExposureEnabled) {
     auto_exposure_set();
   } else if (exposure_cfg->AutoGainEnabled) {
@@ -1205,7 +1220,6 @@ static void updatehash_exposure(int sce, char *name, void *data) {
     g_hash_table_replace(db_exposure_hash, g_strdup(sce_str),
                          (gpointer)exposure_cfg);
   }
-
   if (g_str_equal(name, "sExposureMode")) {
     exposure_cfg->AutoExposureEnabled = string2work_mode_0_t((char *)data);
   } else if (g_str_equal(name, "sGainMode")) {

@@ -969,7 +969,23 @@ int dehaze_para_set(work_mode_2_t mode, int level) {
   pthread_mutex_unlock(&db_aiq_ctx_mutex);
   return ret;
 }
-
+int exposure_weight_str2array(char *weight,int32_t* g_weight){
+    int ret = 0;
+    gchar **arr;
+    gint i;
+    if(weight == NULL){
+      return -1;
+    }
+    LOG_INFO("%s\n", weight);
+    if(strstr(weight,",") == NULL){
+      return -1;
+    }
+    arr = g_strsplit(weight, ",", 0);
+    for (i = 0; arr[i] != NULL; i++){
+	g_weight[i] = atoi(arr[i]);
+    }
+    return ret;
+}
 float exposure_time_str2float(char *time) {
   float numerator, denominator, rst;
   if (strcmp(time, "1")) {
@@ -1156,6 +1172,54 @@ int manual_exposure_manual_gain_set_float(float expTime, int gain) {
   return ret;
 }
 
+int manual_exposure_grid_weight_set(int32_t* weight,int evbias) {
+  if (!db_aiq_ctx || !g_stream_on)
+    return -1;
+  LOG_INFO(" xy is %d,%d . wh is %d,%d\n",weight[0],weight[1],weight[2],weight[3] );
+  Uapi_ExpSwAttr_t stExpSwAttr;
+  Uapi_LinExpAttr_t pLinExpAttr;
+  pthread_mutex_lock(&db_aiq_ctx_mutex);
+  rk_aiq_user_api_ae_getExpSwAttr(db_aiq_ctx, &stExpSwAttr);
+  rk_aiq_user_api_ae_getLinExpAttr(db_aiq_ctx, &pLinExpAttr);
+  pLinExpAttr.Evbias = evbias;
+  stExpSwAttr.stAdvanced.enable = true;
+  uint8_t DayGridWeights[225]={
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        };
+  for(int i = 0; i < 225; i++){
+     if(weight[i] != 0 && weight[i] < 225){
+	DayGridWeights[weight[i]] = 15;
+     }
+  }
+  if(weight[0] == 0 && weight[1] == 0){
+    for(int i = 0; i < 225; i++){
+        DayGridWeights[i] = 1;
+    }
+    pLinExpAttr.Evbias = 0;
+    LOG_INFO(" xy is %d,%d . wh is %d,%d\n",weight[0],weight[1],weight[2],weight[3]);
+    //stExpSwAttr.stAdvanced.enable = false;
+  }
+  memcpy(stExpSwAttr.stAdvanced.DayGridWeights,DayGridWeights,sizeof(stExpSwAttr.stAdvanced.DayGridWeights));
+  memcpy(stExpSwAttr.stAdvanced.NightGridWeights,DayGridWeights,sizeof(stExpSwAttr.stAdvanced.DayGridWeights));
+  int ret = rk_aiq_user_api_ae_setExpSwAttr(db_aiq_ctx, stExpSwAttr);
+  ret = rk_aiq_user_api_ae_setLinExpAttr(db_aiq_ctx, pLinExpAttr);
+  pthread_mutex_unlock(&db_aiq_ctx_mutex);
+  return ret;
+}
 static int blc_region_strength_set_no_mutex(int strength) {
   if (!db_aiq_ctx || !g_stream_on)
     return -1;
