@@ -221,6 +221,8 @@ static white_balance_mode_t string2white_balance_mode_t(char *mode) {
     return WB_WARM_LIGHT;
   else if (g_str_equal(mode, "naturalLight"))
     return WB_NATURE_LIGHT;
+  else if (g_str_equal(mode, "manualWhiteBalanceCT"))
+    return WB_CT;
   else
     return WB_INVALID;
 }
@@ -1037,7 +1039,10 @@ static void white_balance_set_by_hash(json_object *j_data) {
     return;
   }
   if (sWhiteBalanceStyle) {
-    if (white_balance_cfg->WhiteBlanceStyle == WB_MANUAL) {
+    if (white_balance_cfg->WhiteBlanceStyle == WB_CT) {
+      LOG_WARN("use data WhiteBalanceRed to set MWBCT\n");
+      manual_white_balance_ct_set(white_balance_cfg->WhiteBalanceRed);
+    } else if (white_balance_cfg->WhiteBlanceStyle == WB_MANUAL) {
       manual_white_balance_set(white_balance_cfg->WhiteBalanceRed,
                                white_balance_cfg->WhiteBalanceGreen,
                                white_balance_cfg->WhiteBalanceBlue);
@@ -1046,7 +1051,9 @@ static void white_balance_set_by_hash(json_object *j_data) {
     }
   } else if ((iWhiteBalanceRed) || (iWhiteBalanceBlue) ||
              (iWhiteBalanceGreen)) {
-    if (white_balance_cfg->WhiteBlanceStyle == WB_MANUAL)
+    if (white_balance_cfg->WhiteBlanceStyle == WB_CT)
+      manual_white_balance_ct_set(white_balance_cfg->WhiteBalanceRed);
+    else if (white_balance_cfg->WhiteBlanceStyle == WB_MANUAL)
       manual_white_balance_level_set(white_balance_cfg->WhiteBalanceRed,
                                      white_balance_cfg->WhiteBalanceGreen,
                                      white_balance_cfg->WhiteBalanceBlue);

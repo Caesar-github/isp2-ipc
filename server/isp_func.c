@@ -158,6 +158,18 @@ int manual_white_balance_set(int r_level, int g_level, int b_level) {
   return ret;
 }
 
+int manual_white_balance_ct_set(int ct) {
+  if (!db_aiq_ctx || !g_stream_on)
+    return -1;
+  int ret = -1;
+  pthread_mutex_lock(&db_aiq_ctx_mutex);
+  ret = rk_aiq_uapi_setWBMode(db_aiq_ctx, OP_MANUAL);
+  LOG_DEBUG("set white balance ct mode manual, ret is %d\n", ret);
+  pthread_mutex_unlock(&db_aiq_ctx_mutex);
+  ret = rk_aiq_uapi_setMWBCT(db_aiq_ctx, ct);;
+  return ret;
+}
+
 int white_balance_style_set(white_balance_mode_t style) {
   LOG_DEBUG("white balance style is %d\n", style);
   if (!db_aiq_ctx || !g_stream_on)
@@ -178,6 +190,7 @@ int white_balance_style_set(white_balance_mode_t style) {
     LOG_INFO("set autoWhiteBalance, ret is %d\n", ret);
     break;
   }
+  case WB_CT:
   case WB_MANUAL: {
     ret = rk_aiq_uapi_setWBMode(db_aiq_ctx, OP_MANUAL);
     LOG_INFO("set manualWhiteBalance, without level, ret is %d\n", ret);

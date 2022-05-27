@@ -61,7 +61,8 @@ typedef enum white_balance_mode_e {
   WB_FLUORESCENT_LAMP,
   WB_INCANDESCENT,
   WB_WARM_LIGHT,
-  WB_NATURE_LIGHT
+  WB_NATURE_LIGHT,
+  WB_CT
 } white_balance_mode_t;
 
 typedef enum noise_reduce_mode_e {
@@ -108,6 +109,7 @@ void saturation_set(int level);
 void sharpness_set(int level);
 void hue_set(int level);
 
+int manual_white_balance_ct_set(int ct);
 int manual_white_balance_set(int r_level, int g_level, int b_level);
 int manual_white_balance_level_set(int r_level, int g_level, int b_level);
 int white_balance_style_set(white_balance_mode_t style);
