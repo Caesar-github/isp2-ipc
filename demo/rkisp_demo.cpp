@@ -248,6 +248,7 @@ void test_imgproc(const rk_aiq_sys_ctx_t* ctx) {
         rk_aiq_uapi_getCrSuppsn(ctx, &level2);
         printf("getCrSuppsn=%d\n",level2);
         break;
+#if 0
     case 'p':
         rk_aiq_uapi_setHDRMode(ctx, OP_AUTO);
         printf("setHDRMode\n");
@@ -260,6 +261,7 @@ void test_imgproc(const rk_aiq_sys_ctx_t* ctx) {
         rk_aiq_uapi_getHDRMode(ctx, &mode);
         printf("getHDRMode=%d\n",mode);
         break;
+#endif
     case 's':
         rk_aiq_uapi_setNRMode(ctx, OP_MANUAL);
         printf("setNRMode\n");

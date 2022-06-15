@@ -529,6 +529,7 @@ XCamReturn rk_aiq_uapi_getOpZoomSpeed_ipc(void *args){
 *
 *****************************
 */
+#if 0
 XCamReturn rk_aiq_uapi_setHDRMode_ipc(void *args){
     CALL_SET_AIQ(rk_aiq_uapi_setHDRMode);
     return 0;
@@ -537,7 +538,7 @@ XCamReturn rk_aiq_uapi_getHDRMode_ipc(void *args){
     CALL_GET_AIQ(rk_aiq_uapi_getHDRMode);
     return 0;
 }
-
+#endif
 /*
 *****************************
 *

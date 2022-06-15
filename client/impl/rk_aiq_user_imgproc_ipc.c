@@ -693,6 +693,7 @@ XCamReturn rk_aiq_uapi_getOpZoomSpeed(const rk_aiq_sys_ctx_t* ctx, unsigned int 
 *
 *****************************
 */
+#if 0
 XCamReturn rk_aiq_uapi_setHDRMode(const rk_aiq_sys_ctx_t* ctx, opMode_t mode)
 {    
     const rk_aiq_sys_ctx_t* sys_ctx = ctx;
@@ -707,7 +708,7 @@ XCamReturn rk_aiq_uapi_getHDRMode(const rk_aiq_sys_ctx_t* ctx, opMode_t *mode)
     opMode_t *attr = mode;
     CLIENT_CALL_GET_AIQ(rk_aiq_uapi_getHDRMode);
 }
-
+#endif
 /*
 *****************************
 *

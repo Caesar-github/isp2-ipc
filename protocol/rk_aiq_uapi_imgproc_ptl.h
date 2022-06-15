@@ -612,6 +612,7 @@ typedef struct rk_aiq_uapi_getOpZoomSpeed {
 *
 *****************************
 */
+#if 0
 typedef struct rk_aiq_uapi_setHDRMode {
    rk_aiq_sys_ctx_t* sys_ctx; 
    opMode_t attr;
@@ -622,7 +623,7 @@ typedef struct rk_aiq_uapi_getHDRMode {
    opMode_t  attr;
    XCamReturn returnvalue;
 } rk_aiq_uapi_getHDRMode_t;
-
+#endif
 /*
 *****************************
 *
