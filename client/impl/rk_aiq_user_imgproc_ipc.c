@@ -685,33 +685,6 @@ XCamReturn rk_aiq_uapi_getOpZoomSpeed(const rk_aiq_sys_ctx_t* ctx, unsigned int 
 /*
 *****************************
 *
-* Desc: set hdr mode
-* Argument:
-*   mode:
-*     auto: auto hdr mode
-*     manual：manual hdr mode
-*
-*****************************
-*/
-#if 0
-XCamReturn rk_aiq_uapi_setHDRMode(const rk_aiq_sys_ctx_t* ctx, opMode_t mode)
-{    
-    const rk_aiq_sys_ctx_t* sys_ctx = ctx;
-    opMode_t attr;
-    memcpy(&attr, &mode, sizeof(opMode_t));
-    CLIENT_CALL_SET_AIQ(rk_aiq_uapi_setHDRMode);
-}
-
-XCamReturn rk_aiq_uapi_getHDRMode(const rk_aiq_sys_ctx_t* ctx, opMode_t *mode)
-{    
-    const rk_aiq_sys_ctx_t* sys_ctx = ctx;
-    opMode_t *attr = mode;
-    CLIENT_CALL_GET_AIQ(rk_aiq_uapi_getHDRMode);
-}
-#endif
-/*
-*****************************
-*
 * Desc: set manual hdr strength
 *    this function is active for HDR is manual mode
 * Argument:

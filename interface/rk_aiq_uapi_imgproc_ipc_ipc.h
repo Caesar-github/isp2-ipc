@@ -389,21 +389,6 @@ XCamReturn rk_aiq_uapi_getOpZoomSpeed_ipc(void *args);
 /*
 *****************************
 *
-* Desc: set hdr mode
-* Argument:
-*   mode:
-*     auto: auto hdr mode
-*     manual：manual hdr mode
-*
-*****************************
-*/
-#if 0
-XCamReturn rk_aiq_uapi_setHDRMode_ipc(void *args);
-XCamReturn rk_aiq_uapi_getHDRMode_ipc(void *args);
-#endif
-/*
-*****************************
-*
 * Desc: set manual hdr strength
 *    this function is active for HDR is manual mode
 * Argument:

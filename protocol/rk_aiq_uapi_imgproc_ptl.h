@@ -604,29 +604,6 @@ typedef struct rk_aiq_uapi_getOpZoomSpeed {
 /*
 *****************************
 *
-* Desc: set hdr mode
-* Argument:
-*   mode:
-*     auto: auto hdr mode
-*     manual：manual hdr mode
-*
-*****************************
-*/
-#if 0
-typedef struct rk_aiq_uapi_setHDRMode {
-   rk_aiq_sys_ctx_t* sys_ctx; 
-   opMode_t attr;
-   XCamReturn returnvalue;
-} rk_aiq_uapi_setHDRMode_t;
-typedef struct rk_aiq_uapi_getHDRMode {
-   rk_aiq_sys_ctx_t* sys_ctx; 
-   opMode_t  attr;
-   XCamReturn returnvalue;
-} rk_aiq_uapi_getHDRMode_t;
-#endif
-/*
-*****************************
-*
 * Desc: set manual hdr strength
 *    this function is active for HDR is manual mode
 * Argument:
