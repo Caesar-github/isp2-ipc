@@ -361,7 +361,7 @@ int rkaiq_get_media_info() {
 
     /* Try rkispp */
     if (!find_ispp[cam_id]) {
-      ret = rkaiq_get_devname(device, "rkispp_input_params",
+      ret = rkaiq_get_devname(device, "rkispp_nr_params",
                               media_info[cam_id].sd_ispp_path);
       if (ret == 0) {
         find_ispp[cam_id] = 1;
