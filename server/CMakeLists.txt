@@ -10,6 +10,7 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/./
         ${PROJECT_SOURCE_DIR}/../interface/
         ${PROJECT_SOURCE_DIR}/../common/
+	${PROJECT_SOURCE_DIR}/../common/mediactl/
         ${CMAKE_SYSROOT}/usr/include/rkaiq/uAPI/
         ${CMAKE_SYSROOT}/usr/include/rkaiq/algos
         ${CMAKE_SYSROOT}/usr/include/rkaiq/common
